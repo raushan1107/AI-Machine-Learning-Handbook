@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 1 | Secure Financial ML Engineering</title>
+<meta name="description" content="RR Skillverse free learning handbook for AI and Machine Learning — Module 1: Secure Financial ML Engineering.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.search{flex:1;max-width:560px;margin:auto}
+.search input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:12px;background:#09182a;color:var(--text);outline:none}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:58px;height:calc(100vh - 58px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:9px 11px;border-radius:9px;color:#c6d4e4;font-size:14px}
+.nav a:hover,.nav a.active{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1200px;width:100%;margin:0 auto;padding:46px 34px 90px}
+.hero{padding:46px 0 30px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(38px,6vw,70px);line-height:1.02;letter-spacing:-2px;margin:0 0 18px;max-width:1000px}
+h1 span{color:var(--accent)}
+.hero p{font-size:19px;color:#b9c9da;max-width:900px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px)}
+.progress{height:8px;background:#0b1b2d;border-radius:99px;overflow:hidden;border:1px solid var(--border);margin-top:22px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}
+.kpi{background:linear-gradient(145deg,#0d1b2e,#0b192b);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.kpi b{font-size:28px;display:block}.kpi span{color:var(--muted);font-size:13px}
+.section{margin-top:60px}
+.section>h2{font-size:34px;margin-bottom:8px}.section>p.lead{color:#b8c9da;font-size:17px;max-width:900px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:20px}
+.card h3{margin-top:0}
+.card p{color:#b6c6d8}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0}
+.flow .node{background:#10243c;border:1px solid var(--border);padding:10px 13px;border-radius:11px;font-size:14px}
+.flow .arrow{color:var(--accent);font-weight:800}
+.lesson{margin-top:72px;scroll-margin-top:78px}
+.lesson-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:24px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.lesson h2{font-size:36px;line-height:1.1;margin:5px 0 8px}
+.lesson-head p{margin:0;color:var(--muted);font-size:16px}
+.six-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:22px 0}
+.six-card{background:#0b1a2c;border:1px solid var(--border);border-radius:14px;padding:17px;position:relative}
+.six-card .qnum{width:28px;height:28px;display:grid;place-items:center;background:#12314a;border:1px solid #275174;border-radius:8px;color:var(--accent);font-weight:800;font-size:12px}
+.six-card h4{margin:10px 0 6px;font-size:15px}.six-card p{margin:0;color:#b8c8d8;font-size:14px}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}.callout.why{border-color:#24586b}.callout.warn{border-color:#6b5424}.callout.danger{border-color:#6b2733}.callout.ok{border-color:#256243}
+.code-wrap{position:relative;margin:16px 0}
+pre{margin:0;background:#050d17;border:1px solid #172a40;border-radius:12px;padding:18px;overflow:auto;font-size:13px;line-height:1.55;color:#dbe8f5}
+.copy-btn{position:absolute;right:10px;top:10px;z-index:2;border:1px solid #27425f;background:#0e2034;color:#cfe0f1;border-radius:8px;padding:6px 9px;font-size:12px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}th{color:#dce9f6;background:#0f2339}td{color:#b9c9d9}
+.math{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#06111e;border:1px solid var(--border);padding:12px 14px;border-radius:10px;color:#cfe7ff;overflow:auto}
+.demo{border:1px solid var(--border);border-radius:16px;background:#0b192b;margin:18px 0;overflow:hidden}
+.demo summary{cursor:pointer;padding:16px 18px;font-weight:750;background:#0e2035}
+.demo .demo-body{padding:20px}
+.steps{counter-reset:step;display:grid;gap:10px}
+
+.folder-tree{margin:18px 0;background:#07111e;border:1px solid var(--border);border-radius:14px;padding:18px 20px;overflow:auto}
+.folder-tree .tree-title{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);font-weight:850;margin-bottom:12px}
+.folder-tree pre{margin:0;color:#c9d9e8;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;line-height:1.75;white-space:pre}
+.folder-tree .folder{color:#7aa7ff;font-weight:700}.folder-tree .file{color:#dce8f4}.folder-tree .purpose{color:#8298ad}
+.path-chip{display:inline-block;background:#07111e;border:1px solid var(--border);border-radius:7px;padding:2px 7px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;color:#bfe9e3}
+
+.step{counter-increment:step;background:#0d1d30;border:1px solid var(--border);border-radius:12px;padding:15px 16px 15px 58px;position:relative}
+.step:before{content:counter(step);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:8px;background:#12314a;color:var(--accent);display:grid;place-items:center;font-weight:800}
+.step h4{margin:0 0 5px}.step p{margin:0;color:#b8c8d8}
+.checklist{display:grid;gap:8px;margin:14px 0}
+.check{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#0b1a2c;border:1px solid var(--border);border-radius:10px}
+.check input{margin-top:5px;accent-color:var(--accent)}
+.lesson-tag{display:inline-block;padding:4px 8px;border-radius:7px;background:#10243c;color:#9ec5ff;font-size:11px;font-weight:750;margin-right:5px}
+.quiz{border:1px solid var(--border);border-radius:14px;background:#0b1a2c;padding:18px;margin:16px 0}
+.quiz button{margin-top:10px}.answer{display:none;margin-top:12px;color:#bfead7;border-left:3px solid var(--ok);padding-left:12px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.kpis{grid-template-columns:repeat(2,1fr)}.card-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){main{padding:28px 16px 70px}.topbar{padding:10px 12px}.search{display:none}.kpis,.card-grid,.six-grid{grid-template-columns:1fr}.lesson h2{font-size:29px}h1{font-size:42px}}
+
+.algorithm-card{background:#0b1a2b;border:1px solid var(--border);border-radius:15px;padding:19px}
+.algorithm-card h3{margin:0 0 7px}.algorithm-card .question{color:var(--accent);font-weight:800;font-size:13px}
+.algorithm-card .when{margin-top:10px;color:#c7d7e6;font-size:13px}
+.compare{overflow:auto}.compare table{min-width:760px}
+.source-pipeline{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:18px 0}
+.source-box{flex:1 1 145px;min-width:140px;background:#0c1b2d;border:1px solid var(--border);border-radius:12px;padding:13px}
+.source-box strong{display:block;color:#dceafa}.source-box small{color:#8fa4b8}
+.connector{display:grid;place-items:center;color:var(--accent);font-size:20px;font-weight:900}
+.result-box{background:#0a2029;border:1px solid #24586b;border-radius:13px;padding:16px;margin:14px 0}
+.teach-prompt{background:#171827;border:1px dashed #44526b;border-radius:12px;padding:14px 16px;margin:12px 0;color:#cbd8e6}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <div class="search"><input id="search" type="search" placeholder="Search Module 1…" oninput="filterPage()"></div>
+  <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#foundation-first">Why Module 1 starts here</a>
+    <a href="#overview">How to use</a>
+    <a href="#course-map">Course map</a>
+    <a href="#dataset">Dataset</a>
+    <a href="#about">Module 1 outcome</a>
+    <h3>Module 1</h3>
+    <a href="#numpy">1 · NumPy</a>
+    <a href="#pandas">2 · Pandas + EDA</a>
+    <a href="#features">3 · Feature engineering</a>
+    <a href="#regression">4 · Regression</a>
+    <a href="#classification">5 · Classification</a>
+    <a href="#imbalance">6 · Imbalance + SMOTE</a>
+    <a href="#kmeans">7 · K-Means++</a>
+    <a href="#dbscan">8 · DBSCAN</a>
+    <a href="#pca">9 · PCA</a>
+    <a href="#umap">10 · UMAP</a>
+    <a href="#poison">11 · Data poisoning</a>
+    <a href="#isolation">12 · Isolation Forest</a>
+    <a href="#defense">13 · Poisoning defence</a>
+    <h3>Practice</h3>
+    <a href="#demos">VS Code demo path</a>
+    <a href="#lab">Integrated lab</a>
+    <a href="#trainer">Trainer mode</a>
+    <a href="#check">Knowledge check</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="callout why" style="margin-top:18px">
+    <strong>Free Learning Handbook</strong>
+    <div>A personal educational reference for structured learning, demonstrations and hands-on practice. This material is shared for learning purposes and is not presented as a commercial course or paid service.</div>
+  </div>
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Advanced</span>
+    <span class="badge">Module 1 · 3 Hours</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Data Science + <span>Financial Data Analysis</span></h1>
+  <p>Build the first trusted component of an enterprise financial AI system. Understand the business problem, translate it into mathematics, choose the right technique, implement it in Python, inspect the result, attack the training process, and design a layered defence.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#demos">Start the hands-on path →</a>
+    <a class="btn" href="data/rr_finance_module1_dataset.csv" download>Download dataset</a>
+  </div>
+  <div class="progress"><div id="progressBar"></div></div>
+</section>
+
+
+
+<div class="section" id="foundation-first">
+  <h2>Foundation First: Why Module 1 starts here</h2>
+  <p class="lead">Before NumPy, Pandas, regression, classification or Isolation Forest, we need to understand the problem we are actually trying to solve. Think of this as the map for the entire course.</p>
+  <div class="big-question" style="font-size:27px;border:1px solid #24586b;background:#0b2030;border-radius:16px;padding:20px;margin:20px 0;">
+    <strong>Business problem:</strong> “A financial organization wants to make better risk decisions from data — and it needs the resulting AI system to be trustworthy and secure. What do we build first?”
+  </div>
+  <div class="flow">
+    <div class="node">Business problem</div><div class="arrow">→</div>
+    <div class="node">Evidence / data</div><div class="arrow">→</div>
+    <div class="node">Financial meaning</div><div class="arrow">→</div>
+    <div class="node">Features</div><div class="arrow">→</div>
+    <div class="node">Algorithm</div><div class="arrow">→</div>
+    <div class="node">Python implementation</div><div class="arrow">→</div>
+    <div class="node">Evaluation</div><div class="arrow">→</div>
+    <div class="node">Security controls</div>
+  </div>
+  <div class="card-grid">
+    <div class="card"><h3>1. Ask the question</h3><p>Are we predicting a number? A class? Discovering groups? Finding unusual records? Each question points toward different techniques.</p></div>
+    <div class="card"><h3>2. Find the evidence</h3><p>Income, debt, loan amount, credit history and other fields are observations. They are not automatically “risk”. We must interpret them.</p></div>
+    <div class="card"><h3>3. Translate meaning</h3><p>“Financial pressure” is vague. Debt-to-income turns it into a measurable ratio. That translation is feature engineering.</p></div>
+    <div class="card"><h3>4. Choose the tool</h3><p>Classification for default/no-default. Clustering for groups. Anomaly detection for unusual observations. Regression for “how much?”.</p></div>
+    <div class="card"><h3>5. Build a baseline</h3><p>Start with a simple model we can understand. A baseline gives us something to measure before introducing complex AI.</p></div>
+    <div class="card"><h3>6. Attack our assumption</h3><p>What if someone manipulates the training data? Data poisoning makes security part of the ML pipeline itself.</p></div>
+  </div>
+  <div class="callout why"><strong>Why is this the first stepping stone?</strong><div>Every later module depends on it. Neural networks still need data. LLMs still need data and evaluation. Agents still depend on retrieval and permissions. Production deployment still depends on a model whose training process we understand. Module 1 establishes the foundation: <strong>what the system learns from, what it is trying to learn, how we measure it, and how we begin protecting that learning process.</strong></div></div>
+
+  <h3>Analogy 1 — Building a house</h3>
+  <p>You do not start a house by choosing the paint. You first decide what the building must do, inspect the ground, design the structure and choose materials. AI engineering follows the same sequence: <strong>problem → data → representation → algorithm → implementation → validation → security</strong>.</p>
+
+  <h3>Analogy 2 — A doctor</h3>
+  <p>A doctor does not start with a sophisticated treatment because it sounds advanced. First comes the patient's complaint, observations, measurements and diagnosis. In ML, the business problem is the complaint, data is the observation, features are the measurable signals, and the model is part of the diagnostic machinery.</p>
+
+  <h3>Analogy 3 — A detective</h3>
+  <p>A detective does not guess the culprit and then search for evidence. Evidence comes first. Data science is similar: inspect the evidence, check whether it is trustworthy, find patterns, test a hypothesis, then make a prediction.</p>
+
+  <h3>Analogy 4 — A toolbox</h3>
+  <p>An algorithm is not a trophy. A hammer is not “better” than a screwdriver. The correct tool depends on the task. Regression answers <em>how much</em>; classification answers <em>which class/probability</em>; clustering asks <em>which observations resemble each other</em>; anomaly detection asks <em>which observations look unusual</em>.</p>
+
+  <h3>Why Python comes after the problem</h3>
+  <p>Python is our practical workbench, not the problem itself. We choose it because the ecosystem connects numerical calculation, tabular data, classical ML, visualization, deep learning and later NLP/LLM work.</p>
+  <div class="math">Business idea → mathematical definition → Python expression</div>
+  <pre><code>monthly_income = 100000
+monthly_debt = 30000
+
+dti = monthly_debt / monthly_income
+
+print("DTI:", dti)
+print("DTI (%):", dti * 100)</code></pre>
+  <p>The important lesson: we did not discover DTI because Python exists. We had a financial question first. Python simply gives us a precise way to express the answer.</p>
+
+  <h3>Why NumPy comes next</h3>
+  <p>One customer is easy. A financial organization may have hundreds of thousands of customers. NumPy lets the same mathematical definition operate across arrays efficiently.</p>
+  <pre><code>import numpy as np
+
+income = np.array([40000, 400000])
+debt = np.array([30000, 30000])
+
+dti = debt / income
+
+print(dti)
+print(dti * 100)</code></pre>
+  <table><tr><th>Customer</th><th>Income</th><th>Debt</th><th>DTI</th><th>Meaning</th></tr>
+  <tr><td>A</td><td>₹40,000</td><td>₹30,000</td><td>0.75</td><td>Debt is 75% of income</td></tr>
+  <tr><td>B</td><td>₹400,000</td><td>₹30,000</td><td>0.075</td><td>Debt is 7.5% of income</td></tr></table>
+  <div class="callout warn"><strong>Very important distinction</strong><div>0.1, 0.2, 0.75 etc. are not automatically “risk values”. A DTI of 0.20 means debt equals 20% of income. It is a ratio. A model may use it as evidence, but it is not itself a default probability.</div></div>
+
+  <h3>The algorithm decision tree</h3>
+  <table><tr><th>Question</th><th>Technique</th><th>Financial example</th><th>Why it fits</th></tr>
+  <tr><td>How much?</td><td>Regression</td><td>Expected loss amount</td><td>Continuous numeric output</td></tr>
+  <tr><td>Which class / likelihood?</td><td>Classification</td><td>Default vs no-default</td><td>Known target label</td></tr>
+  <tr><td>What groups exist?</td><td>K-Means / DBSCAN</td><td>Customer behaviour segments</td><td>No target label required</td></tr>
+  <tr><td>Can we simplify many dimensions?</td><td>PCA / UMAP</td><td>Explore high-dimensional customer patterns</td><td>Compress for analysis/visualization</td></tr>
+  <tr><td>What looks unusual?</td><td>Isolation Forest</td><td>Potentially suspicious training records</td><td>Works without a fraud label for every record</td></tr>
+  <tr><td>What if training evidence is manipulated?</td><td>Poisoning experiment</td><td>Label flipping / corrupted training data</td><td>Tests the security of the learning process</td></tr></table>
+
+  <h3>Why we deliberately do not start with deep learning</h3>
+  <p>A neural network can learn complex patterns, but complexity does not compensate for a weak foundation. If the feature definition is wrong, the label is wrong, the test set leaks information, or the training data is poisoned, a more powerful model can simply make the wrong result more sophisticated.</p>
+  <div class="callout ok"><strong>Module 1 is therefore the foundation layer.</strong><div>By the end, participants should be able to explain the problem without using an algorithm name, then choose an algorithm because they can state the question it answers. That is the bridge into Module 2.</div></div>
+</div>
+
+<div class="section" id="overview">
+  <h2>Reference tools for the session</h2>
+  <p class="lead">This is a teaching surface, not a transcript. Read the concept on screen, run the code in VS Code, inspect the output, and return to the financial interpretation. Every topic follows the same reasoning pattern.</p>
+  <div class="flow">
+    <div class="node">Business problem</div><div class="arrow">→</div>
+    <div class="node">Mathematical representation</div><div class="arrow">→</div>
+    <div class="node">Technique / algorithm</div><div class="arrow">→</div>
+    <div class="node">Python</div><div class="arrow">→</div>
+    <div class="node">Result</div><div class="arrow">→</div>
+    <div class="node">Risk & security</div>
+  </div>
+  <div class="card-grid">
+    <div class="card"><h3>Audience</h3><p>Technically strong finance professionals who need to understand how AI/ML choices translate into secure enterprise solutions.</p></div>
+    <div class="card"><h3>Running organization</h3><p><strong>RR Finance</strong> — a fictional financial institution used to keep every lab connected to a realistic business story.</p></div>
+    <div class="card"><h3>Module outcome</h3><p>Build the first trusted financial ML pipeline, deliberately poison training data, detect suspicious observations, and document the defence.</p></div>
+  </div>
+  <div class="callout why"><strong>The core teaching principle</strong><div>Do not memorize parameters. Learn why a parameter exists, what assumption it represents, and how changing it changes the system.</div></div>
+</div>
+
+
+<div class="section" id="course-map">
+  <h2>Course map — the 12-module engineering journey</h2>
+  <p class="lead">Each module extends the same financial AI system rather than starting from an unrelated toy exercise.</p>
+  <table>
+    <tr><th>#</th><th>Module</th><th>What it adds to the system</th></tr>
+    <tr><td>1</td><td>Data Science + Financial Data Analysis</td><td>Trusted data, ML foundations, imbalance, anomaly detection, poisoning defence</td></tr>
+    <tr><td>2</td><td>Deep Neural Networks</td><td>Neural models and adversarial examples</td></tr>
+    <tr><td>3</td><td>NLP + Financial Text AI</td><td>Financial text, NER, sentiment and PII protection</td></tr>
+    <tr><td>4</td><td>Generative AI, LLMs & RLHF</td><td>Local LLMs, fine-tuning, alignment and red-teaming</td></tr>
+    <tr><td>5</td><td>RAG, LangChain & AI Agents</td><td>Retrieval, tools, agent workflows and prompt-injection defence</td></tr>
+    <tr><td>6</td><td>Explainable & Responsible AI</td><td>SHAP/LIME, counterfactuals, fairness and governance</td></tr>
+    <tr><td>7</td><td>Federated & Privacy-Preserving ML</td><td>Distributed learning, differential privacy and Byzantine defence</td></tr>
+    <tr><td>8</td><td>Multimodal AI</td><td>Speech, vision and document intelligence</td></tr>
+    <tr><td>9</td><td>Graph Neural Networks</td><td>Fraud rings, graph reasoning and graph-based intrusion detection</td></tr>
+    <tr><td>10</td><td>MLOps & On-Prem Deployment</td><td>FastAPI, Docker, MLflow, Kubernetes and security hardening</td></tr>
+    <tr><td>11</td><td>AI Cybersecurity</td><td>STRIDE, MITRE ATLAS, model theft, deepfakes and AI-powered security operations</td></tr>
+    <tr><td>12</td><td>Final Capstone</td><td>Integrated secure on-premises production system</td></tr>
+  </table>
+</div>
+
+
+<div class="section" id="dataset">
+  <h2>Our running dataset: RR Finance Loan Risk</h2>
+  <p class="lead">Every important column has a business interpretation. This prevents the “feature 1 / feature 2” problem found in many ML tutorials.</p>
+  <table>
+    <tr><th>Column</th><th>Meaning</th><th>Why it may matter</th></tr>
+    <tr><td>annual_income</td><td>Customer annual income</td><td>Repayment capacity</td></tr>
+    <tr><td>monthly_debt</td><td>Existing monthly debt obligations</td><td>Debt burden</td></tr>
+    <tr><td>loan_amount</td><td>Requested loan amount</td><td>Exposure size</td></tr>
+    <tr><td>loan_term_months</td><td>Requested repayment period</td><td>Duration of exposure</td></tr>
+    <tr><td>credit_score</td><td>Creditworthiness indicator</td><td>Historical credit risk signal</td></tr>
+    <tr><td>employment_years</td><td>Years employed</td><td>Income stability proxy</td></tr>
+    <tr><td>account_age_months</td><td>Relationship length</td><td>Customer history/context</td></tr>
+    <tr><td>num_previous_loans</td><td>Previous borrowing count</td><td>Credit behaviour context</td></tr>
+    <tr><td>previous_defaults</td><td>Historical default count</td><td>Strong risk signal</td></tr>
+    <tr><td>debt_to_income</td><td>monthly debt ÷ monthly income</td><td>Normalizes debt by earning capacity</td></tr>
+    <tr><td>loan_to_income</td><td>loan amount ÷ annual income</td><td>Normalizes requested exposure</td></tr>
+    <tr><td>default</td><td>Target: 1 = default, 0 = no default</td><td>What our classifier learns to predict</td></tr>
+  </table>
+  <div class="hero-actions">
+    <a class="btn primary" href="data/rr_finance_module1_dataset.csv" download>Download Module 1 Dataset</a>
+  </div>
+  <div class="callout warn"><strong>Important</strong><div>This dataset is synthetic and educational. It is deliberately designed to have interpretable financial features; it is not a representation of any real bank, country, credit policy, or regulatory threshold.</div></div>
+</div>
+
+
+<div class="section" id="about">
+  <h2>Module 1 at a glance</h2>
+  <div class="kpis">
+    <div class="kpi"><b>13</b><span>Concept lessons</span></div>
+    <div class="kpi"><b>7</b><span>Sequential VS Code demos</span></div>
+    <div class="kpi"><b>1</b><span>Integrated financial lab</span></div>
+    <div class="kpi"><b>6</b><span>Questions used for every topic</span></div>
+  </div>
+  {callout("ok","The hand-off artifact","At the end of Module 1, the team has a reproducible financial ML foundation plus a documented data-poisoning experiment and anomaly-screening layer. Module 2 can extend this same system rather than replacing it.")}
+</div>
+
+
+
+    <section class="lesson" id="numpy">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>1. NumPy — turning business quantities into mathematics</h2>
+        <p>NumPy is the numerical foundation. It is a tool, not a financial algorithm.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>We need to perform mathematical operations across many numerical observations efficiently.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Financial systems constantly calculate ratios, exposures, changes, scores and normalized measures across large collections of customers or transactions.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>NumPy arrays provide efficient numerical operations and vectorization. We are not choosing NumPy because it 'does finance'; we are choosing it because the data is numerical.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>In the example, 1.10 means a 10% multiplier. It is an illustrative mathematical value, not a banking risk factor. In our financial example, DTI values such as 0.30 mean 30% debt-to-income.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Vectorization applies one mathematical operation to an entire array: for each observation, new_value = old_value × multiplier. Broadcasting lets compatible arrays interact without writing explicit Python loops.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing the multiplier changes the calculation. Changing array shapes can make broadcasting valid, invalid, or produce a different alignment. The numbers must have a business interpretation before we call the result a financial feature.</p></div></div>
+      
+<h3>Start with a meaningful financial calculation</h3>
+<p>Suppose a customer earns ₹100,000 per month and has ₹30,000 of monthly debt payments. The debt-to-income ratio is:</p>
+<div class="math">DTI = monthly debt / monthly income = 30,000 / 100,000 = 0.30 = 30%</div>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import numpy as np
+
+monthly_income = np.array([100000, 150000, 200000])
+monthly_debt = np.array([30000, 45000, 100000])
+
+dti = monthly_debt / monthly_income
+
+print(&quot;DTI:&quot;, dti)
+print(&quot;DTI (%):&quot;, dti * 100)</code></pre></div>
+<div class="callout why"><strong>Trainer explanation</strong><div>The important lesson is not the NumPy syntax. We started from a business question — “How large is the customer's debt relative to income?” — created a mathematical definition, and only then used Python to calculate it for many customers.</div></div>
+<h3>Why vectorization?</h3>
+<p>Without NumPy, you could loop over customers one by one. NumPy lets the same mathematical operation work over the whole array. This is especially useful when preprocessing large datasets.</p>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code># A simple broadcasting example
+amounts = np.array([
+    [100, 200, 300],
+    [400, 500, 600]
+])
+
+multipliers = np.array([1.10, 1.20, 1.30])
+
+print(amounts * multipliers)</code></pre></div>
+<div class="callout warn"><strong>Do not teach 1.10 / 1.20 / 1.30 as “financial risk values”.</strong><div>They are only multipliers used to demonstrate broadcasting. For the finance audience, the DTI example is the better primary demonstration.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="pandas">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>2. Pandas + EDA — understanding the data before modeling</h2>
+        <p>Pandas gives us tables and operations for inspection, transformation and analysis. EDA asks whether the data makes sense before we trust a model.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>We need to inspect data quality, distributions, missing values, duplicates, ranges and relationships before modeling.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>A model trained on impossible incomes, duplicated customers, broken labels or unexpected missing values can produce misleading decisions.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>Pandas is the practical table-manipulation layer. EDA is a process rather than one algorithm: summarize, visualize, question, validate.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>Counts, means, percentiles and ranges come from the data. They are observations, not assumptions. A threshold such as ₹500,000 should only be used if the business context justifies it.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Descriptive statistics summarize the sample. Groupby aggregates observations by a category. Correlation measures linear association, not causation.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Filtering or grouping changes the population you are analyzing. A suspicious pattern may disappear or appear after segmentation, so EDA should be systematic and reproducible.</p></div></div>
+      
+<h3>Open the dataset</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+
+df = pd.read_csv(&quot;data/rr_finance_module1_dataset.csv&quot;)
+
+print(df.head())
+print(df.shape)
+print(df.dtypes)</code></pre></div>
+<div class="steps">
+  <div class="step"><h4>Read the data</h4><p><code>read_csv()</code> loads the CSV into a DataFrame — a labeled table.</p></div>
+  <div class="step"><h4>Check shape</h4><p><code>df.shape</code> returns rows and columns. This tells you how much data you are actually working with.</p></div>
+  <div class="step"><h4>Check types</h4><p>Numbers should be numeric; identifiers and categories should not silently become the wrong type.</p></div>
+</div>
+<h3>Run the first health check</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>print(&quot;\nMissing values&quot;)
+print(df.isna().sum())
+
+print(&quot;\nDuplicates&quot;)
+print(df.duplicated().sum())
+
+print(&quot;\nSummary&quot;)
+print(df.describe())
+
+print(&quot;\nTarget distribution&quot;)
+print(df[&quot;default&quot;].value_counts(normalize=True))</code></pre></div>
+<div class="callout why"><strong>Trainer question</strong><div>Before showing the model, ask: “If you were the data owner, what would you want to know about this dataset before allowing an automated credit decision to depend on it?”</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="features">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>3. Feature engineering — translating financial reasoning into model inputs</h2>
+        <p>Features are the bridge between business concepts and machine learning.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Raw fields often do not express the relationship we actually care about.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>A ₹30,000 monthly debt means something different to a customer earning ₹40,000 versus ₹400,000. Relative measures can be more informative than raw amounts.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>We use domain-informed transformations such as ratios, counts, rates and time-based measures. The right transformation depends on the business problem.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>DTI = debt / monthly income. LTI = loan amount / annual income. These numbers are ratios; 0.30 means 30% when interpreted as a proportion.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>A ratio changes the scale from an absolute quantity to a relative quantity. This can make customers more comparable.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing a feature definition changes the information presented to the model. A badly defined feature can introduce leakage, bias or misleading signals.</p></div></div>
+      
+<h3>Calculate interpretable features</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>df[&quot;monthly_income&quot;] = df[&quot;annual_income&quot;] / 12
+
+df[&quot;debt_to_income&quot;] = (
+    df[&quot;monthly_debt&quot;] / df[&quot;monthly_income&quot;]
+)
+
+df[&quot;loan_to_income&quot;] = (
+    df[&quot;loan_amount&quot;] / df[&quot;annual_income&quot;]
+)
+
+print(
+    df[
+        [
+            &quot;annual_income&quot;,
+            &quot;monthly_debt&quot;,
+            &quot;debt_to_income&quot;,
+            &quot;loan_amount&quot;,
+            &quot;loan_to_income&quot;
+        ]
+    ].head()
+)</code></pre></div>
+<div class="callout ok"><strong>Interpretation</strong><div>A DTI of 0.30 means monthly debt consumes 30% of monthly income. A DTI of 0.80 means 80%. The feature itself is not a decision; it is an input signal that a model can combine with other evidence.</div></div>
+<h3>Watch for leakage</h3>
+<p>Never create a feature using information that would only become available after the decision being predicted. For example, using a future repayment outcome to predict whether the loan will default would leak the answer into the input.</p>
+
+    </section>
+    
+
+    <section class="lesson" id="regression">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>4. Regression — predicting a continuous financial quantity</h2>
+        <p>Regression answers: “How much?” rather than “Which class?”</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Predict a numeric quantity such as expected loss, expected revenue, or a continuous risk score.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Financial planning and risk management often need amounts, not only yes/no decisions.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>Ridge and Lasso are linear regression variants that add regularization. They are useful baseline models because they are fast, interpretable and demonstrate the bias/variance trade-off.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>Ridge uses alpha to control the strength of the L2 penalty. Lasso uses alpha for the L1 penalty. Alpha is a hyperparameter to validate, not a universal financial constant.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Ordinary least squares minimizes squared prediction errors. Ridge adds a penalty proportional to the squared coefficient sizes; Lasso adds a penalty proportional to absolute coefficient sizes.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Larger regularization generally shrinks coefficients more. Too little can overfit; too much can underfit. The useful value is data-dependent and should be selected using validation.</p></div></div>
+      
+<h3>Ridge regression</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+
+X, y = make_regression(
+    n_samples=1000,
+    n_features=5,
+    noise=20,
+    random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = Ridge(alpha=1.0)
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+
+print(&quot;R²:&quot;, r2_score(y_test, predictions))
+print(&quot;RMSE:&quot;, mean_squared_error(
+    y_test, predictions, squared=False
+))</code></pre></div>
+<div class="math">Ridge objective ≈ prediction error + α × Σ(coefficient²)</div>
+<p><strong>Meaning:</strong> the model is encouraged not only to fit the training data, but also to keep coefficients from becoming unnecessarily large.</p>
+<h3>Ridge vs Lasso</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.linear_model import Lasso
+
+ridge = Ridge(alpha=1.0)
+lasso = Lasso(alpha=0.1)
+
+ridge.fit(X_train, y_train)
+lasso.fit(X_train, y_train)
+
+print(&quot;Ridge coefficients:&quot;, ridge.coef_)
+print(&quot;Lasso coefficients:&quot;, lasso.coef_)</code></pre></div>
+<div class="callout warn"><strong>Parameter lesson</strong><div>Do not say “alpha=1.0 is the correct value.” It is an example configuration. In a real model-development process, alpha would be selected through validation/cross-validation and then documented as part of the model configuration.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="classification">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>5. Classification — predicting a financial category</h2>
+        <p>Classification answers: “Which class?” For our running case, we predict default vs no default.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Predict a discrete outcome such as default/no default, suspicious/not suspicious, or approved/review.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Financial decisions often have asymmetric consequences. Missing a true default can be much more costly than investigating an additional false alert.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>Logistic Regression is an excellent baseline because it produces class probabilities, is fast, and is easier to explain than many complex models.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>The classification threshold, often 0.5 by default, is a decision policy rather than a law. It should be evaluated against the business cost of false positives and false negatives.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Logistic regression maps a linear score through the sigmoid function to produce a value between 0 and 1 that can be interpreted as a model-estimated probability under the model assumptions.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing the threshold changes precision, recall, false positives and false negatives. Changing model features or regularization changes the learned decision boundary.</p></div></div>
+      
+<h3>Build the first default classifier</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    roc_auc_score
+)
+
+df = pd.read_csv(&quot;data/rr_finance_module1_dataset.csv&quot;)
+
+features = [
+    &quot;annual_income&quot;,
+    &quot;monthly_debt&quot;,
+    &quot;loan_amount&quot;,
+    &quot;loan_term_months&quot;,
+    &quot;credit_score&quot;,
+    &quot;employment_years&quot;,
+    &quot;account_age_months&quot;,
+    &quot;num_previous_loans&quot;,
+    &quot;previous_defaults&quot;,
+    &quot;debt_to_income&quot;,
+    &quot;loan_to_income&quot;
+]
+
+X = df[features]
+y = df[&quot;default&quot;]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.20,
+    stratify=y,
+    random_state=42
+)
+
+pipeline = Pipeline([
+    (&quot;scaler&quot;, StandardScaler()),
+    (&quot;model&quot;, LogisticRegression(max_iter=1000))
+])
+
+pipeline.fit(X_train, y_train)
+
+predictions = pipeline.predict(X_test)
+probabilities = pipeline.predict_proba(X_test)[:, 1]
+
+print(confusion_matrix(y_test, predictions))
+print(classification_report(y_test, predictions))
+print(&quot;ROC-AUC:&quot;, roc_auc_score(y_test, probabilities))</code></pre></div>
+<h3>Why the pipeline?</h3>
+<p>Scaling and modeling are kept together so that the same preprocessing logic is applied consistently. Most importantly, the scaler is fitted on training data rather than independently learning from the test set.</p>
+<div class="math">sigmoid(z) = 1 / (1 + e<sup>-z</sup>)</div>
+<div class="callout why"><strong>Financial interpretation</strong><div>The model outputs a probability-like score. Turning that score into “approve/reject” is a separate decision. In a real organization, the threshold should be connected to risk appetite, policy, cost, fairness and validation — not chosen because 0.5 is convenient.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="imbalance">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>6. Imbalanced classification + SMOTE — why accuracy can lie</h2>
+        <p>Rare events are common in finance. A model can look accurate while failing to detect the cases we actually care about.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>The positive class may be much smaller than the negative class, making naive training and accuracy misleading.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Fraud, default, suspicious activity and operational incidents are often rare relative to legitimate activity.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>SMOTE is one possible training-data technique for creating synthetic minority samples. It should be compared with alternatives such as class weights and threshold tuning.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>SMOTE's neighbor-related settings control how synthetic samples are constructed. random_state controls reproducibility. There is no universal “correct” oversampling ratio.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>SMOTE creates synthetic points between minority-class observations using their feature-space neighborhoods rather than simply duplicating rows.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing the oversampling strategy changes the training distribution. Too much synthetic data can distort the problem; too little may not address the imbalance. Always evaluate on an untouched, naturally distributed test set.</p></div></div>
+      
+<h3>First expose the accuracy trap</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import numpy as np
+
+y_example = np.array([0] * 900 + [1] * 100)
+
+# A useless model that predicts &quot;no default&quot; for everyone
+all_zero_predictions = np.zeros_like(y_example)
+
+accuracy = (
+    all_zero_predictions == y_example
+).mean()
+
+print(&quot;Accuracy:&quot;, accuracy)</code></pre></div>
+<p>This model can achieve 90% accuracy while detecting <strong>zero</strong> positive cases. That is why we inspect the confusion matrix, precision, recall, F1 and ROC-AUC.</p>
+
+<h3>Now apply SMOTE only to the training split</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from collections import Counter
+from imblearn.over_sampling import SMOTE
+
+print(&quot;Before:&quot;, Counter(y_train))
+
+smote = SMOTE(
+    random_state=42
+)
+
+X_train_smote, y_train_smote = smote.fit_resample(
+    X_train,
+    y_train
+)
+
+print(&quot;After:&quot;, Counter(y_train_smote))</code></pre></div>
+<div class="callout danger"><strong>Critical rule</strong><div>Do not SMOTE the entire dataset before train/test splitting. The test set must remain representative of the natural distribution so that evaluation answers the real question: “How does the model perform on unseen, naturally distributed data?”</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="kmeans">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>7. K-Means++ — discovering customer groups</h2>
+        <p>Clustering is unsupervised: we do not give the algorithm a target label.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Discover groups of observations with similar feature patterns when there is no target label to predict.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>A financial institution may segment customers by behaviour, service needs or portfolio characteristics without a pre-existing segment label.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>K-Means is simple, fast and easy to visualize. K-Means++ improves initialization by choosing better-spread starting centroids.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>n_clusters=3 means we are asking for three groups. It is a modeling choice, not a fact about the business. Validate candidate values using measures such as silhouette score and business usefulness.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>The algorithm alternates between assigning each point to its nearest centroid and moving each centroid toward the mean of its assigned points.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing K changes the segmentation. Too few groups can merge meaningful populations; too many can create artificial fragments.</p></div></div>
+      
+<h3>Customer segmentation example</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+cluster_features = df[
+    [
+        &quot;annual_income&quot;,
+        &quot;loan_amount&quot;,
+        &quot;credit_score&quot;,
+        &quot;debt_to_income&quot;
+    ]
+]
+
+scaled = StandardScaler().fit_transform(
+    cluster_features
+)
+
+kmeans = KMeans(
+    n_clusters=3,
+    init=&quot;k-means++&quot;,
+    n_init=10,
+    random_state=42
+)
+
+clusters = kmeans.fit_predict(scaled)
+
+df[&quot;customer_cluster&quot;] = clusters
+
+print(
+    df[
+        [&quot;customer_id&quot;, &quot;customer_cluster&quot;]
+    ].head(20)
+)</code></pre></div>
+<div class="callout warn"><strong>Trainer question</strong><div>Ask: “Why did we choose 3?” The desired answer is not “because K-Means uses 3.” The answer is: “Three is a hypothesis for the demonstration; in a real segmentation study we would test several values and combine statistical evidence with business usefulness.”</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="dbscan">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>8. DBSCAN — finding dense behaviour and noise</h2>
+        <p>DBSCAN is useful when the shape of the groups is not well represented by simple spherical clusters and when we want a notion of noise.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Identify dense regions of similar observations and mark points that do not belong to a dense region.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Customer or transaction behaviour may contain unusual observations that do not naturally fit a dominant behavioural group.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>DBSCAN does not require us to specify the number of clusters in advance and can label some observations as noise.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>eps is a neighborhood radius under the chosen distance/scaling. min_samples is the density requirement. These values are highly data-dependent.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>A point is considered part of a dense region when enough neighbors fall within the chosen neighborhood. Sparse points can become noise.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing eps can merge clusters or split them. Changing min_samples changes how strict the density requirement is. Feature scaling strongly affects distances.</p></div></div>
+      
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.cluster import DBSCAN
+
+dbscan = DBSCAN(
+    eps=0.7,
+    min_samples=10
+)
+
+labels = dbscan.fit_predict(scaled)
+
+print(&quot;Labels:&quot;, sorted(set(labels)))
+print(&quot;Noise points:&quot;, (labels == -1).sum())</code></pre></div>
+<div class="callout why"><strong>Why 0.7 and 10?</strong><div>They are demonstration parameters, not financial thresholds. Because DBSCAN is distance-based, scaling and the geometry of the dataset matter. In a real project we would inspect distance distributions and validate candidate settings.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="pca">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>9. PCA — reducing many dimensions to a view we can inspect</h2>
+        <p>PCA compresses high-dimensional numeric structure into a smaller number of linear components.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Reduce many correlated numeric dimensions into a smaller representation for visualization, compression or downstream analysis.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Financial datasets can contain many correlated measures. Analysts may need a two-dimensional view to inspect patterns before building more complex systems.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>PCA is fast, deterministic after preprocessing, and mathematically interpretable as a linear projection that captures directions of maximum variance.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>n_components=2 asks for two principal components. It is chosen here because humans can plot two dimensions; it is not a claim that the data truly has only two dimensions.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>PCA finds orthogonal directions ordered by how much variance they explain. The transformed coordinates are projections of the original data onto those directions.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Increasing components retains more information but reduces compression. Fewer components may make visualization easier while discarding more variance.</p></div></div>
+      
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2)
+
+X_pca = pca.fit_transform(scaled)
+
+print(&quot;Original shape:&quot;, scaled.shape)
+print(&quot;Reduced shape:&quot;, X_pca.shape)
+print(
+    &quot;Explained variance:&quot;,
+    pca.explained_variance_ratio_
+)</code></pre></div>
+<div class="math">PC1, PC2 = projections of the original features onto the first two variance-maximizing directions.</div>
+
+    </section>
+    
+
+    <section class="lesson" id="umap">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>10. UMAP — nonlinear structure for exploration</h2>
+        <p>UMAP is a nonlinear dimensionality-reduction technique. It is especially useful as an exploratory visualization tool.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Create a low-dimensional representation that can expose nonlinear structure in high-dimensional data.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>Complex financial behaviour may contain nonlinear relationships that are difficult to see with raw features or a purely linear projection.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>UMAP can preserve useful local structure while producing a compact embedding. It is useful for exploration, but the visualization should not automatically be treated as a causal or regulatory conclusion.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>n_components=2 creates a two-dimensional embedding. random_state fixes stochastic behavior for reproducibility. Other settings control neighborhood and embedding structure.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>UMAP constructs a graph-like representation of local relationships and optimizes a low-dimensional embedding that attempts to preserve those relationships.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing neighborhood or embedding parameters can change the visualization substantially. Different settings can reveal different structures, so results need validation and cautious interpretation.</p></div></div>
+      
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import umap
+
+reducer = umap.UMAP(
+    n_components=2,
+    random_state=42
+)
+
+embedding = reducer.fit_transform(scaled)
+
+print(&quot;Embedding shape:&quot;, embedding.shape)
+print(embedding[:5])</code></pre></div>
+<div class="callout warn"><strong>Interpretation warning</strong><div>A beautiful UMAP plot is not proof that a real business segment exists. Treat it as exploratory evidence and validate any business conclusion using domain knowledge and statistical checks.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="poison">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>11. Data poisoning — attacking the learning process</h2>
+        <p>Now we attack the foundation: the training data.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Understand how manipulated training examples can cause a model to learn incorrect patterns.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>If training data is corrupted, an enterprise can deploy a model that appears technically valid but encodes malicious or incorrect behavior.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>We start with label flipping because it is easy to understand and reproduce. Later modules can introduce more advanced backdoors and adversarial attacks.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>A poisoning rate such as 5% is an experimental attack intensity. It is not a statement that real attacks will affect exactly 5% of records.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Label flipping changes the target y while leaving the input X unchanged. The model then optimizes against incorrect supervision.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Higher poisoning rates can increase model degradation, but the relationship depends on class balance, feature separability and which records are poisoned. A targeted attack may be more effective than a random one.</p></div></div>
+      
+<h3>Baseline first</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.metrics import roc_auc_score
+from sklearn.linear_model import LogisticRegression
+
+clean_model = LogisticRegression(max_iter=1000)
+clean_model.fit(X_train, y_train)
+
+clean_prob = clean_model.predict_proba(
+    X_test
+)[:, 1]
+
+print(
+    &quot;Clean ROC-AUC:&quot;,
+    roc_auc_score(y_test, clean_prob)
+)</code></pre></div>
+<h3>Now flip a small portion of training labels</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(42)
+
+poison_rate = 0.05
+poison_count = int(
+    len(y_train) * poison_rate
+)
+
+poison_indices = rng.choice(
+    len(y_train),
+    size=poison_count,
+    replace=False
+)
+
+y_train_poisoned = y_train.to_numpy().copy()
+
+# 0 becomes 1, and 1 becomes 0
+y_train_poisoned[poison_indices] = (
+    1 - y_train_poisoned[poison_indices]
+)
+
+poisoned_model = LogisticRegression(
+    max_iter=1000
+)
+
+poisoned_model.fit(
+    X_train,
+    y_train_poisoned
+)
+
+poison_prob = poisoned_model.predict_proba(
+    X_test
+)[:, 1]
+
+print(
+    &quot;Poisoned ROC-AUC:&quot;,
+    roc_auc_score(y_test, poison_prob)
+)</code></pre></div>
+<div class="callout danger"><strong>Security lesson</strong><div>The attacker never needed access to the model API. They changed the information used to teach the model. This is why dataset access control, provenance, validation and versioning are security controls.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="isolation">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>12. Isolation Forest — screening for unusual training records</h2>
+        <p>Isolation Forest is an anomaly-detection algorithm. It answers “does this point look unusual?” — not “is this fraud?”</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Find potentially unusual observations when we do not have reliable labels for every observation.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>A financial organization may have millions of legitimate records and only a small set of investigated cases. Anomaly detection can help prioritize records for review.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>Isolation Forest is purpose-built around the idea of isolating unusual observations. It does not require a fraud label for every training record.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>contamination=0.05 is an illustrative assumption that roughly 5% may be treated as outliers for thresholding. random_state=42 is a reproducibility seed. Neither is a universal financial constant.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>Randomly partitioning feature space tends to isolate unusual observations with fewer splits. Normal points embedded in dense regions tend to require more partitions.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Changing contamination changes the outlier threshold. Changing random_state can change the exact random partitions and therefore small details of the result. In production, both the threshold and stability should be validated.</p></div></div>
+      
+<h3>First understand the problem</h3>
+<div class="flow">
+  <div class="node">Mostly unlabeled records</div><div class="arrow">→</div>
+  <div class="node">Need unusual-record screening</div><div class="arrow">→</div>
+  <div class="node">Isolation Forest</div>
+</div>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>from sklearn.ensemble import IsolationForest
+
+anomaly_features = df[
+    [
+        &quot;annual_income&quot;,
+        &quot;monthly_debt&quot;,
+        &quot;loan_amount&quot;,
+        &quot;credit_score&quot;,
+        &quot;debt_to_income&quot;,
+        &quot;loan_to_income&quot;
+    ]
+]
+
+detector = IsolationForest(
+    contamination=0.05,
+    random_state=42
+)
+
+flags = detector.fit_predict(
+    anomaly_features
+)
+
+df[&quot;anomaly_flag&quot;] = flags
+
+print(
+    df[&quot;anomaly_flag&quot;].value_counts()
+)
+
+print(
+    df[df[&quot;anomaly_flag&quot;] == -1].head(10)
+)</code></pre></div>
+<h3>Decode the parameters</h3>
+<table>
+<tr><th>Parameter</th><th>Meaning</th><th>What it does NOT mean</th></tr>
+<tr><td>contamination=0.05</td><td>Illustrative expected outlier proportion / threshold configuration</td><td>It does not mean 5% of bank transactions are fraud.</td></tr>
+<tr><td>random_state=42</td><td>Fixed pseudo-random seed for repeatable experiments</td><td>42 has no financial meaning.</td></tr>
+</table>
+<div class="callout danger"><strong>Never equate anomaly with fraud</strong><div>A ₹250,000 transaction may be unusual because the customer bought a car. Anomaly detection is a triage signal. Fraud determination needs additional evidence, rules, models, investigations and controls.</div></div>
+
+    </section>
+    
+
+    <section class="lesson" id="defense">
+      <div class="lesson-head">
+        <span class="eyebrow">LESSON</span>
+        <h2>13. Poisoning defence — from algorithm to security control</h2>
+        <p>Anomaly detection is only one layer. A trusted ML pipeline combines statistical checks with governance and security controls.</p>
+      </div>
+      <div class="six-grid"><div class="six-card"><div class="qnum">1</div><h4>What problem are we solving?</h4><p>Reduce the chance that manipulated or low-quality records silently become training data.</p></div><div class="six-card"><div class="qnum">2</div><h4>Why does it matter in finance?</h4><p>A financial organization needs reproducibility and evidence: who changed the dataset, which version trained the model, what validation occurred, and what was quarantined.</p></div><div class="six-card"><div class="qnum">3</div><h4>Why this algorithm / technique?</h4><p>A layered defence is more appropriate than relying on one algorithm. Use validation, provenance, access controls, anomaly screening, human review and model validation.</p></div><div class="six-card"><div class="qnum">4</div><h4>What do the numbers and parameters mean?</h4><p>Thresholds should be selected based on validation and operational capacity. Dataset versions and hashes are configuration/integrity controls rather than model hyperparameters.</p></div><div class="six-card"><div class="qnum">5</div><h4>What is happening mathematically?</h4><p>The defence pipeline separates data collection, validation, anomaly screening, quarantine, approval and training. This reduces the chance that one bad record can silently flow into production.</p></div><div class="six-card"><div class="qnum">6</div><h4>What happens if we change it?</h4><p>Removing one control changes the residual risk. A perfect anomaly detector is unrealistic, so layered controls matter.</p></div></div>
+      
+<h3>Target architecture</h3>
+<div class="flow">
+  <div class="node">Raw dataset</div><div class="arrow">→</div>
+  <div class="node">Schema & quality checks</div><div class="arrow">→</div>
+  <div class="node">Provenance / version</div><div class="arrow">→</div>
+  <div class="node">Anomaly screening</div><div class="arrow">→</div>
+  <div class="node">Quarantine / review</div><div class="arrow">→</div>
+  <div class="node">Training</div>
+</div>
+<h3>Simple screening example</h3>
+<div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code># Example: flag suspicious rows for review.
+# This is NOT an automated fraud decision.
+
+review_queue = df[
+    df[&quot;anomaly_flag&quot;] == -1
+].copy()
+
+print(
+    review_queue[
+        [
+            &quot;customer_id&quot;,
+            &quot;annual_income&quot;,
+            &quot;loan_amount&quot;,
+            &quot;credit_score&quot;,
+            &quot;debt_to_income&quot;,
+            &quot;anomaly_flag&quot;
+        ]
+    ].head(20)
+)</code></pre></div>
+<div class="card-grid">
+  <div class="card"><h3>Data integrity</h3><p>Dataset versioning, hashes, lineage and controlled write access.</p></div>
+  <div class="card"><h3>Statistical controls</h3><p>Schema checks, range checks, duplicate checks, distribution checks and anomaly screening.</p></div>
+  <div class="card"><h3>Governance</h3><p>Human approval, audit trails, reproducible training and documented model validation.</p></div>
+</div>
+
+    </section>
+    
+
+
+<div class="section" id="demos">
+  <h2>Hands-on demo path — follow this sequence exactly</h2>
+  <p class="lead">This is the front-screen lab guide. Participants can read the current step, perform it in VS Code, run it, inspect the output, and then return here.</p>
+  <div class="callout ok">
+    <strong>First: understand the project map</strong>
+    <div>We will create one project and keep every file in a predictable location. Do not create scripts on the Desktop or in random folders. This structure becomes the pattern we can extend in Module 2, Module 3, and the later modules.</div>
+  </div>
+
+  <div class="folder-tree">
+    <div class="tree-title">Create this folder structure before Demo 1</div>
+    <pre><span class="folder">rr-finance-ai/</span>
+├── <span class="folder">module01/</span>
+│   ├── <span class="folder">data/</span>
+│   │   └── <span class="file">rr_finance_module1_dataset.csv</span> <span class="purpose">← input data</span>
+│   ├── <span class="folder">scripts/</span>
+│   │   ├── <span class="file">01_read_data.py</span> <span class="purpose">← inspect the dataset</span>
+│   │   ├── <span class="file">02_features_eda.py</span> <span class="purpose">← financial features + EDA</span>
+│   │   ├── <span class="file">03_baseline_model.py</span> <span class="purpose">← train first default model</span>
+│   │   ├── <span class="file">04_smote.py</span> <span class="purpose">← imbalance experiment</span>
+│   │   ├── <span class="file">05_unsupervised.py</span> <span class="purpose">← K-Means + DBSCAN + PCA</span>
+│   │   ├── <span class="file">06_poisoning.py</span> <span class="purpose">← simulate label poisoning</span>
+│   │   └── <span class="file">07_isolation_forest.py</span> <span class="purpose">← anomaly screening</span>
+│   └── <span class="folder">outputs/</span>
+│       ├── <span class="file">model_metrics.txt</span> <span class="purpose">← retained model results</span>
+│       ├── <span class="file">anomaly_review.csv</span> <span class="purpose">← review queue</span>
+│       └── <span class="file">poisoning_comparison.txt</span> <span class="purpose">← clean vs poisoned comparison</span>
+└── <span class="file">README.md</span> <span class="purpose">← optional project notes</span></pre>
+  </div>
+
+  <div class="card-grid">
+    <div class="card"><h3>📁 data</h3><p>Only input datasets. Today: <code>module01/data/rr_finance_module1_dataset.csv</code>.</p></div>
+    <div class="card"><h3>🐍 scripts</h3><p>Only Python programs that perform the demonstrations and experiments.</p></div>
+    <div class="card"><h3>📊 outputs</h3><p>Only results we decide to retain for the lab hand-off and future modules.</p></div>
+  </div>
+
+  <div class="callout">
+    <strong>Navigation rule for the trainer</strong>
+    <div>Whenever the handbook says <strong>Create</strong>, use the exact path shown. Whenever it says <strong>Run from the project root</strong>, make sure the VS Code terminal is currently inside <code>rr-finance-ai</code>.</div>
+  </div>
+
+  <details class="demo" open>
+    <summary>Demo 0 — Prepare VS Code and the project</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Open Visual Studio Code</h4><p>Launch VS Code and open a new folder called <strong>rr-finance-ai</strong>.</p></div>
+        <div class="step"><h4>Create the folders</h4><p>Create <code>module01</code>, then inside it create <code>data</code>, <code>scripts</code> and <code>outputs</code>.</p></div>
+        <div class="step"><h4>Copy the dataset</h4><p>Download the dataset from this page and place it at <code>module01/data/rr_finance_module1_dataset.csv</code>.</p></div>
+        <div class="step"><h4>Open the terminal</h4><p>In VS Code select Terminal → New Terminal.</p></div>
+        <div class="step"><h4>Create the virtual environment</h4><p>Run the commands below.</p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+pip install numpy pandas matplotlib seaborn scikit-learn imbalanced-learn umap-learn</code></pre></div>
+      <div class="checklist">
+        <label class="check"><input type="checkbox"> VS Code is open and the <code>rr-finance-ai</code> folder is open.</label>
+        <label class="check"><input type="checkbox"> The dataset is inside <code>module01/data</code>.</label>
+        <label class="check"><input type="checkbox"> The virtual environment is active.</label>
+        <label class="check"><input type="checkbox"> Required packages installed successfully.</label>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 1 — Read the financial dataset</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create a file</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/01_read_data.py</span></p></div>
+        <div class="step"><h4>Paste the code</h4><p>Use the script below.</p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+print(&quot;\nFIRST FIVE ROWS&quot;)
+print(df.head())
+
+print(&quot;\nSHAPE&quot;)
+print(df.shape)
+
+print(&quot;\nDATA TYPES&quot;)
+print(df.dtypes)
+
+print(&quot;\nMISSING VALUES&quot;)
+print(df.isna().sum())
+
+print(&quot;\nDEFAULT DISTRIBUTION&quot;)
+print(df[&quot;default&quot;].value_counts())</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Run it</h4><p>From the project root:</p><div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/01_read_data.py</code></pre></div></div>
+        <div class="step"><h4>Read the output</h4><p>Ask: How many rows? How many columns? Which fields are numeric? Is the target balanced? Are there missing values?</p></div>
+        <div class="step"><h4>Trainer checkpoint</h4><p>Do not move on until participants can explain what every dataset column means.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 2 — Calculate DTI and inspect distributions</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/02_features_eda.py</span></p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+df[&quot;monthly_income&quot;] = df[&quot;annual_income&quot;] / 12
+
+df[&quot;debt_to_income&quot;] = (
+    df[&quot;monthly_debt&quot;] / df[&quot;monthly_income&quot;]
+)
+
+df[&quot;loan_to_income&quot;] = (
+    df[&quot;loan_amount&quot;] / df[&quot;annual_income&quot;]
+)
+
+print(&quot;\nDTI SUMMARY&quot;)
+print(df[&quot;debt_to_income&quot;].describe())
+
+print(&quot;\nHIGH DTI CASES&quot;)
+print(
+    df[
+        df[&quot;debt_to_income&quot;] &gt; 0.50
+    ][
+        [
+            &quot;customer_id&quot;,
+            &quot;annual_income&quot;,
+            &quot;monthly_debt&quot;,
+            &quot;debt_to_income&quot;
+        ]
+    ].head(10)
+)</code></pre></div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/02_features_eda.py</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Explain the number</h4><p>If DTI = 0.50, monthly debt is equal to 50% of monthly income. It is a ratio, not a probability and not a universal approval threshold.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 3 — Train the baseline default model</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/03_baseline_model.py</span></p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    roc_auc_score
+)
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+features = [
+    &quot;annual_income&quot;,
+    &quot;monthly_debt&quot;,
+    &quot;loan_amount&quot;,
+    &quot;loan_term_months&quot;,
+    &quot;credit_score&quot;,
+    &quot;employment_years&quot;,
+    &quot;account_age_months&quot;,
+    &quot;num_previous_loans&quot;,
+    &quot;previous_defaults&quot;,
+    &quot;debt_to_income&quot;,
+    &quot;loan_to_income&quot;
+]
+
+X = df[features]
+y = df[&quot;default&quot;]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    stratify=y,
+    random_state=42
+)
+
+model = Pipeline([
+    (&quot;scaler&quot;, StandardScaler()),
+    (&quot;classifier&quot;, LogisticRegression(max_iter=1000))
+])
+
+model.fit(X_train, y_train)
+
+predictions = model.predict(X_test)
+probabilities = model.predict_proba(X_test)[:, 1]
+
+print(&quot;\nCONFUSION MATRIX&quot;)
+print(confusion_matrix(y_test, predictions))
+
+print(&quot;\nCLASSIFICATION REPORT&quot;)
+print(classification_report(y_test, predictions))
+
+print(
+    &quot;\nROC-AUC:&quot;,
+    roc_auc_score(y_test, probabilities)
+)</code></pre></div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/03_baseline_model.py</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Read the confusion matrix</h4><p>Identify TP, TN, FP and FN. Then ask which error would be more costly in the organization's particular use case.</p></div>
+        <div class="step"><h4>Do not celebrate accuracy alone</h4><p>Look at recall, precision, F1 and ROC-AUC alongside the confusion matrix.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 4 — Compare class imbalance handling</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/04_smote.py</span></p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+from collections import Counter
+
+from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+features = [
+    &quot;annual_income&quot;, &quot;monthly_debt&quot;, &quot;loan_amount&quot;,
+    &quot;loan_term_months&quot;, &quot;credit_score&quot;, &quot;employment_years&quot;,
+    &quot;account_age_months&quot;, &quot;num_previous_loans&quot;,
+    &quot;previous_defaults&quot;, &quot;debt_to_income&quot;, &quot;loan_to_income&quot;
+]
+
+X = df[features]
+y = df[&quot;default&quot;]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.20,
+    stratify=y,
+    random_state=42
+)
+
+print(&quot;Original training distribution:&quot;)
+print(Counter(y_train))
+
+smote = SMOTE(random_state=42)
+
+X_train_smote, y_train_smote = smote.fit_resample(
+    X_train,
+    y_train
+)
+
+print(&quot;\nAfter SMOTE:&quot;)
+print(Counter(y_train_smote))
+
+print(&quot;\nTest distribution — must remain untouched:&quot;)
+print(Counter(y_test))</code></pre></div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/04_smote.py</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Explain what changed</h4><p>Only the training data changed. The test set stayed natural so the evaluation remains meaningful.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 5 — Unsupervised analysis: K-Means, DBSCAN and PCA</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/05_unsupervised.py</span></p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans, DBSCAN
+from sklearn.decomposition import PCA
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+features = [
+    &quot;annual_income&quot;,
+    &quot;loan_amount&quot;,
+    &quot;credit_score&quot;,
+    &quot;debt_to_income&quot;
+]
+
+X = df[features]
+
+scaled = StandardScaler().fit_transform(X)
+
+# 1) K-Means
+kmeans = KMeans(
+    n_clusters=3,
+    init=&quot;k-means++&quot;,
+    n_init=10,
+    random_state=42
+)
+
+df[&quot;kmeans_cluster&quot;] = kmeans.fit_predict(scaled)
+
+# 2) DBSCAN
+dbscan = DBSCAN(
+    eps=0.7,
+    min_samples=10
+)
+
+df[&quot;dbscan_label&quot;] = dbscan.fit_predict(scaled)
+
+# 3) PCA
+pca = PCA(n_components=2)
+pca_result = pca.fit_transform(scaled)
+
+print(&quot;K-Means clusters:&quot;)
+print(df[&quot;kmeans_cluster&quot;].value_counts())
+
+print(&quot;\nDBSCAN labels:&quot;)
+print(df[&quot;dbscan_label&quot;].value_counts())
+
+print(&quot;\nPCA explained variance:&quot;)
+print(pca.explained_variance_ratio_)</code></pre></div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/05_unsupervised.py</code></pre></div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 6 — Poison the training labels</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/06_poisoning.py</span></p></div>
+        <div class="step"><h4>Understand the attack before running it</h4><p>We will modify only training labels. The test set stays clean so we can measure the effect of the poisoning.</p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import numpy as np
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+features = [
+    &quot;annual_income&quot;, &quot;monthly_debt&quot;, &quot;loan_amount&quot;,
+    &quot;loan_term_months&quot;, &quot;credit_score&quot;, &quot;employment_years&quot;,
+    &quot;account_age_months&quot;, &quot;num_previous_loans&quot;,
+    &quot;previous_defaults&quot;, &quot;debt_to_income&quot;, &quot;loan_to_income&quot;
+]
+
+X = df[features]
+y = df[&quot;default&quot;]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.20,
+    stratify=y,
+    random_state=42
+)
+
+baseline = Pipeline([
+    (&quot;scaler&quot;, StandardScaler()),
+    (&quot;model&quot;, LogisticRegression(max_iter=1000))
+])
+
+baseline.fit(X_train, y_train)
+
+clean_probability = baseline.predict_proba(
+    X_test
+)[:, 1]
+
+clean_auc = roc_auc_score(
+    y_test,
+    clean_probability
+)
+
+# Poison only the training labels.
+rng = np.random.default_rng(42)
+
+poison_rate = 0.05
+poison_count = int(
+    len(y_train) * poison_rate
+)
+
+indices = rng.choice(
+    len(y_train),
+    size=poison_count,
+    replace=False
+)
+
+y_train_poisoned = y_train.to_numpy().copy()
+
+y_train_poisoned[indices] = (
+    1 - y_train_poisoned[indices]
+)
+
+poisoned = Pipeline([
+    (&quot;scaler&quot;, StandardScaler()),
+    (&quot;model&quot;, LogisticRegression(max_iter=1000))
+])
+
+poisoned.fit(
+    X_train,
+    y_train_poisoned
+)
+
+poison_probability = poisoned.predict_proba(
+    X_test
+)[:, 1]
+
+poison_auc = roc_auc_score(
+    y_test,
+    poison_probability
+)
+
+print(&quot;Clean ROC-AUC:&quot;, clean_auc)
+print(&quot;Poisoned ROC-AUC:&quot;, poison_auc)
+print(&quot;Poisoned training records:&quot;, poison_count)</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Observe the comparison</h4><p>The exact degradation will depend on the generated dataset and model. The experiment demonstrates the mechanism: changing training labels changes what the model learns.</p></div>
+        <div class="step"><h4>Security question</h4><p>Ask: “If the model training pipeline cannot prove which dataset version it consumed, how would we investigate a suspicious model?”</p></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="demo">
+    <summary>Demo 7 — Isolation Forest as a screening layer</summary>
+    <div class="demo-body">
+      <div class="steps">
+        <div class="step"><h4>Create</h4><p><strong>Create this exact file:</strong> <span class="path-chip">rr-finance-ai/module01/scripts/07_isolation_forest.py</span></p></div>
+      </div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>import pandas as pd
+from sklearn.ensemble import IsolationForest
+
+df = pd.read_csv(
+    &quot;module01/data/rr_finance_module1_dataset.csv&quot;
+)
+
+features = [
+    &quot;annual_income&quot;,
+    &quot;monthly_debt&quot;,
+    &quot;loan_amount&quot;,
+    &quot;credit_score&quot;,
+    &quot;debt_to_income&quot;,
+    &quot;loan_to_income&quot;
+]
+
+detector = IsolationForest(
+    contamination=0.05,
+    random_state=42
+)
+
+df[&quot;anomaly_flag&quot;] = detector.fit_predict(
+    df[features]
+)
+
+review_queue = df[
+    df[&quot;anomaly_flag&quot;] == -1
+]
+
+print(&quot;Total records:&quot;, len(df))
+print(&quot;Potential anomalies:&quot;, len(review_queue))
+
+print(
+    review_queue[
+        [
+            &quot;customer_id&quot;,
+            &quot;annual_income&quot;,
+            &quot;loan_amount&quot;,
+            &quot;credit_score&quot;,
+            &quot;debt_to_income&quot;
+        ]
+    ].head(20)
+)</code></pre></div>
+      <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>python module01/scripts/07_isolation_forest.py</code></pre></div>
+      <div class="steps">
+        <div class="step"><h4>Interpret</h4><p>These are potential anomalies. They are not automatically fraudulent or poisoned.</p></div>
+        <div class="step"><h4>Connect to security</h4><p>In a real training pipeline, suspicious records can enter a quarantine/review process before they are allowed into model training.</p></div>
+      </div>
+    </div>
+  </details>
+</div>
+
+
+<div class="section" id="lab">
+  <h2>Module 1 integrated lab — Secure Credit Risk Foundation</h2>
+  <p class="lead">This is the hand-off point for Module 2. The lab is intentionally large enough to show how the topics fit together, but it ends with a clean artifact that the next module can extend.</p>
+
+  <div class="callout why"><strong>Business scenario</strong><div>RR Finance wants an internal credit-risk foundation. The organization needs a reproducible dataset, a baseline default model, an imbalance strategy, exploratory segmentation/anomaly signals, and evidence that the training pipeline can detect suspicious data before model training.</div></div>
+
+  <h3>Lab objective</h3>
+  <p>Build an initial <strong>Credit Risk Intelligence Pipeline</strong> that produces:</p>
+  <div class="checklist">
+    <label class="check"><input type="checkbox"> A validated and documented financial dataset.</label>
+    <label class="check"><input type="checkbox"> A feature-engineering step with DTI and LTI.</label>
+    <label class="check"><input type="checkbox"> A reproducible classification baseline.</label>
+    <label class="check"><input type="checkbox"> A class-imbalance experiment.</label>
+    <label class="check"><input type="checkbox"> A customer segmentation experiment.</label>
+    <label class="check"><input type="checkbox"> An anomaly-screening experiment.</label>
+    <label class="check"><input type="checkbox"> A label-poisoning experiment.</label>
+    <label class="check"><input type="checkbox"> A before/after model-quality comparison.</label>
+    <label class="check"><input type="checkbox"> A short security-control recommendation.</label>
+  </div>
+
+  <h3>Final lab architecture</h3>
+  <div class="flow">
+    <div class="node">CSV</div><div class="arrow">→</div>
+    <div class="node">Validation</div><div class="arrow">→</div>
+    <div class="node">Features</div><div class="arrow">→</div>
+    <div class="node">Train/Test</div><div class="arrow">→</div>
+    <div class="node">Baseline</div><div class="arrow">→</div>
+    <div class="node">SMOTE experiment</div><div class="arrow">→</div>
+    <div class="node">Poison test</div><div class="arrow">→</div>
+    <div class="node">Anomaly screening</div><div class="arrow">→</div>
+    <div class="node">Security report</div>
+  </div>
+
+  <h3>Recommended project structure after today's lab</h3>
+  <div class="code-wrap"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>rr-finance-ai/
+└── module01/
+    ├── data/
+    │   └── rr_finance_module1_dataset.csv
+    ├── scripts/
+    │   ├── 01_read_data.py
+    │   ├── 02_features_eda.py
+    │   ├── 03_baseline_model.py
+    │   ├── 04_smote.py
+    │   ├── 05_unsupervised.py
+    │   ├── 06_poisoning.py
+    │   └── 07_isolation_forest.py
+    └── outputs/
+        ├── model_metrics.txt
+        ├── anomaly_review.csv
+        └── poisoning_comparison.txt</code></pre></div>
+
+  <h3>Acceptance criteria</h3>
+  <table>
+    <tr><th>Area</th><th>Pass condition</th></tr>
+    <tr><td>Data understanding</td><td>Participant can explain every feature and identify the target.</td></tr>
+    <tr><td>Modeling</td><td>Baseline classifier runs reproducibly and reports multiple metrics.</td></tr>
+    <tr><td>Imbalance</td><td>SMOTE is applied only to training data and compared against a baseline.</td></tr>
+    <tr><td>Unsupervised ML</td><td>Participant can explain what K-Means and DBSCAN are trying to discover.</td></tr>
+    <tr><td>Poisoning</td><td>Participant can demonstrate that changing training labels changes the learned model.</td></tr>
+    <tr><td>Defence</td><td>Participant can explain anomaly detection as screening, not proof of fraud.</td></tr>
+    <tr><td>Security</td><td>Participant can propose provenance, versioning, access control and review controls.</td></tr>
+  </table>
+
+  
+<h3>Same project, next module</h3>
+<div class="folder-tree">
+  <div class="tree-title">How this structure will grow</div>
+  <pre><span class="folder">rr-finance-ai/</span>
+├── <span class="folder">module01/</span> <span class="purpose">← LIVE now</span>
+├── <span class="folder">module02/</span> <span class="purpose">← neural networks + adversarial examples</span>
+├── <span class="folder">module03/</span> <span class="purpose">← NLP + financial text + PII</span>
+├── <span class="folder">module04/</span> <span class="purpose">← LLMs + fine-tuning + red teaming</span>
+├── <span class="folder">module05/</span> <span class="purpose">← RAG + agents + retrieval security</span>
+├── <span class="folder">module06/</span> <span class="purpose">← XAI + responsible AI</span>
+├── <span class="folder">module07/</span> <span class="purpose">← federated + privacy-preserving ML</span>
+├── <span class="folder">module08/</span> <span class="purpose">← multimodal AI</span>
+├── <span class="folder">module09/</span> <span class="purpose">← GNN + fraud + intrusion detection</span>
+├── <span class="folder">module10/</span> <span class="purpose">← MLOps + on-prem deployment</span>
+├── <span class="folder">module11/</span> <span class="purpose">← AI cybersecurity</span>
+└── <span class="folder">module12/</span> <span class="purpose">← integrated capstone</span></pre>
+</div>
+<h3>Module 2 hand-off</h3>
+  <div class="callout ok"><strong>What we carry forward</strong><div>The next module should not start a new unrelated project. Carry forward the financial risk problem, the dataset/feature concepts, the idea of a trusted training pipeline, and the security mindset. Module 2 adds neural networks and adversarial examples to the same engineering story.</div></div>
+</div>
+
+
+<div class="section" id="trainer">
+  <h2>Trainer mode — what to emphasize</h2>
+  <p class="lead">Use these prompts while screen-sharing. They are intentionally short so the page remains useful to participants instead of becoming a transcript.</p>
+  <div class="card-grid">
+    <div class="card"><h3>Opening</h3><p>“We are not learning a list of Python libraries. We are building a financial AI pipeline and asking whether we can trust every stage of it.”</p></div>
+    <div class="card"><h3>Before every algorithm</h3><p>“What problem do we have right now? What information do we have? Do we have labels? What are we trying to predict or discover?”</p></div>
+    <div class="card"><h3>When a parameter appears</h3><p>“This number is not magic. What assumption does it represent? What would happen if we changed it?”</p></div>
+    <div class="card"><h3>Security transition</h3><p>“What if the data we trusted was deliberately manipulated before training?”</p></div>
+    <div class="card"><h3>Anomaly warning</h3><p>“Unusual does not mean fraudulent. It means we have a reason to investigate.”</p></div>
+    <div class="card"><h3>Closing</h3><p>“An AI system is only as trustworthy as the pipeline that creates, validates, trains and monitors it.”</p></div>
+  </div>
+</div>
+
+
+<div class="section" id="check">
+  <h2>Quick knowledge check</h2>
+  <div class="quiz"><strong>1. Why is 42 used in many examples?</strong><br><button class="btn" onclick="toggleAnswer(this)">Reveal answer</button><div class="answer">It is simply a reproducibility seed. 42 has no special financial or ML meaning.</div></div>
+  <div class="quiz"><strong>2. What does contamination=0.05 mean in our Isolation Forest demo?</strong><br><button class="btn" onclick="toggleAnswer(this)">Reveal answer</button><div class="answer">It is an illustrative configuration representing an assumption that roughly 5% of observations may be treated as outliers for thresholding. It is not a claim that 5% of transactions are fraud.</div></div>
+  <div class="quiz"><strong>3. Is an Isolation Forest anomaly automatically fraud?</strong><br><button class="btn" onclick="toggleAnswer(this)">Reveal answer</button><div class="answer">No. It is an anomaly signal. The record needs additional evidence or investigation.</div></div>
+  <div class="quiz"><strong>4. Why should SMOTE be applied after train/test splitting?</strong><br><button class="btn" onclick="toggleAnswer(this)">Reveal answer</button><div class="answer">To keep the test set untouched and representative of the natural distribution used for evaluation.</div></div>
+  <div class="quiz"><strong>5. Why did we choose Logistic Regression as a baseline?</strong><br><button class="btn" onclick="toggleAnswer(this)">Reveal answer</button><div class="answer">It is fast, produces probability scores, is comparatively interpretable, and gives us a strong baseline before moving to more complex models.</div></div>
+</div>
+
+
+<footer>
+  <strong>RR Skillverse</strong> · Free Learning Handbook · AI & Machine Learning: Advanced Engineering with Cybersecurity · Module 1<br>
+  This is a personal learning and knowledge-sharing resource created for educational purposes. It is not a commercial course, paid service, consulting offering, or independent training platform. Educational synthetic data only. This handbook does not define credit policy, fraud policy, regulatory thresholds, or production financial decisions.
+</footer>
+</main>
+</div>
+
+<script>
+function copyCode(btn){
+  const code = btn.parentElement.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    const old = btn.innerText;
+    btn.innerText='Copied!';
+    setTimeout(()=>btn.innerText=old,1200);
+  });
+}
+function toggleAnswer(btn){
+  const answer = btn.nextElementSibling;
+  answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+}
+function filterPage(){
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('section.lesson').forEach(section=>{
+    const text = section.innerText.toLowerCase();
+    section.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+}
+function updateProgress(){
+  const top = document.documentElement.scrollTop || document.body.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const pct = height ? Math.min(100, Math.round(top/height*100)) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress);
+updateProgress();
+
+const links = [...document.querySelectorAll('.sidebar a')];
+const sections = links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      links.forEach(a=>a.classList.remove('active'));
+      const link=document.querySelector('.sidebar a[href="#'+entry.target.id+'"]');
+      if(link) link.classList.add('active');
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>
