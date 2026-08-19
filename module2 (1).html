@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 2 Handbook | Deep Neural Networks</title>
+<meta name="description" content="Module 2 theory handbook: what each deep learning technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module1.html">← Module 1</a>
+    <a class="dl" href="reference-notebooks/module2.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#foundation">Why neural networks, now</a>
+    <h3>Concepts</h3>
+    <a href="#perceptron">1 · Perceptron</a>
+    <a href="#ann">2 · ANN architecture</a>
+    <a href="#activations">3 · Activation functions</a>
+    <a href="#backprop">4 · Backpropagation</a>
+    <a href="#optimizers">5 · Optimizers</a>
+    <a href="#regularisation">6 · BatchNorm &amp; Dropout</a>
+    <a href="#cnn-foundations">7 · CNN foundations</a>
+    <a href="#cnn-lab">8 · Training a CNN</a>
+    <a href="#transfer-learning">9 · Transfer learning</a>
+    <a href="#adversarial">10 · Adversarial examples</a>
+    <a href="#adversarial-training">11 · Adversarial training</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 3</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 2 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 2 — <span>Deep Neural Networks</span></h1>
+  <p>Same theory-first structure as Module 1: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific limitation of what came before it — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Module 1 built a logistic-regression baseline; every concept here exists because that baseline has a specific, nameable limit, and this module builds the tool that addresses it.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module2.ipynb" download>⬇ Download the Module 2 notebook</a>
+    <a class="btn" href="module1.html">← Back to Module 1</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="foundation">
+  <h2>Why neural networks, and why now</h2>
+  <p class="lead">Module 1's logistic regression is one linear decision boundary. It cannot represent an interaction like "risk is high when debt-to-income is high <em>and</em> credit history is short, but only above a combined threshold" without someone manually engineering that exact interaction term first. That specific gap — not fashion, not hype — is why Module 2 exists.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The panel, not the interviewer</h3><p>Logistic regression is one interviewer with a fixed checklist. A neural network is a panel of specialists (hidden neurons), each attuned to a different combination of signals, with a final layer combining their opinions.</p></div>
+    <div class="card"><h3>Pixels aren't ratios</h3><p>A cheque image is not "16 financial ratios" — meaning lives in local spatial patterns. This is the specific reason Module 2 also introduces CNNs, not just deeper tabular networks.</p></div>
+    <div class="card"><h3>A second kind of attack</h3><p>Module 1 showed training data can be poisoned. Module 2 shows a <em>cleanly trained</em> model can still be fooled at prediction time — a different attack surface entirely.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: PERCEPTRON ============ -->
+<section class="concept" id="perceptron">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>The Perceptron</h2>
+    <p>The smallest possible neural unit — and the historical dead end that explains why depth matters.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A perceptron computes a weighted sum of its inputs plus a bias, then applies a threshold: fire (1) if the sum crosses zero, stay silent (0) otherwise. Every neuron in every network in this entire course — up to and including transformers in Module 4 — is a descendant of this one idea.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1958</div>
+    <strong>Frank Rosenblatt</strong>, at the Cornell Aeronautical Laboratory, built the perceptron as a physical machine (the "Mark I Perceptron") intended to learn visual pattern recognition — and it came with real learning rule: adjust weights toward the correct answer after every mistake.
+    <div class="yr" style="margin-top:10px">1969</div>
+    <strong>Marvin Minsky and Seymour Papert</strong> published <em>Perceptrons</em>, mathematically proving a single perceptron <strong>cannot learn XOR</strong> — or any pattern that isn't linearly separable. This result is widely credited with triggering the first "AI winter": funding and interest in neural networks collapsed for over a decade, because the community initially over-generalised the result to mean neural networks in general were a dead end — not just single-layer ones.
+    <div class="yr" style="margin-top:10px">1986</div>
+    The <strong>backpropagation</strong> algorithm (Lesson 4) showed how to train networks with <em>multiple stacked layers</em>, which sidesteps the XOR limitation entirely — the field's real answer to Minsky and Papert's critique, decades later.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What it teaches</h4><ul><li>The exact atomic computation (weighted sum + threshold) every later layer reuses</li><li>Why depth, not just width, was historically necessary</li></ul></div>
+    <div class="use-box no"><h4>✗ What it cannot do alone</h4><ul><li>Represent any pattern that isn't linearly separable — including XOR, and by extension most interesting financial risk interactions</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A single perceptron behaves exactly like Module 1's logistic regression at its core — one straight decision boundary. The XOR failure is a toy example, but it stands in for real cases like "flag as risky only when DTI is high <em>and</em> credit history is short, not when only one is true" — a pattern one straight line cannot separate.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 2: ANN ============ -->
+<section class="concept" id="ann">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>ANN Architecture (Feedforward Networks)</h2>
+    <p>Stacking neurons to fix what one perceptron structurally cannot do.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>An Artificial Neural Network (ANN) stacks layers of neurons: an input layer, one or more <strong>hidden</strong> layers, and an output layer. Each layer's output feeds the next layer's input — literally the perceptron equation, repeated and composed.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1986</div>
+    <strong>Rumelhart, Hinton and Williams</strong> published the paper that popularised <strong>backpropagation</strong> (building on earlier, less-noticed work by others through the 1960s–70s), finally giving the field a practical way to train networks with hidden layers. This is the direct technical answer to the 1969 XOR critique — depth solves what a single perceptron cannot.
+    <div class="yr" style="margin-top:10px">1989</div>
+    The <strong>Universal Approximation Theorem</strong> (Cybenko, and later Hornik) proved that even a single hidden layer, given enough neurons, can approximate essentially any continuous function — a mathematical answer to "why does adding layers/width actually help?"
+  </div>
+
+  <div class="subhead">Alternatives — and why an ANN here</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Logistic regression (Module 1)</td><td>Fast, interpretable, but one linear boundary only</td></tr>
+    <tr><td>Tree-based models (Random Forest, XGBoost)</td><td>Capture non-linear interactions well and often win on small-to-medium tabular data with far less tuning than a neural net</td></tr>
+    <tr><td class="picked">ANN</td><td class="picked">Can represent arbitrary non-linear interactions given enough capacity and data — the trade-off is needing more data, more tuning, and losing easy interpretability</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You suspect genuine feature interactions a linear model can't capture</li><li>You have enough data to support the extra capacity without overfitting</li></ul></div>
+    <div class="use-box no"><h4>✗ Don't reach for it when</h4><ul><li>The dataset is small and the relationship is plausibly linear — Module 2's own notebook shows the ANN <em>losing</em> to logistic regression on RR Finance's real 800-row dataset. That is the honest lesson, not a bug: check the simple model first.</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A large bank with millions of loan records and genuinely complex, interacting risk factors may see a real ANN advantage. A small credit union with a few hundred well-understood cases very often does not — capacity without enough data to fill it just overfits.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 3: ACTIVATIONS ============ -->
+<section class="concept" id="activations">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Activation Functions</h2>
+    <p>Without them, depth is mathematically pointless.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>An activation function is a non-linear transformation applied after each layer's weighted sum. <strong>ReLU</strong> (rectified linear unit) is the modern default for hidden layers; <strong>Sigmoid</strong> and <strong>Softmax</strong> are used on output layers for binary and multi-class probabilities respectively.</p>
+
+  <div class="subhead">Why it exists — the critical fact</div>
+  <div class="history-card">
+    <div class="yr">The mathematical reason, not a historical one</div>
+    Stacking any number of purely <em>linear</em> layers collapses mathematically into a <strong>single</strong> linear layer — matrix multiplication composed with matrix multiplication is still just a matrix multiplication. Depth buys you nothing at all without a non-linearity between layers. This is why activation functions aren't an optional add-on; they're the entire reason stacking layers works.
+    <div class="yr" style="margin-top:10px">2010s</div>
+    Early networks mostly used <strong>Sigmoid</strong> or <strong>Tanh</strong> for hidden layers, but both suffer from <strong>vanishing gradients</strong> in deep networks — their derivative is near zero for large inputs, so gradient signal shrinks toward nothing as it propagates backward through many layers. <strong>ReLU</strong> (popularised heavily after Nair &amp; Hinton, 2010, and its central role in AlexNet, 2012) doesn't saturate for positive inputs, which was a major practical unlock for training genuinely deep networks.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Where each belongs</h4><ul><li><strong>ReLU</strong>: hidden layers, by default</li><li><strong>Sigmoid</strong>: output layer, binary classification (e.g. default probability)</li><li><strong>Softmax</strong>: output layer, multi-class classification (e.g. 10 cheque digits)</li></ul></div>
+    <div class="use-box no"><h4>✗ Common mistakes</h4><ul><li>Using Sigmoid in deep hidden layers — invites vanishing gradients</li><li>Forgetting Softmax must operate on a <em>vector</em> of scores, not a single number</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The output activation determines what the network's number even <em>means</em>: Sigmoid on RR Finance's default classifier gives a genuine probability of default; Softmax on the cheque-digit reader gives a probability distribution across all 10 possible digits, which must sum to exactly 1.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 4: BACKPROP ============ -->
+<section class="concept" id="backprop">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Backpropagation</h2>
+    <p>How a network figures out which direction to move millions of weights from one number.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Backpropagation is the chain-rule-based algorithm that computes how much each weight in the network contributed to the final error, working backward from the output layer to the input layer, so gradient descent (next lesson) knows which direction to nudge every weight.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1970 → 1986</div>
+    The mathematical technique (reverse-mode automatic differentiation) existed earlier — <strong>Seppo Linnainmaa</strong>'s 1970 thesis is often cited as the first clear general formulation — but it took <strong>Rumelhart, Hinton and Williams</strong>' 1986 paper to demonstrate its power specifically for training multi-layer neural networks and popularise it across the field. Before this, there was no practical, general way to train a network with hidden layers at all — which is a large part of why the field stalled through the 1970s after the perceptron's XOR limitation was exposed.
+  </div>
+
+  <div class="subhead">Alternatives — and why backprop won</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Numerical differentiation (perturb each weight, remeasure loss)</td><td>Conceptually simple, but requires a full forward pass <em>per weight</em> — computationally impossible at the scale of millions of parameters</td></tr>
+    <tr><td class="picked">Backpropagation (reverse-mode autodiff)</td><td class="picked">Computes gradients for <em>every</em> weight in roughly the cost of one extra forward pass, regardless of how many parameters there are — the only reason training large networks is computationally feasible at all</td></tr>
+  </table>
+
+  <div class="callout ok"><strong>The gradient check, made concrete</strong><div>The notebook derives backprop by hand on a tiny network, then verifies the result against numerical differentiation — the same debugging technique real deep-learning engineers use when a training run behaves unexpectedly. Trusting a mechanism you've verified once, by hand, is different from trusting a black box you've never opened.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Every <code>.backward()</code> call in every model trained across this entire 12-module course — the cheque-digit CNN here, the fine-tuned LLM in Module 4 — runs on exactly this mechanism. Understanding it once means every later "training is unstable" or "loss exploded" problem has a mechanism you can actually reason about, not just a button you press and hope.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 5: OPTIMIZERS ============ -->
+<section class="concept" id="optimizers">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Gradient Descent &amp; Optimizers</h2>
+    <p>Backprop tells you the direction. Optimizers decide how far, and whether to remember the last step.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Given a gradient, an optimizer decides the actual weight update. <strong>SGD</strong> takes a fixed-size step in the gradient's direction; <strong>Momentum</strong> adds memory of previous steps to smooth noisy updates; <strong>RMSprop</strong> and <strong>Adam</strong> adapt the step size per parameter based on recent gradient behaviour.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1951</div>
+    <strong>Robbins and Monro</strong>'s stochastic approximation method is the mathematical ancestor of SGD — using noisy, sampled gradients instead of the full dataset at every step, which is what makes training on huge datasets tractable at all.
+    <div class="yr" style="margin-top:10px">1999 → 2012</div>
+    <strong>Momentum</strong> (Polyak, 1964; popularised for deep learning by Sutskever et al., 2013) smooths the noisy path SGD takes. <strong>RMSprop</strong> (introduced informally by Geoffrey Hinton in a 2012 lecture, never formally published as a standalone paper) adapts the learning rate per parameter using a running average of recent squared gradients.
+    <div class="yr" style="margin-top:10px">2014</div>
+    <strong>Kingma and Ba</strong> published <strong>Adam</strong> ("Adaptive Moment Estimation"), combining Momentum's smoothing with RMSprop's per-parameter adaptation — it became, and largely remains, the default first choice across the field.
+  </div>
+
+  <div class="subhead">Alternatives — how to choose</div>
+  <table class="alt-table">
+    <tr><th>Optimizer</th><th>When it's the right call</th></tr>
+    <tr><td>SGD (plain)</td><td>Simple, sometimes generalises better with careful tuning — common in some published vision benchmarks</td></tr>
+    <tr><td>SGD + Momentum</td><td>A strong, well-understood default when you have time to tune the learning rate</td></tr>
+    <tr><td>RMSprop</td><td>Good on noisy or non-stationary problems (originally motivated by RNN training)</td></tr>
+    <tr><td class="picked">Adam</td><td class="picked">The reasonable first choice with minimal tuning — used throughout this course's default training loops</td></tr>
+  </table>
+
+  <div class="callout warn"><strong>Free lunches don't exist here</strong><div>"Just increase the learning rate to train faster" is not free — push it too high with plain SGD and training visibly oscillates or diverges. The notebook demonstrates this directly by comparing all four optimizers on identical starting weights.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A poorly chosen optimizer or learning rate on a production model-retraining job doesn't just train slower — it can converge to a measurably worse model or fail to converge at all, wasting real compute budget on a nightly or weekly retraining pipeline.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 6: BATCHNORM/DROPOUT ============ -->
+<section class="concept" id="regularisation">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Batch Normalisation &amp; Dropout</h2>
+    <p>Two different problems, both fixed by deliberately adding a bit of controlled disruption.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>BatchNorm</strong> normalises each layer's activations to zero mean/unit variance per mini-batch (then lets the network re-learn an optimal scale), stabilising training. <strong>Dropout</strong> randomly zeroes a fraction of activations during training only, preventing the network from over-relying on any single neuron.</p>
+
+  <div class="subhead">Why they exist — the history</div>
+  <div class="history-card">
+    <div class="yr">2012</div>
+    <strong>Dropout</strong> was introduced by <strong>Hinton and colleagues</strong> (including Srivastava, in the fuller 2014 paper), directly motivated by overfitting in networks with many parameters relative to available data — a random subset of neurons is disabled each step, forcing redundancy rather than reliance on any one path.
+    <div class="yr" style="margin-top:10px">2015</div>
+    <strong>Batch Normalisation</strong> (Ioffe and Szegedy) addressed a different problem: as training progresses, the distribution of each layer's inputs keeps shifting ("internal covariate shift" was the original explanation, though later research debated the precise mechanism), making deep networks slow and unstable to train. Normalising activations within each mini-batch measurably sped up and stabilised training of much deeper networks than were previously practical.
+  </div>
+
+  <div class="callout warn"><strong>The bug this lesson exists to prevent</strong><div>Both layers behave <em>differently</em> in training vs. evaluation mode. Forgetting <code>model.eval()</code> before inference leaves Dropout randomly zeroing activations and BatchNorm using batch statistics instead of learned running statistics — silently corrupting predictions in a way that produces no error message, just quietly wrong numbers. This is one of the most common real-world PyTorch bugs, and the notebook demonstrates it directly rather than just warning about it.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A cheque-digit reader that memorises training-set quirks (a specific scanner's artefacts, a particular pen's ink) instead of learning generalisable digit shapes will fail unpredictably in production on a different scanner or a different branch's equipment — exactly the overfitting failure Dropout exists to reduce.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 7: CNN FOUNDATIONS ============ -->
+<section class="concept" id="cnn-foundations">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>CNN Foundations: Convolution, Padding, Stride, Pooling</h2>
+    <p>Why images need a fundamentally different architecture than tables do.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A convolution slides a small, learnable filter across an image, computing a local dot product at every position — the same pattern-detector is reused everywhere in the image, rather than learning a completely separate weight for every pixel. Pooling then downsamples, keeping the strongest signal in each small region.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1980</div>
+    <strong>Kunihiko Fukushima</strong>'s Neocognitron introduced the core idea of local receptive fields and shared weights, inspired by biological studies of the visual cortex (Hubel and Wiesel's 1960s work on cat vision).
+    <div class="yr" style="margin-top:10px">1989 → 1998</div>
+    <strong>Yann LeCun</strong> and colleagues built <strong>LeNet</strong>, applying backpropagation to convolutional networks for handwritten digit recognition — used commercially to read handwritten cheque amounts at scale for U.S. banks in the 1990s. This is not a coincidental example: it's the literal historical origin of the CNN, applied to the exact same problem this module's lab recreates.
+    <div class="yr" style="margin-top:10px">2012</div>
+    <strong>AlexNet</strong> (Krizhevsky, Sutskever, Hinton) combined CNNs with GPU training and ReLU at a much larger scale, decisively winning the ImageNet competition and triggering the modern deep-learning boom in computer vision.
+  </div>
+
+  <div class="subhead">Why not just a fully-connected (ANN) layer on the image?</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Flatten the image, feed a plain ANN</td><td>A 28×28 image needs 784 separate weights <em>per neuron</em>, with zero spatial reuse — pixel (0,0) is treated as no more related to pixel (0,1) than to pixel (27,27), throwing away the one thing that makes an image an image</td></tr>
+    <tr><td class="picked">Convolution</td><td class="picked">A 3×3 filter (9 weights) is reused at every position — far fewer parameters, and pattern detection becomes position-independent by construction</td></tr>
+  </table>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's cheque-digit reader in this module's lab is the exact same problem LeNet solved commercially for U.S. banks in the 1990s — reading a handwritten amount off a scanned cheque, at scale, automatically.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 8: CNN LAB ============ -->
+<section class="concept" id="cnn-lab">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8 · LAB</span>
+    <h2>Building and Training a CNN</h2>
+    <p>RR Finance's cheque-digit reader, built from the pieces above.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>The lab combines everything so far — convolution, pooling, BatchNorm, Dropout, ReLU, Softmax, backprop, Adam — into one trained model that classifies a 28×28 handwritten digit image into one of 10 classes, using the standard MNIST dataset as a stand-in for real cheque-digit crops.</p>
+
+  <div class="subhead">Why MNIST specifically</div>
+  <div class="history-card">
+    <div class="yr">1998</div>
+    MNIST was assembled by <strong>Yann LeCun, Corinna Cortes and Christopher Burges</strong> from NIST handwriting samples, explicitly as a benchmark for exactly this task — it has been the field's standard "hello world" for image classification for over two decades, precisely because it's clean, well-labelled, and directly tied to the historical cheque-reading use case.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What this lab teaches</h4><ul><li>How the architectural pieces (Lessons 3–7) compose into one trainable system</li><li>Why the flattened size before the final layer follows directly from the pooling arithmetic (28→14→7)</li></ul></div>
+    <div class="use-box no"><h4>✗ What it doesn't cover yet</h4><ul><li>Real cheque images have scan noise, skew, and varied handwriting the clean MNIST set doesn't — Module 8 (Multimodal AI) extends this exact pattern to messier real-world document data</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Automated, auditable digit recognition reduces manual keying error and cost in cheque processing — this lab's architecture, training loop and evaluation approach transfer directly once real, labelled cheque-digit crops are available.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 9: TRANSFER LEARNING ============ -->
+<section class="concept" id="transfer-learning">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9</span>
+    <h2>Transfer Learning</h2>
+    <p>Reusing what a network already learned, when you don't have millions of your own labelled images.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Instead of training a CNN from scratch, load a network already trained on a large general dataset (e.g. ImageNet), <strong>freeze</strong> its early layers (which tend to have learned general-purpose features like edges and textures), and only retrain the final layer(s) for your specific task.</p>
+
+  <div class="subhead">Why it exists — the motivating problem</div>
+  <div class="history-card">
+    <div class="yr">2014 onward</div>
+    As CNNs like <strong>VGGNet</strong> and later <strong>ResNet</strong> (He et al., 2015) were trained on ImageNet's 1.2 million labelled images, researchers noticed their early layers learned remarkably general features — edges, textures, simple shapes — reusable across almost any image task. Fine-tuning only the later layers on a much smaller, task-specific dataset became standard practice, because most organisations will never have anywhere close to ImageNet-scale labelled data for their specific problem.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You have a new image task but limited labelled data — exactly RR Finance's real-world cheque-digit situation, where labelled crops are expensive and slow to collect under confidentiality constraints</li></ul></div>
+    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Freezing too much prevents adaptation to real quirks (paper texture, ink variation, scan skew)</li><li>Freezing too little re-introduces the "not enough data" problem transfer learning was meant to solve — how much to freeze is itself a hyperparameter to validate</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance may only have a few thousand real, labelled cheque-digit crops — nowhere near enough to train a deep CNN from zero reliably. Starting from a network that already understands "edges and shapes in general" and only teaching it the last mile to "these specific ten digit classes" is the practical answer.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 10: ADVERSARIAL EXAMPLES ============ -->
+<section class="concept" id="adversarial">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 10 · CYBERSECURITY</span>
+    <h2>Adversarial Examples: FGSM &amp; PGD</h2>
+    <p>Fooling a correctly trained model, without ever touching its training data.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>An adversarial example is an input deliberately perturbed by a tiny, often visually imperceptible amount, crafted specifically to cause a correctly-trained model to misclassify it with high confidence — using the model's own gradients against it.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2013</div>
+    <strong>Szegedy and colleagues</strong> ("Intriguing properties of neural networks") first demonstrated that state-of-the-art image classifiers could be fooled by perturbations invisible to the human eye — a genuinely surprising result at the time, since the networks were otherwise performing extremely well.
+    <div class="yr" style="margin-top:10px">2015</div>
+    <strong>Goodfellow, Shlens and Szegedy</strong> introduced <strong>FGSM</strong> (Fast Gradient Sign Method) — a single gradient step in the direction that increases the model's loss the fastest, moving every pixel by exactly ±ε.
+    <div class="yr" style="margin-top:10px">2017</div>
+    <strong>Madry and colleagues</strong> introduced <strong>PGD</strong> (Projected Gradient Descent) — FGSM applied iteratively with a smaller step size, projecting the perturbation back within the ε budget after each step. PGD became the standard <em>benchmark</em> attack for evaluating model robustness, precisely because it is generally stronger than a single FGSM step.
+  </div>
+
+  <div class="subhead">This is a different attack surface than Module 1's poisoning</div>
+  <table class="alt-table">
+    <tr><th>Attack</th><th>When it happens</th><th>What the attacker needs</th></tr>
+    <tr><td>Data poisoning (Module 1)</td><td>Training time</td><td>Ability to influence training data — never touches the deployed model</td></tr>
+    <tr><td class="picked">Adversarial examples (this lesson)</td><td class="picked">Inference time</td><td class="picked">Access to (or the ability to estimate) the trained model's gradients, plus a small perturbation budget</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>The security lesson</strong><div>The attacker here needs no access to training data and no ability to retrain the model — only the ability to query gradients and a small perturbation budget. This is exactly why adversarial robustness is treated as a distinct concern from data provenance, with its own dedicated attention in Module 11's black-box (query-only) attack scenarios, where the attacker can't even see gradients directly.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If RR Finance's cheque-digit reader — or any production image classifier used for document fraud detection or ID verification — can be fooled by adversarial pixel noise, an attacker could manipulate an amount or bypass a check without an obvious visual red flag for a human reviewer.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 11: ADVERSARIAL TRAINING ============ -->
+<section class="concept" id="adversarial-training">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 11 · CYBERSECURITY</span>
+    <h2>Adversarial Training</h2>
+    <p>The first defence — and an honest look at its limits.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Adversarial training generates adversarial examples <em>during</em> training and includes them in the training loss, alongside clean examples — explicitly teaching the model to classify attacked inputs correctly too, not just clean ones.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2015 → 2017</div>
+    Proposed alongside FGSM itself (Goodfellow et al., 2015) as the natural direct defence, then substantially strengthened by <strong>Madry et al.'s</strong> 2017 formulation using PGD-generated adversarial examples during training — often still referred to as "Madry-style" adversarial training, and broadly considered one of the most reliable (though computationally expensive) defences available today.
+  </div>
+
+  <div class="callout warn"><strong>Read the robustness numbers honestly</strong><div>A model adversarially trained against FGSM is <strong>not</strong> automatically robust against PGD — a different, stronger attack. The notebook measures this directly rather than assuming it: expect a real, visible improvement under the attack the model was trained against, and a smaller, more modest improvement against a different or stronger one. This gap is not a flaw in the exercise — it is the genuine, well-documented state of adversarial robustness research, and exactly why "the model was adversarially trained" is treated as one layer of defence, not a solved problem, mirroring Module 1's layered poisoning defence.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A more robust cheque-digit reader degrades more gracefully under real-world noisy conditions (poor scans, compression artefacts) as well as deliberate manipulation — reducing both fraud risk and false-alarm operational cost, though never eliminating either.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 2 hand-off</h2>
+  <p class="lead">The notebook benchmarks its ANN against Module 1's exact saved baseline, trains and saves a cheque-digit CNN, and produces a measured (not assumed) adversarial-robustness comparison. Module 3 reuses the same skeleton one more time — business problem → representation → model → cybersecurity angle → lab — this time for text instead of tables or pixels.</p>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module1.html"><span class="n">←</span>Back to Module 1</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+</body>
+</html>

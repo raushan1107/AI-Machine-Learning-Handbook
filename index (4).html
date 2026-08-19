@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Free Learning Handbook | AI &amp; Machine Learning with Cybersecurity</title>
+<meta name="description" content="RR Skillverse free learning handbook — a 12-module, theory-first guide to AI/ML engineering with cybersecurity, by Raushan Ranjan.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:16px;font-size:14px}
+main{max-width:1200px;width:100%;margin:0 auto;padding:46px 34px 90px}
+.hero{padding:36px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.05;letter-spacing:-1.5px;margin:0 0 18px;max-width:980px}
+h1 span{color:var(--accent)}
+.hero p{font-size:19px;color:#b9c9da;max-width:880px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:11px 16px;border-radius:10px;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn.ghost{background:transparent}
+.btn:hover{transform:translateY(-1px)}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:18px 20px;margin:22px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.section{margin-top:56px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:900px}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0}
+.mod-card{background:linear-gradient(145deg,#0d1b2e,#0b192b);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;min-height:190px}
+.mod-card .num{font-size:12px;letter-spacing:1.6px;color:var(--accent);font-weight:800}
+.mod-card h3{margin:2px 0 4px;font-size:18px;line-height:1.25}
+.mod-card p{margin:0;color:#aebfd1;font-size:13.5px;flex:1}
+.mod-card .status{font-size:11px;font-weight:750;letter-spacing:.6px;padding:4px 9px;border-radius:999px;width:fit-content;margin-top:6px}
+.status.live{background:rgba(85,209,135,.14);color:var(--ok);border:1px solid rgba(85,209,135,.35)}
+.status.soon{background:rgba(159,177,197,.1);color:var(--muted);border:1px solid var(--border)}
+.mod-card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.mod-card .row a{font-size:12.5px;border:1px solid var(--border);padding:6px 10px;border-radius:8px;color:#cfe0f1}
+.mod-card .row a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.system-diagram{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0}
+.system-diagram .node{background:#10243c;border:1px solid var(--border);padding:9px 12px;border-radius:10px;font-size:13px}
+.system-diagram .arrow{color:var(--accent);font-weight:800}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:20px}
+.card h3{margin-top:0;font-size:16px}
+.card p{color:#b6c6d8;font-size:14px;margin:0}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;color:#dce9f6}
+@media(max-width:1000px){.roadmap,.card-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){main{padding:28px 16px 70px}.roadmap,.card-grid{grid-template-columns:1fr}h1{font-size:38px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="#roadmap">Modules</a>
+    <a href="#downloads">Downloads</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="callout why">
+      <strong>Free Learning Handbook — by Raushan Ranjan</strong>
+      <div>A personal educational reference for structured learning, demonstrations and hands-on practice. Shared for learning purposes only — not a commercial product or paid service. Companion runnable notebooks (<code>.ipynb</code>) for every live module are linked below and in the <code>reference-notebooks/</code> folder of this repository.</div>
+    </div>
+
+    <div class="badges">
+      <span class="badge">RR Skillverse</span>
+      <span class="badge">12 Modules · 40 Hours</span>
+      <span class="badge">Finance + AI + Security</span>
+      <span class="badge">Theory-first Handbook</span>
+    </div>
+
+    <h1>AI &amp; Machine Learning: <span>Advanced Engineering with Cybersecurity</span></h1>
+    <p>A 12-module, outcome-based journey that builds <strong>one running financial AI system</strong> — RR Finance — module by module. Every page here is the <em>theory layer</em>: what each algorithm is, why it exists, what came before it, what else you could use instead, and where it shows up in real financial systems. The matching Jupyter notebook for each module is where you run the code.</p>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="#roadmap">Start with Module 1 →</a>
+      <a class="btn ghost" href="#downloads">Download all notebooks + data</a>
+    </div>
+  </section>
+
+  <div class="section" id="system">
+    <h2>One system, built module by module</h2>
+    <p class="lead">This is not twelve unrelated demos. Every module adds one capability to the same running system, until Module 12 wires everything into one integrated, secured, deployed product.</p>
+    <div class="system-diagram">
+      <div class="node">Trusted data (M1)</div><div class="arrow">→</div>
+      <div class="node">Deep learning (M2)</div><div class="arrow">→</div>
+      <div class="node">Text/NLP (M3)</div><div class="arrow">→</div>
+      <div class="node">LLMs (M4)</div><div class="arrow">→</div>
+      <div class="node">RAG + Agents (M5)</div><div class="arrow">→</div>
+      <div class="node">Explainability (M6)</div><div class="arrow">→</div>
+      <div class="node">Privacy (M7)</div><div class="arrow">→</div>
+      <div class="node">Multimodal (M8)</div><div class="arrow">→</div>
+      <div class="node">Graphs (M9)</div><div class="arrow">→</div>
+      <div class="node">Deployment (M10)</div><div class="arrow">→</div>
+      <div class="node">Security audit (M11)</div><div class="arrow">→</div>
+      <div class="node" style="border-color:var(--accent);color:var(--accent)">Capstone (M12)</div>
+    </div>
+  </div>
+
+  <div class="section" id="roadmap">
+    <h2>The 12 modules</h2>
+    <p class="lead">Click a live module to read the theory handbook, or use the notebook button to download the runnable <code>.ipynb</code> straight from this repository's <code>reference-notebooks/</code> folder.</p>
+
+    <div class="roadmap">
+      <div class="mod-card">
+        <div class="num">MODULE 1</div>
+        <h3>Data Science + Financial Data Analysis</h3>
+        <p>The trusted foundation: EDA, feature engineering, regression, classification, clustering, anomaly detection, and the first security control — data-poisoning defence.</p>
+        <span class="status live">● Live</span>
+        <div class="row">
+          <a href="module1.html">Read handbook →</a>
+          <a href="reference-notebooks/module1.ipynb" download>⬇ Notebook</a>
+          <a href="data/rr_finance_module1_dataset.csv" download>⬇ Dataset (.csv)</a>
+        </div>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 2</div>
+        <h3>Deep Neural Networks</h3>
+        <p>Perceptrons, ANNs, backprop, optimizers, CNNs — plus the first inference-time attack: adversarial examples (FGSM/PGD) and adversarial training as a defence.</p>
+        <span class="status live">● Live</span>
+        <div class="row">
+          <a href="module2.html">Read handbook →</a>
+          <a href="reference-notebooks/module2.ipynb" download>⬇ Notebook</a>
+        </div>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 3</div>
+        <h3>NLP + Financial Text AI</h3>
+        <p>Text representations, NER, sentiment analysis on financial text, prompt injection, and PII redaction.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 4</div>
+        <h3>Generative AI, LLMs &amp; RLHF</h3>
+        <p>Transformers, fine-tuning (LoRA/QLoRA), alignment (SFT → RM → PPO/DPO), and LLM red-teaming.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 5</div>
+        <h3>RAG, LangChain &amp; AI Agents</h3>
+        <p>Vector retrieval, agentic tool-use, LangGraph, and the agentic-AI threat surface (retrieval poisoning, tool-call hijacking).</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 6</div>
+        <h3>Explainable &amp; Responsible AI</h3>
+        <p>SHAP, LIME, counterfactuals, fairness auditing, and model governance — including the age-fairness question Module 1 flagged.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 7</div>
+        <h3>Federated &amp; Privacy-Preserving ML</h3>
+        <p>Federated averaging, differential privacy, and Byzantine-robust aggregation defences.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 8</div>
+        <h3>Multimodal AI</h3>
+        <p>Speech, vision-language models, and document intelligence — building on Module 2's CNN foundations.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 9</div>
+        <h3>Graph Neural Networks</h3>
+        <p>Fraud-ring detection, knowledge graphs, GraphRAG, and GNN-based intrusion detection.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 10</div>
+        <h3>MLOps &amp; On-Premises Deployment</h3>
+        <p>FastAPI serving, Docker/Kubernetes, and DevSecOps controls (Trivy, Vault, TLS/mTLS).</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 11</div>
+        <h3>AI Cybersecurity</h3>
+        <p>STRIDE and MITRE ATLAS threat modelling, model stealing, deepfake detection, and AI-powered SOC operations.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+
+      <div class="mod-card">
+        <div class="num">MODULE 12</div>
+        <h3>Final Capstone</h3>
+        <p>Everything from Modules 1–11, wired into one integrated, secured, on-premises production system.</p>
+        <span class="status soon">Coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="downloads">
+    <h2>Downloads</h2>
+    <p class="lead">Every live module has a matching Jupyter notebook in <code>reference-notebooks/</code>. Run the notebook to build and train the system; read the handbook page to understand why each piece exists before you run it.</p>
+    <div class="card-grid">
+      <div class="card">
+        <h3>📓 Notebooks</h3>
+        <p><a href="reference-notebooks/module1.ipynb" download>module1.ipynb</a> · <a href="reference-notebooks/module2.ipynb" download>module2.ipynb</a><br>Open in Jupyter, VS Code, or Google Colab. Run top to bottom once before class.</p>
+      </div>
+      <div class="card">
+        <h3>📊 Dataset</h3>
+        <p><a href="data/rr_finance_module1_dataset.csv" download>rr_finance_module1_dataset.csv</a><br>The RR Finance loan-risk table, validated in Module 1 and reused by every module after it.</p>
+      </div>
+      <div class="card">
+        <h3>🗂 Repository layout</h3>
+        <p><code>index.html</code>, <code>module1.html</code>, <code>module2.html</code> — the handbook.<br><code>reference-notebooks/</code> — runnable <code>.ipynb</code> files.<br><code>data/</code> — datasets.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="about">
+    <h2>How to use this handbook</h2>
+    <div class="card-grid">
+      <div class="card"><h3>1. Read the theory</h3><p>Each module page explains what an algorithm is, why it exists, its history, its alternatives, and where it shows up in real financial systems — before you touch code.</p></div>
+      <div class="card"><h3>2. Run the notebook</h3><p>Download the matching <code>.ipynb</code>, run it top to bottom, and connect what you just read to what you just watched happen on real data.</p></div>
+      <div class="card"><h3>3. Move to the next module</h3><p>Every module saves its artifacts (data, trained models, metrics) for the next one to load — the system keeps growing, it never restarts.</p></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="brand-row"><strong>RR Skillverse</strong> — Free Learning Handbook</div>
+    <div>By Raushan Ranjan · Shared for learning purposes only — not a commercial product or paid service.</div>
+  </footer>
+</main>
+
+</body>
+</html>

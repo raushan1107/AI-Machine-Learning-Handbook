@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 1 Handbook | Data Science + Financial Data Analysis</title>
+<meta name="description" content="Module 1 theory handbook: what each algorithm is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a class="dl" href="reference-notebooks/module1.ipynb" download>⬇ Notebook</a>
+    <a class="dl" href="data/rr_finance_module1_dataset.csv" download>⬇ Dataset</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#foundation">Why Module 1 starts here</a>
+    <a href="#dataset">The RR Finance dataset</a>
+    <h3>Concepts</h3>
+    <a href="#numpy">1 · NumPy</a>
+    <a href="#pandas">2 · Pandas + EDA</a>
+    <a href="#feature-engineering">3 · Feature engineering</a>
+    <a href="#regression">4 · Ridge &amp; Lasso regression</a>
+    <a href="#classification">5 · Logistic regression</a>
+    <a href="#imbalance">6 · Imbalance + SMOTE</a>
+    <a href="#kmeans">7 · K-Means++</a>
+    <a href="#dbscan">8 · DBSCAN</a>
+    <a href="#pca">9 · PCA</a>
+    <a href="#umap">10 · UMAP</a>
+    <a href="#poisoning">11 · Data poisoning</a>
+    <a href="#isolation-forest">12 · Isolation Forest</a>
+    <a href="#defence">13 · Layered defence</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 2</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 1 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 1 — <span>Data Science + Financial Data Analysis</span></h1>
+  <p>This page is the <strong>theory layer</strong> for Module 1. For every technique below you get four things before a single line of code matters: <strong>what it is</strong>, <strong>why it exists</strong> (the problem it was invented to solve, and what came before it), <strong>what else you could use instead</strong> and why we picked this one, and <strong>a real financial example</strong> of where it actually gets used. The runnable notebook — where you build, train and attack the RR Finance system yourself — is the companion to this page, not a replacement for it.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module1.ipynb" download>⬇ Download the Module 1 notebook</a>
+    <a class="btn" href="data/rr_finance_module1_dataset.csv" download>⬇ Download the dataset</a>
+    <a class="btn" href="module2.html">Continue to Module 2 →</a>
+  </div>
+</section>
+
+<div class="section" id="foundation">
+  <h2>Why Module 1 starts here</h2>
+  <p class="lead">Before any algorithm, we need to understand the problem: a financial organisation wants better risk decisions from data, and needs the resulting system to be trustworthy. Module 1 answers "what do we build first?"</p>
+  <div class="card-grid">
+    <div class="card"><h3>1. Ask the question</h3><p>Are we predicting a number, a class, a group, or an unusual record? Each question points to a different family of techniques — this is the decision tree every concept below fits into.</p></div>
+    <div class="card"><h3>2. Find the evidence</h3><p>Income, debt, credit history are observations, not automatically "risk." Interpreting them is the whole job.</p></div>
+    <div class="card"><h3>3. Choose the tool, not the trend</h3><p>An algorithm is a tool for a specific question, not a trophy. This handbook always asks "why this, not something else?" before touching code.</p></div>
+  </div>
+  <div class="callout why"><strong>Why this is the foundation for all 12 modules</strong><div>Neural networks (Module 2) still need data. LLMs (Module 4) still need data and evaluation. Agents (Module 5) still depend on retrieval and permissions. Deployment (Module 10) still depends on a model whose training process is understood. Every later module inherits whatever quality — and whatever risk — Module 1 establishes here.</div></div>
+</div>
+
+<div class="section" id="dataset">
+  <h2>The RR Finance dataset</h2>
+  <p class="lead">Every concept below is taught against one real, validated table: 800 customer records with income, debt, loan and credit-history fields, and a binary <code>default</code> outcome. Module 1's notebook spends its first four lessons doing nothing but interrogating this file for problems before declaring it trustworthy — that process, not the specific numbers, is the reusable skill.</p>
+  <table>
+    <tr><th>Column</th><th>Meaning</th></tr>
+    <tr><td><code>annual_income</code>, <code>monthly_debt</code>, <code>loan_amount</code></td><td>Raw financial fields</td></tr>
+    <tr><td><code>credit_score</code>, <code>employment_years</code>, <code>account_age_months</code></td><td>Creditworthiness and history signals</td></tr>
+    <tr><td><code>debt_to_income</code>, <code>loan_to_income</code></td><td>Engineered ratios (see Lesson 3)</td></tr>
+    <tr><td><code>age</code></td><td>Present for exploration, deliberately excluded from every model — see Lesson 5</td></tr>
+    <tr><td><code>default</code></td><td>Target: 1 = defaulted, 0 = did not</td></tr>
+  </table>
+</div>
+
+<!-- ============ CONCEPT 1: NUMPY ============ -->
+<section class="concept" id="numpy">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>NumPy</h2>
+    <p>The numerical foundation almost everything else in this course sits on top of.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>NumPy ("Numerical Python") is a library built around one core object — the <code>ndarray</code> — an n-dimensional grid of numbers of a single type, stored contiguously in memory and operated on by fast, compiled C code instead of the Python interpreter.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1995 → 2005</div>
+    Python's built-in <code>list</code> is flexible but slow for numeric work — every element is a full Python object with its own overhead, and looping over millions of them in pure Python is orders of magnitude slower than compiled code. Two competing array libraries emerged in the 1990s — <strong>Numeric</strong> and the more feature-rich but slower <strong>Numarray</strong> — splitting the scientific Python community. In 2005, <strong>Travis Oliphant</strong> merged their best ideas into <strong>NumPy</strong>, which has been the single standard ever since and now underlies pandas, scikit-learn, PyTorch and almost the entire Python data-science stack.
+  </div>
+
+  <div class="subhead">Alternatives — and why NumPy</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Plain Python lists + loops</td><td>No installation needed, but 10–100× slower for numeric work at scale</td></tr>
+    <tr><td>Python's built-in <code>array</code> module</td><td>Faster than lists but lacks vectorised math, broadcasting, and linear algebra</td></tr>
+    <tr><td>Write C/Fortran directly</td><td>Fastest possible, but throws away Python's readability and ecosystem</td></tr>
+    <tr><td class="picked">NumPy</td><td class="picked">C-speed vectorised math with Python's syntax — the practical middle ground the whole ecosystem standardised on</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Data is numeric and homogeneous (all one type)</li><li>You need the same operation applied across thousands/millions of values</li><li>You're about to hand data to pandas, scikit-learn, or PyTorch — they all expect NumPy arrays underneath</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Data is labelled/tabular with mixed types — that's pandas (next lesson), built on top of NumPy</li><li>You need automatic differentiation for training a neural network — that's PyTorch's tensor, a NumPy-like object with gradients attached (Module 2)</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Computing debt-to-income for one customer is a single division. Computing it for 500,000 customers overnight, every night, as part of a batch risk report, is a NumPy vectorisation problem — the same formula, applied at scale, without writing a loop.</div>
+
+  <div class="code-teaser"><code>dti = monthly_debt / (annual_income / 12)</code> — one line, works whether <code>monthly_debt</code> is a single number or an array of 500,000. Full walkthrough: <strong>Notebook, Lesson 1</strong>.</div>
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 2: PANDAS + EDA ============ -->
+<section class="concept" id="pandas">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Pandas + Exploratory Data Analysis</h2>
+    <p>The table-manipulation layer, and the discipline of distrusting your data until it earns your trust.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>Pandas</strong> gives Python a <code>DataFrame</code> — a labelled table, like a spreadsheet or a SQL result set, with named columns of mixed types. <strong>EDA</strong> is not a library at all — it's a process: summarise, visualise, question, and validate a dataset before trusting any model built on it.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2008</div>
+    Pandas was created by <strong>Wes McKinney</strong> while working at <strong>AQR Capital Management</strong>, a quantitative hedge fund — the motivating problem was literally financial time-series and panel data analysis in Python, because the alternative at the time was juggling R, Excel and hand-rolled NumPy code. Pandas' name itself comes from "panel data," an econometrics term. It is worth knowing that a financial institution's specific data-wrangling pain is the direct reason this tool exists.
+  </div>
+
+  <div class="subhead">Alternatives — and why pandas</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>SQL directly</td><td>Excellent for querying, weaker for iterative, code-driven exploration and modelling hand-off</td></tr>
+    <tr><td>Excel</td><td>Fast for small, manual exploration; does not scale, is not reproducible, is not version-controllable</td></tr>
+    <tr><td>R's <code>data.frame</code> / <code>dplyr</code></td><td>Mature and elegant, but a separate language/ecosystem from the ML libraries you'll use next</td></tr>
+    <tr><td>Polars (newer)</td><td>Often faster on large data via multi-threading and a Rust core; smaller ecosystem/community than pandas as of today</td></tr>
+    <tr><td class="picked">pandas</td><td class="picked">The default hand-off format to every ML library in this course</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Data has named, mixed-type columns (numbers, categories, dates)</li><li>You need to filter, group, join or reshape before modelling</li><li>You need to inspect data quality before trusting it</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Data genuinely exceeds memory — that's a distributed-computing problem (Spark, Dask), out of scope for this course</li><li>You only need pure numeric array math — plain NumPy is lighter weight</li></ul></div>
+  </div>
+
+  <div class="callout warn"><strong>The EDA discipline, not just the syntax</strong><div>Before showing any model, ask: "if I were the data owner, what would I want to know about this table before letting an automated credit decision depend on it?" The notebook's Lessons 1–4 build this habit directly on the real RR Finance file: checking for missing values, duplicates, cross-field consistency (does <code>employment_years</code> fit inside this person's <code>age</code>?), and whether the target label itself behaves the way domain knowledge says it should.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank's risk team receiving a new data feed from a partner institution runs exactly this kind of check before any model is allowed near it: row counts, null rates, duplicate customer IDs, and whether fields that should logically agree (like age and years employed) actually do.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 3: FEATURE ENGINEERING ============ -->
+<section class="concept" id="feature-engineering">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Feature Engineering</h2>
+    <p>Translating financial reasoning into numbers a model can actually use.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Feature engineering is the practice of transforming raw fields into new inputs that better expose the pattern a model needs to learn — ratios, rates, counts, time differences — informed by domain knowledge, not by what's easiest to compute.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Long before "machine learning" existed</div>
+    This is not a 21st-century idea. Actuaries and economists have engineered ratios like debt-to-income and loan-to-value for over a century, because raw absolute numbers (₹30,000 of debt) are meaningless without context (relative to what income?). Classical statistics and econometrics were doing feature engineering long before it had that name — ML just inherited and formalised the practice.
+  </div>
+
+  <div class="subhead">Alternatives — and why we still hand-engineer here</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Manual, domain-informed features (this lesson)</td><td>Interpretable, auditable, works well with small-to-medium tabular data and simple models</td></tr>
+    <tr><td>Automated feature engineering tools (e.g. Featuretools)</td><td>Faster to generate many candidates, but can produce features nobody can explain to a regulator</td></tr>
+    <tr><td class="picked">Let a deep network learn its own features (Module 2)</td><td class="picked">Neural networks can learn useful internal representations directly from raw inputs — this is exactly why Module 2 exists, and why hand engineering matters less (but doesn't disappear) once you add depth</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Do it when</h4><ul><li>Using classical models (regression, logistic regression, trees)</li><li>A domain expert can name the relationship that matters (e.g. "debt relative to income," not just "debt")</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li><strong>Leakage:</strong> never build a feature from information that would only exist <em>after</em> the event you're predicting</li><li>Over-engineering redundant ratios that just re-encode the same signal multiple times</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Two customers both owe ₹30,000/month. One earns ₹40,000/month, the other ₹4,00,000/month. Raw debt tells you almost nothing about risk; <code>debt_to_income</code> tells you everything the raw number was hiding.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 4: REGRESSION ============ -->
+<section class="concept" id="regression">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Ridge &amp; Lasso Regression</h2>
+    <p>Predicting a continuous number, and taming an old problem: overconfident coefficients.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Regression predicts a continuous quantity (e.g. expected loan amount) rather than a class. Ridge and Lasso are linear regression with a <em>penalty</em> added that discourages coefficients from growing too large.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">~1805</div>
+    Ordinary Least Squares (OLS) — fitting a straight line by minimising squared error — dates back to <strong>Legendre</strong> and <strong>Gauss</strong>, originally for astronomical orbit calculations. It works beautifully until predictors are correlated with each other (multicollinearity) or you have more predictors than data points — then OLS coefficients become wildly unstable, swinging based on tiny data changes.
+    <div class="yr" style="margin-top:10px">1970</div>
+    <strong>Hoerl and Kennard</strong> introduced <strong>Ridge regression</strong>: add a penalty on the <em>squared size</em> of coefficients, trading a little bias for a lot less variance.
+    <div class="yr" style="margin-top:10px">1996</div>
+    <strong>Robert Tibshirani</strong> introduced <strong>Lasso</strong> ("Least Absolute Shrinkage and Selection Operator"): penalise the <em>absolute size</em> of coefficients instead, which has the extra property of driving unimportant coefficients exactly to zero — automatic feature selection baked into the fitting process.
+  </div>
+
+  <div class="subhead">Alternatives — and why Ridge/Lasso here</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Plain OLS</td><td>Unstable with correlated features or limited data — exactly RR Finance's situation</td></tr>
+    <tr><td class="picked">Ridge</td><td class="picked">Stabilises coefficients when predictors are correlated; keeps all features, just shrinks them</td></tr>
+    <tr><td class="picked">Lasso</td><td class="picked">Same stabilisation, plus automatic feature selection via exact zeros</td></tr>
+    <tr><td>Elastic Net</td><td>Blends Ridge + Lasso penalties — a reasonable default when unsure which one fits better</td></tr>
+    <tr><td>Tree-based regressors (Random Forest, XGBoost)</td><td>Capture non-linear interactions Ridge/Lasso cannot, at the cost of interpretability</td></tr>
+    <tr><td>Neural network regression (Module 2)</td><td>Most flexible, needs the most data, least interpretable</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Relationship between inputs and target is roughly linear</li><li>Predictors are correlated with each other (common in finance: income, loan size, and debt all move together)</li><li>Interpretability and auditability matter</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The true relationship has strong non-linear interactions — check with a tree-based model or Module 2's ANN first</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Predicting expected loan amount from income, debt and credit history — all three tend to move together, so plain OLS coefficients would be unstable and hard to trust in a report. Ridge keeps the estimate stable; Lasso would additionally tell you which of those correlated fields is actually pulling its weight.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 5: CLASSIFICATION ============ -->
+<section class="concept" id="classification">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Logistic Regression (Classification)</h2>
+    <p>The baseline every later module in this course gets benchmarked against.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Logistic regression predicts the <em>probability</em> of a binary outcome (default vs. no default) by passing a linear combination of inputs through the sigmoid function, which squashes any real number into the range (0, 1).</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1830s</div>
+    The logistic (sigmoid) function itself comes from <strong>Pierre François Verhulst</strong>, modelling population growth that slows as it approaches a carrying capacity — nothing to do with classification originally.
+    <div class="yr" style="margin-top:10px">1944 → 1958</div>
+    <strong>Joseph Berkson</strong> coined "logit" and championed the logistic function for bioassay in the 1940s; <strong>David Cox</strong>'s 1958 work formalised logistic regression as we use it today. The core motivating problem: plain linear regression can predict probabilities below 0 or above 1, which is nonsensical — logistic regression fixes that by construction.
+  </div>
+
+  <div class="subhead">Alternatives — and why logistic regression as the baseline</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Linear regression on a 0/1 target</td><td>Predicts impossible probabilities outside [0,1] — a real, avoidable modelling error</td></tr>
+    <tr><td>Linear Discriminant Analysis</td><td>Assumes features are normally distributed within each class — often violated in financial data</td></tr>
+    <tr><td>Decision Trees / Random Forest / XGBoost</td><td>Capture non-linear interactions automatically; very common in real production credit scoring, but harder to explain to a regulator than a logistic-regression coefficient table</td></tr>
+    <tr><td>Support Vector Machines</td><td>Strong for smaller, high-dimensional datasets; probability outputs are less natural</td></tr>
+    <tr><td>Neural network (Module 2)</td><td>Most flexible, needs the most data and compute, hardest to fully explain</td></tr>
+    <tr><td class="picked">Logistic regression</td><td class="picked">Fast, gives real probabilities, coefficients are directly explainable to a risk committee — the right first thing to try, and the fair baseline every later module in this course is measured against</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need an interpretable, auditable baseline before anything fancier</li><li>The relationship between features and the log-odds of the outcome is roughly linear</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Strong feature interactions exist that a single linear boundary cannot represent (Module 2 tests this directly against this exact baseline)</li></ul></div>
+  </div>
+
+  <div class="callout warn"><strong>A governance finding, not just a modelling choice</strong><div><code>age</code> exists in this dataset and correlates with several fields — but age is a <strong>protected attribute</strong> under fair-lending regulation (e.g. the U.S. Equal Credit Opportunity Act) in most jurisdictions. The notebook deliberately excludes it from every model's feature list, while keeping it available for a fairness audit in Module 6. This is exactly the kind of decision "explore first, trust second" is meant to surface.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank's underwriting team needs a probability of default they can explain in one sentence to a risk committee: "for every one-unit increase in debt-to-income, the odds of default increase by X%." That sentence is only easy to say about a logistic regression coefficient — it gets much harder for a random forest or neural network.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 6: IMBALANCE + SMOTE ============ -->
+<section class="concept" id="imbalance">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Imbalanced Classification + SMOTE</h2>
+    <p>Why a 90%-accurate model can be catching zero of the cases you actually care about.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>When one class (default) is much rarer than the other, a classifier trained naively can achieve high <em>accuracy</em> purely by always predicting the majority class — while being useless at its actual job. SMOTE ("Synthetic Minority Over-sampling Technique") creates synthetic minority-class training examples to counteract this.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2002</div>
+    <strong>Nitesh Chawla and colleagues</strong> published the SMOTE paper, motivated directly by domains like fraud and rare-disease detection where the interesting class is naturally scarce. Instead of just duplicating existing minority rows (which teaches a model nothing new and encourages overfitting to those exact points), SMOTE generates <em>new, synthetic</em> points along the line between real minority-class neighbours in feature space.
+  </div>
+
+  <div class="subhead">Alternatives — and why we compare, not just apply SMOTE</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">SMOTE</td><td class="picked">Adds genuinely new synthetic examples; can occasionally create unrealistic points if classes overlap heavily</td></tr>
+    <tr><td class="picked"><code>class_weight="balanced"</code></td><td class="picked">Costs one keyword argument, no synthetic data, tells the loss function to penalise minority-class mistakes more — often the better first thing to try</td></tr>
+    <tr><td>Random undersampling</td><td>Simple, but throws away real majority-class data and information</td></tr>
+    <tr><td>Ensemble methods (Balanced Random Forest, EasyEnsemble)</td><td>Handle imbalance structurally, at the cost of a more complex model</td></tr>
+    <tr><td>Reframe as anomaly detection (Lesson 12)</td><td>When the positive class is extremely rare (well under 1%), "detect the unusual" often outperforms "classify the rare class"</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use SMOTE when</h4><ul><li>Minority class has a reasonable number of examples to interpolate between (not just a handful)</li><li><code>class_weight</code> alone hasn't closed the gap</li></ul></div>
+    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Never apply SMOTE before the train/test split — the test set must stay naturally distributed, or your evaluation lies to you</li><li>Extremely rare classes (fraud at 0.1%) often need a different framing entirely, not just more oversampling</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A model that predicts "no fraud" for every single transaction can be 99.9% accurate in a dataset where 0.1% of transactions are fraudulent — and catch not one real case. This is exactly why fraud, default, and rare-event financial modelling never reports accuracy alone.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 7: KMEANS ============ -->
+<section class="concept" id="kmeans">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>K-Means++</h2>
+    <p>Finding customer groups with no target label to guide you.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>K-Means partitions data into <em>K</em> groups by repeatedly assigning each point to its nearest centroid, then moving each centroid to the average of its assigned points, until the assignments stop changing. It is <strong>unsupervised</strong> — there is no "correct answer" column to learn from.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1957 → 1982</div>
+    The core algorithm was developed by <strong>Stuart Lloyd</strong> at Bell Labs in 1957 for pulse-code modulation (signal processing, not data science at all) — it wasn't formally published until 1982, by which point others had independently rediscovered the same idea for general clustering.
+    <div class="yr" style="margin-top:10px">2007</div>
+    Lloyd's original algorithm picks starting centroids <em>randomly</em>, which can converge to poor, inconsistent groupings depending on luck. <strong>David Arthur and Sergei Vassilvitskii</strong> introduced <strong>K-Means++</strong>: a smarter initialisation that spreads out the starting centroids, giving both better and more consistent results — the "++" is what nearly every modern K-Means implementation (including scikit-learn's default) actually uses.
+  </div>
+
+  <div class="subhead">Alternatives — and why K-Means++</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">K-Means++</td><td class="picked">Fast, scales well, easy to explain to a business audience — but assumes roughly spherical, similar-sized clusters and forces every point into some group</td></tr>
+    <tr><td>Hierarchical clustering</td><td>No need to pre-specify K, gives a full dendrogram of structure; slower on large data</td></tr>
+    <tr><td>Gaussian Mixture Models</td><td>Soft/probabilistic cluster membership, handles elliptical clusters; more parameters to estimate</td></tr>
+    <tr><td>DBSCAN (next lesson)</td><td>Handles arbitrary shapes and explicit noise — the direct answer to K-Means' biggest weakness</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You expect roughly round, similar-sized groups</li><li>You have a rough sense of how many groups (K) should exist, or can validate K with a metric like silhouette score</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Cluster shapes are irregular or very different in size/density — try DBSCAN</li><li>You need every point to belong "softly" to multiple groups — try a Gaussian Mixture Model</li></ul></div>
+  </div>
+
+  <div class="callout ok"><strong>Validate K — don't assume it</strong><div>"Why did we choose this K?" should never be answered with "because a tutorial used 3." The notebook sweeps K=2..7 and picks the value with the best silhouette score — statistical evidence, then combined with business usefulness, before any segmentation gets used operationally.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank wants to design different relationship-management outreach for different customer segments, but has no pre-existing "segment" label in its data — K-Means discovers behavioural groupings (e.g. high-income/low-debt vs. high-debt/short-history) directly from the numbers.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 8: DBSCAN ============ -->
+<section class="concept" id="dbscan">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8</span>
+    <h2>DBSCAN</h2>
+    <p>Clustering that admits some points just don't belong anywhere.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>DBSCAN</strong> ("Density-Based Spatial Clustering of Applications with Noise") groups points that are packed closely together (dense regions), and explicitly labels points in sparse regions as <strong>noise</strong> rather than forcing them into a cluster.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1996</div>
+    Introduced by <strong>Martin Ester, Hans-Peter Kriegel, Jörg Sander and Xiaowei Xu</strong> at KDD 1996 — it later won the conference's "test of time" award for lasting influence. The motivating gap: K-Means forces <em>every</em> point into a cluster and assumes roughly spherical shapes, but real-world data is often irregularly shaped and contains genuine outliers that don't belong to any group at all.
+  </div>
+
+  <div class="subhead">Alternatives — and why DBSCAN here</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>K-Means</td><td>Forces every point into a cluster; struggles with non-spherical shapes and varying density</td></tr>
+    <tr><td class="picked">DBSCAN</td><td class="picked">Handles arbitrary shapes and gives you an explicit "this doesn't fit anywhere" signal — at the cost of being sensitive to its two parameters (<code>eps</code>, <code>min_samples</code>) and to feature scaling</td></tr>
+    <tr><td>OPTICS</td><td>A DBSCAN variant that handles varying density across the dataset better, at higher computational cost</td></tr>
+    <tr><td>HDBSCAN</td><td>Hierarchical density clustering — often the more robust modern default, less parameter-sensitive than plain DBSCAN</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You don't know the number of clusters in advance</li><li>You explicitly want an "unclassified/noise" bucket</li><li>Clusters might not be round</li></ul></div>
+    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Density varies a lot across the dataset — a single <code>eps</code> won't fit all regions well</li><li>You haven't scaled features first — DBSCAN is purely distance-based</li></ul></div>
+  </div>
+
+  <div class="callout warn"><strong>The parameter-validation lesson, made concrete</strong><div>The notebook deliberately shows what happens when you copy <code>eps</code>/<code>min_samples</code> values from a tutorial without checking them against your own data's distance distribution, then walks through validating them properly instead. On RR Finance's real 800-row dataset, DBSCAN mostly finds <strong>one dense population plus a handful of true outliers</strong> — itself an honest, useful finding: this data does not have several naturally separated behavioural clusters the way a textbook example might.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Most customers in a transaction dataset behave similarly (one dense cluster); a small number have genuinely unusual patterns that don't resemble any group — DBSCAN's "noise" label is a natural first-pass triage signal for that second group, distinct from forcing them into an arbitrary segment.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 9: PCA ============ -->
+<section class="concept" id="pca">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9</span>
+    <h2>PCA (Principal Component Analysis)</h2>
+    <p>Compressing many correlated numbers into a view a human can actually look at.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>PCA finds new axes — linear combinations of the original features — ordered by how much of the data's variance they capture, so the first two or three "principal components" often summarise most of the interesting structure in a much smaller space.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1901 → 1933</div>
+    First described by <strong>Karl Pearson</strong> in 1901 as a way to fit the "best line" through multi-dimensional data, then independently formalised into its modern form by <strong>Harold Hotelling</strong> in 1933. Long before "dimensionality reduction" was a machine-learning phrase, statisticians needed a principled way to compress many correlated measurements into fewer, uncorrelated ones.
+  </div>
+
+  <div class="subhead">Alternatives — and why PCA</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">PCA</td><td class="picked">Fast, deterministic, mathematically interpretable (each component is a variance-maximising direction) — but strictly linear</td></tr>
+    <tr><td>Factor Analysis</td><td>Similar goal, but models measurement noise explicitly — more common in psychometrics/econometrics</td></tr>
+    <tr><td>t-SNE / UMAP (next lesson)</td><td>Capture non-linear structure PCA misses, at the cost of speed, determinism, and easy interpretation</td></tr>
+    <tr><td>Autoencoders (deep learning)</td><td>Learn non-linear compressions directly from data; need much more data and compute than PCA</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Many features are correlated and you want to see the dominant linear structure</li><li>You need fast, reproducible, interpretable compression before other analysis</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The interesting structure in your data is genuinely non-linear — PCA will miss it entirely</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An analyst staring at a dozen correlated financial ratios per customer cannot visually inspect a 12-dimensional space — PCA's first two components often let them plot the whole customer base on one 2D chart and immediately see where high-risk and low-risk customers roughly separate.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 10: UMAP ============ -->
+<section class="concept" id="umap">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 10</span>
+    <h2>UMAP</h2>
+    <p>Seeing the non-linear structure PCA is mathematically incapable of showing you.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>UMAP ("Uniform Manifold Approximation and Projection") builds a graph of which points are close to which of their neighbours in the original high-dimensional space, then optimises a low-dimensional layout that tries to preserve those neighbour relationships — capturing non-linear structure PCA's straight-line projections cannot.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2008</div>
+    <strong>t-SNE</strong>, by <strong>Laurens van der Maaten and Geoffrey Hinton</strong>, was the first widely adopted non-linear visualisation technique to gain real traction — but it is slow on large datasets, has no natural way to place new points without recomputing everything, and can distort global distances between clusters.
+    <div class="yr" style="margin-top:10px">2018</div>
+    <strong>Leland McInnes and John Healy</strong> introduced <strong>UMAP</strong>, grounded in Riemannian geometry and algebraic topology, as a faster, more scalable successor that better preserves both local and some global structure, and — unlike t-SNE — can transform new points onto an existing embedding.
+  </div>
+
+  <div class="subhead">Alternatives — and why UMAP</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>PCA</td><td>Fast and interpretable but purely linear</td></tr>
+    <tr><td>t-SNE</td><td>Good local structure, but slow at scale and cannot easily embed new points</td></tr>
+    <tr><td class="picked">UMAP</td><td class="picked">Faster than t-SNE, preserves more global structure, supports new-point transforms — the modern default for exploratory non-linear visualisation</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You suspect non-linear structure PCA is flattening away</li><li>You want an exploratory visual, not a final business conclusion</li></ul></div>
+    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>A visually striking UMAP plot is not proof a real business segment exists — treat it as a hypothesis to validate, never a conclusion on its own</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Complex customer behaviour (spending patterns that shift non-linearly with income bracket, or risk that spikes only above a combined threshold of two features) is exactly the kind of structure a straight-line PCA projection can flatten into invisibility, but a non-linear UMAP embedding can surface for further investigation.</div>
+
+  <div class="callout"><strong>Install note</strong><div><code>umap-learn</code> depends on <code>numba</code>, which is sensitive to your NumPy version — a very common classroom install snag. If it fails, try installing in a clean virtual environment before troubleshooting further.</div></div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 11: POISONING ============ -->
+<section class="concept" id="poisoning">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 11 · CYBERSECURITY</span>
+    <h2>Data Poisoning</h2>
+    <p>Attacking the model before it's even trained.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Data poisoning is an attack on the <strong>training process itself</strong>: an adversary manipulates some fraction of the training data — here, by flipping labels — so the model learns an incorrect pattern, without ever needing to touch the deployed model or its API.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2004 → 2006</div>
+    Adversarial machine learning as a formal research area traces to work like <strong>"Adversarial Classification"</strong> (Dalvi et al., 2004) and <strong>"Can Machine Learning Be Secure?"</strong> (Barreno et al., 2006), which first systematically asked what happens when a learning system has an active adversary, not just noisy data.
+    <div class="yr" style="margin-top:10px">2012</div>
+    <strong>Battista Biggio and colleagues</strong> demonstrated a concrete, effective poisoning attack against SVM classifiers, showing the threat was practical, not just theoretical — a foundational result that shaped how the field thinks about training-time security today.
+  </div>
+
+  <div class="subhead">Related attack families — and why we start with label flipping</div>
+  <table class="alt-table">
+    <tr><th>Attack type</th><th>What it does</th></tr>
+    <tr><td class="picked">Label flipping (this lesson)</td><td class="picked">Simplest to understand and reproduce — flips <code>y</code>, leaves <code>X</code> untouched — the right starting point before more advanced variants</td></tr>
+    <tr><td>Clean-label poisoning</td><td>Corrupts inputs subtly while keeping labels correct, making detection much harder</td></tr>
+    <tr><td>Backdoor / trojan attacks</td><td>Plants a hidden trigger pattern the model learns to associate with an attacker-chosen output</td></tr>
+    <tr><td>Evasion / adversarial examples</td><td>Attacks a <em>trained, clean</em> model at inference time instead of during training — this is Module 2's Lesson 10, the direct sequel to this one</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>The security lesson</strong><div>The attacker in this lesson never needed access to the model or its API — only the ability to influence training data. That is exactly why dataset access control, provenance, and versioning are security controls, not just data-engineering hygiene.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If an internal or third-party data pipeline that feeds a credit model is compromised — deliberately or through a careless bulk-edit script — the model can be quietly retrained on corrupted history without anyone touching the production API at all. The next model refresh silently inherits the damage.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 12: ISOLATION FOREST ============ -->
+<section class="concept" id="isolation-forest">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 12</span>
+    <h2>Isolation Forest</h2>
+    <p>Finding the unusual without needing to know what "normal" looks like in advance.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Isolation Forest detects anomalies with a genuinely different idea from most other methods: instead of modelling what "normal" looks like and measuring distance from it, it repeatedly makes random splits of the feature space and observes that <strong>anomalies get isolated in fewer splits</strong> than normal points, simply because they're rare and different.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2000</div>
+    Before Isolation Forest, the dominant approach was density- or distance-based — e.g. <strong>Local Outlier Factor (LOF)</strong>, introduced by Breunig et al. in 2000, which compares a point's local density to its neighbours'. These methods scale poorly (roughly O(n²) distance comparisons) and degrade in high-dimensional spaces.
+    <div class="yr" style="margin-top:10px">2008</div>
+    <strong>Fei Tony Liu, Kai Ming Ting and Zhi-Hua Zhou</strong> flipped the framing entirely: don't model normal, just try to isolate each point via random partitioning and count how many splits it takes. Anomalies isolate fast; normal points buried in dense regions take many more splits. The result runs in roughly O(n log n), scaling far better to large, high-dimensional financial datasets.
+  </div>
+
+  <div class="subhead">Alternatives — and why Isolation Forest</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Local Outlier Factor (LOF)</td><td>Density-based, intuitive, but slow at scale and weaker in high dimensions</td></tr>
+    <tr><td>One-Class SVM</td><td>Strong theoretical grounding, but computationally heavier and sensitive to kernel/parameter choice</td></tr>
+    <tr><td>Elliptic Envelope</td><td>Assumes data is roughly Gaussian — often violated in real financial data</td></tr>
+    <tr><td class="picked">Isolation Forest</td><td class="picked">Fast, scales well, doesn't assume a particular data distribution, and needs no labelled "fraud" examples to train on</td></tr>
+    <tr><td>Autoencoder reconstruction error (deep learning)</td><td>Can capture more complex anomaly patterns, needs far more data and compute — an option once the system reaches Module 2/8's territory</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>Never equate anomaly with fraud</strong><div>A ₹250,000 transaction may be unusual because the customer bought a car. Isolation Forest gives you a <strong>triage signal</strong> — where to look first — not a fraud verdict. Fraud determination needs additional evidence, rules, investigation and human judgement.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank with millions of legitimate records and only a handful of confirmed fraud cases cannot train a normal supervised classifier on "fraud" — there's barely any positive-class data. Isolation Forest needs no fraud labels at all; it just flags what doesn't resemble the bulk of normal activity, for a human analyst to review.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 13: DEFENCE ============ -->
+<section class="concept" id="defence">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 13</span>
+    <h2>From Individual Checks to a Layered Defence</h2>
+    <p>No single control is enough — and that's the point.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A layered (or "defence in depth") architecture combines several imperfect controls — schema validation, provenance tracking, anomaly screening, human review, access control — so that no single failure silently compromises the whole system.</p>
+
+  <div class="subhead">Why it exists</div>
+  <div class="history-card">
+    <div class="yr">Borrowed from classical security engineering</div>
+    "Defence in depth" predates machine learning entirely — it's a core principle from military and information-security engineering: assume any one layer can fail, and design so that failure doesn't cascade. The modern MLOps/DataOps movement, and artifacts like <strong>Datasheets for Datasets</strong> (Gebru et al., 2018) and <strong>Model Cards</strong> (Mitchell et al., 2019), are the ML field's version of the same discipline — treating data and model provenance as first-class, documented, auditable artifacts.
+  </div>
+
+  <div class="callout ok"><strong>Why layering matters here specifically</strong><div>Isolation Forest (Lesson 12) is not a complete poisoning defence on its own — a sufficiently subtle, clean-label attack could evade it. Combining anomaly screening with provenance tracking, schema checks, and human review on flagged records is what actually reduces residual risk, because each layer covers a different class of failure.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank doesn't rely on a single fraud-detection model — it layers real-time rules, ML anomaly scores, human investigator review, and after-the-fact audit trails, precisely because no one layer is trusted to be sufficient by itself.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 1 hand-off</h2>
+  <p class="lead">The notebook saves everything built here — the validated dataset, the trained baseline classifier, the Isolation Forest anomaly screen, and a metrics summary — so Module 2 loads and extends this exact system instead of starting over.</p>
+  <div class="toc-index">
+    <a href="module2.html"><span class="n">→</span>Continue to Module 2: Deep Neural Networks</a>
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+</body>
+</html>
