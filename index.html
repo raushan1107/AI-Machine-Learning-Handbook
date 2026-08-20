@@ -69,6 +69,7 @@ footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;co
   <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
   <nav class="topnav">
     <a href="#roadmap">Modules</a>
+    <a href="labs.html">Hands-On Labs</a>
     <a href="#downloads">Downloads</a>
     <a href="#about">About</a>
   </nav>
@@ -93,6 +94,7 @@ footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;co
 
     <div class="hero-actions">
       <a class="btn primary" href="#roadmap">Start with Module 1 →</a>
+      <a class="btn" href="labs.html">Try the hands-on lab guide →</a>
       <a class="btn ghost" href="#downloads">Download all notebooks + data</a>
     </div>
   </section>
@@ -147,8 +149,12 @@ footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;co
       <div class="mod-card">
         <div class="num">MODULE 3</div>
         <h3>NLP + Financial Text AI</h3>
-        <p>Text representations, NER, sentiment analysis on financial text, prompt injection, and PII redaction.</p>
-        <span class="status soon">Coming soon</span>
+        <p>Text representations, embeddings, NER, sentiment analysis on financial text, prompt injection, and PII redaction.</p>
+        <span class="status live">● Live</span>
+        <div class="row">
+          <a href="module3.html">Read handbook →</a>
+          <a href="reference-notebooks/module3.ipynb" download>⬇ Notebook</a>
+        </div>
       </div>
 
       <div class="mod-card">
@@ -222,7 +228,7 @@ footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;co
     <div class="card-grid">
       <div class="card">
         <h3>📓 Notebooks</h3>
-        <p><a href="reference-notebooks/module1.ipynb" download>module1.ipynb</a> · <a href="reference-notebooks/module2.ipynb" download>module2.ipynb</a><br>Open in Jupyter, VS Code, or Google Colab. Run top to bottom once before class.</p>
+        <p><a href="reference-notebooks/module1.ipynb" download>module1.ipynb</a> · <a href="reference-notebooks/module2.ipynb" download>module2.ipynb</a> · <a href="reference-notebooks/module3.ipynb" download>module3.ipynb</a><br>Open in Jupyter, VS Code, or Google Colab. Run top to bottom once before class.</p>
       </div>
       <div class="card">
         <h3>📊 Dataset</h3>
@@ -239,8 +245,8 @@ footer .brand-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;co
     <h2>How to use this handbook</h2>
     <div class="card-grid">
       <div class="card"><h3>1. Read the theory</h3><p>Each module page explains what an algorithm is, why it exists, its history, its alternatives, and where it shows up in real financial systems — before you touch code.</p></div>
-      <div class="card"><h3>2. Run the notebook</h3><p>Download the matching <code>.ipynb</code>, run it top to bottom, and connect what you just read to what you just watched happen on real data.</p></div>
-      <div class="card"><h3>3. Move to the next module</h3><p>Every module saves its artifacts (data, trained models, metrics) for the next one to load — the system keeps growing, it never restarts.</p></div>
+      <div class="card"><h3>2. Build it yourself</h3><p>Use the <a href="labs.html">hands-on lab guide</a> to type each step into your own blank notebook, one explained piece at a time — the copy-paste-run flow that actually builds muscle memory.</p></div>
+      <div class="card"><h3>3. Compare against the reference</h3><p>Download the matching <code>.ipynb</code> to check your work or move faster, then move to the next module — every module saves its artifacts for the next one to load.</p></div>
     </div>
   </div>
 
