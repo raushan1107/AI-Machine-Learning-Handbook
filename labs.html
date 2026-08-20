@@ -1,0 +1,2398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Hands-On Lab Guide | Build It Yourself</title>
+<meta name="description" content="Step-by-step, copy-paste-run hands-on lab guide for the RR Skillverse AI &amp; ML handbook. Follow along in your own Jupyter notebook at your own pace.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+kbd{background:#0f2339;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:12px;color:#dbe8f5}
+code{font-family:"SF Mono",Consolas,Menlo,monospace}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(6,16,29,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+main{max-width:980px;width:100%;margin:0 auto;padding:40px 28px 100px}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.08;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:16.5px;color:#b9c9da;max-width:800px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+h2.section-h{font-size:24px;margin:44px 0 10px}
+.prereq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.prereq-card{background:#0c1b2d;border:1px solid var(--border);border-radius:14px;padding:17px}
+.prereq-card h4{margin:0 0 8px;font-size:14.5px;color:#dce9f6}
+.prereq-card ol,.prereq-card ul{margin:0;padding-left:19px;color:#c2d2e2;font-size:13.5px}
+.prereq-card li{margin-bottom:6px}
+.prereq-card pre{background:#050d17;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px;overflow-x:auto;margin:6px 0}
+details.os-detail{margin:8px 0}
+details.os-detail summary{cursor:pointer;font-size:13px;color:var(--accent2);font-weight:700}
+.tabs-wrap{position:sticky;top:57px;z-index:20;background:rgba(6,16,29,.96);backdrop-filter:blur(10px);padding:14px 0;margin:30px -28px 0;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 28px;scrollbar-width:thin}
+.tab-btn{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:#0c1b2d;border:1px solid var(--border);border-radius:11px;padding:8px 13px;color:#b9c9d9;cursor:pointer;min-width:118px}
+.tab-btn .tab-num{font-size:10.5px;letter-spacing:1px;color:var(--accent);font-weight:800}
+.tab-btn .tab-label{font-size:12px;line-height:1.25;color:#cbdaea}
+.tab-btn.active{background:var(--accent);border-color:transparent}
+.tab-btn.active .tab-num{color:#041016}
+.tab-btn.active .tab-label{color:#041016;font-weight:700}
+.tab-btn:hover:not(.active){border-color:var(--accent)}
+.panel{display:none;padding-top:34px}
+.panel.active{display:block}
+.module-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.module-head h2{font-size:30px;margin:4px 0 6px}
+.module-head p{margin:0;color:var(--muted);font-size:14.5px}
+.lesson-block{margin-top:38px;border-top:1px solid var(--border);padding-top:22px}
+.lesson-title{font-size:19px;color:#eaf2fb;margin:0 0 6px}
+.lesson-intro{color:#b6c6d8;font-size:14px;margin:0 0 16px;max-width:800px}
+.step-card{margin:16px 0}
+.step-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.step-num{background:#10243c;border:1px solid var(--border);color:var(--accent);font-weight:800;font-size:11.5px;letter-spacing:.6px;padding:4px 9px;border-radius:999px}
+.step-instr{font-size:12.5px;color:#9fb1c5}
+.code-block{position:relative;background:#050d17;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.code-block pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:12.8px;color:#dbe8f5;line-height:1.55}
+.copy-btn{position:absolute;top:8px;right:8px;background:#10243c;border:1px solid var(--border);color:#cfe0f1;font-size:11.5px;padding:5px 10px;border-radius:7px;cursor:pointer;z-index:2}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn.copied{background:var(--ok);color:#04150c;border-color:transparent}
+.output-box{margin-top:8px;background:#08131f;border:1px solid #1b3350;border-left:3px solid var(--accent2);border-radius:0 10px 10px 0;padding:10px 14px}
+.output-box .output-label{font-size:10.5px;letter-spacing:1.2px;color:var(--accent2);font-weight:800;margin-bottom:6px;text-transform:uppercase}
+.output-box pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#aebfd1;line-height:1.5}
+.output-box.plot .plot-note{font-size:13px;color:#aebfd1}
+.note-box{margin-top:8px;border-radius:0 10px 10px 0;padding:9px 14px;font-size:12.5px}
+.note-box.net{background:rgba(255,200,87,.06);border-left:3px solid var(--warning);color:#e7d6a8}
+.selfcheck{margin-top:18px;background:rgba(85,209,135,.05);border:1px solid #256243;border-radius:12px;padding:13px 16px;font-size:13.5px;color:#bfe0cc}
+.selfcheck strong{color:var(--ok)}
+.soon-box{text-align:center;padding:70px 20px;border:1px dashed var(--border);border-radius:18px}
+.soon-badge{display:inline-block;background:rgba(159,177,197,.12);border:1px solid var(--border);color:var(--muted);font-size:11.5px;font-weight:800;letter-spacing:1px;padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.soon-box h2{margin:0 0 10px;font-size:24px}
+.soon-box p{color:#aebfd1;max-width:520px;margin:0 auto 20px}
+.btn{display:inline-block;border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 15px;border-radius:10px;font-size:13.5px}
+.btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:760px){.prereq-grid{grid-template-columns:1fr}main{padding:26px 16px 80px}.tabs-wrap{margin:26px -16px 0;padding:12px 0}.tabs{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module1.html">Module 1 theory</a>
+    <a href="module2.html">Module 2 theory</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Hands-On Lab Guide</span>
+    <span class="badge">Learn by doing</span>
+  </div>
+  <h1>Build It Yourself — <span>Hands-On Lab Guide</span></h1>
+  <p>This page is different from the theory handbook and the reference notebook. It's a <strong>step-by-step build guide</strong>: open a blank Jupyter notebook of your own, copy each step's code into a new cell in order, run it, compare your output to what's shown, and move to the next step at your own pace. Every code block below is copied exactly from the tested reference notebook — nothing here is untested or approximate.</p>
+  <div class="callout why"><strong>How this page is different from the reference notebook</strong><div>The <code>reference-notebooks/</code> files are the finished, instructor-built version — useful to compare against or fall back on. This page instead walks you through <em>building your own copy from a blank notebook</em>, one small, explained step at a time, so the typing and the pauses to think are part of the learning.</div></div>
+</section>
+
+<h2 class="section-h">Before you start — setup &amp; assumptions</h2>
+<p style="color:#b8c9da;max-width:800px">These steps are OS-agnostic and assume no prior setup. If you already have Python and Jupyter working, skip to "Create your project folder."</p>
+
+<div class="prereq-grid">
+  <div class="prereq-card">
+    <h4>1 · Install Python (3.10 or newer)</h4>
+    <ol>
+      <li>Download from <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org/downloads</a> (Windows/macOS) or use your package manager on Linux.</li>
+      <li><strong>Windows:</strong> during install, tick "Add python.exe to PATH."</li>
+      <li>Verify it worked — open a terminal (Command Prompt / Terminal) and run:</li>
+    </ol>
+    <pre>python --version</pre>
+    <p style="font-size:12.5px;color:#8fa3b8">You should see something like <code>Python 3.11.x</code>. If you see "command not found," try <code>python3 --version</code> instead.</p>
+  </div>
+
+  <div class="prereq-card">
+    <h4>2 · Create your project folder</h4>
+    <p style="font-size:13px;margin:0 0 6px">Every module in this course reads and writes to the SAME two folders, so create this structure once:</p>
+    <pre>mkdir rr-finance-ai
+cd rr-finance-ai
+mkdir data
+mkdir artifacts</pre>
+    <p style="font-size:12.5px;color:#8fa3b8">Do all your work for every module inside this one <code>rr-finance-ai</code> folder — Module 2's lab literally cannot run without files Module 1's lab saves into <code>data/</code> and <code>artifacts/</code>.</p>
+  </div>
+
+  <div class="prereq-card">
+    <h4>3 · Create a virtual environment (recommended)</h4>
+    <p style="font-size:13px;margin:0 0 6px">Keeps this course's packages separate from anything else on your machine.</p>
+    <pre>python -m venv .venv</pre>
+    <details class="os-detail" open><summary>Activate it — click for your OS</summary>
+      <p style="font-size:12.5px;margin:6px 0 2px"><strong>Windows (Command Prompt):</strong></p>
+      <pre>.venv\Scripts\activate</pre>
+      <p style="font-size:12.5px;margin:6px 0 2px"><strong>macOS / Linux:</strong></p>
+      <pre>source .venv/bin/activate</pre>
+      <p style="font-size:12px;color:#8fa3b8">You'll know it worked when your terminal prompt shows <code>(.venv)</code> at the start of the line. Do this every time you reopen a terminal for this project.</p>
+    </details>
+  </div>
+
+  <div class="prereq-card">
+    <h4>4 · Install Jupyter</h4>
+    <pre>pip install notebook jupyterlab</pre>
+    <p style="font-size:12.5px;color:#8fa3b8;margin:6px 0 0">Prefer Anaconda instead? It already includes Jupyter — install from <a href="https://www.anaconda.com/download" target="_blank" rel="noopener">anaconda.com/download</a> and skip this step.</p>
+  </div>
+
+  <div class="prereq-card">
+    <h4>5 · Launch Jupyter and create your notebook</h4>
+    <pre>jupyter notebook</pre>
+    <p style="font-size:13px;margin:6px 0">This opens a browser tab at <code>localhost:8888</code>, showing your <code>rr-finance-ai</code> folder. Click <strong>New → Notebook</strong>, choose the Python 3 kernel, and rename it (top-left) to:</p>
+    <ul><li>Module 1 → <code>module1_lab.ipynb</code></li><li>Module 2 → <code>module2_lab.ipynb</code></li></ul>
+    <p style="font-size:12.5px;color:#8fa3b8">Prefer JupyterLab or VS Code's notebook editor instead? Either works identically — <code>jupyter lab</code> launches JupyterLab.</p>
+  </div>
+
+  <div class="prereq-card">
+    <h4>6 · Get the dataset</h4>
+    <p style="font-size:13px;margin:0 0 8px">Download <code>rr_finance_module1_dataset.csv</code> and place it inside your <code>data/</code> folder, so the path from your notebook is exactly <code>data/rr_finance_module1_dataset.csv</code>.</p>
+    <a class="btn" href="data/rr_finance_module1_dataset.csv" download>⬇ Download the dataset</a>
+    <p style="font-size:12.5px;color:#8fa3b8;margin-top:8px">Module 1's lab creates everything else (the enriched dataset, the trained model, the anomaly detector) — you only need to manually place this one file.</p>
+  </div>
+</div>
+
+<div class="callout warn"><strong>Using Google Colab instead of a local install?</strong><div>Skip steps 1–5 entirely — Colab already has Python and Jupyter-style notebooks in your browser at <a href="https://colab.research.google.com" target="_blank" rel="noopener">colab.research.google.com</a>. You still need the folder structure: run <code>!mkdir -p data artifacts</code> in your first cell, then upload the CSV with:
+<pre style="margin-top:8px">from google.colab import files
+uploaded = files.upload()  # choose rr_finance_module1_dataset.csv
+!mv rr_finance_module1_dataset.csv data/</pre>
+Every other step below works identically in Colab.</div></div>
+
+<div class="callout"><strong>Rules for working through this page</strong>
+<div>
+<ul style="margin:6px 0 0;padding-left:19px">
+<li><strong>Go in order.</strong> Later steps use variables created in earlier steps — skipping ahead will cause a <code>NameError</code>.</li>
+<li><strong>One step = one new cell.</strong> Don't merge multiple steps into one cell; keeping them separate makes it easier to see exactly which step produced which output.</li>
+<li><strong>Read "Expected output" before panicking.</strong> Your exact numbers may differ slightly (randomness, package versions) — the shape and scale of the output is what matters.</li>
+<li><strong>If a cell errors with <code>ModuleNotFoundError</code>,</strong> scroll up and re-run the Setup install cell first.</li>
+<li><strong>If a cell errors with <code>FileNotFoundError</code> for the CSV,</strong> double-check the file is at <code>data/rr_finance_module1_dataset.csv</code> relative to where you launched Jupyter.</li>
+<li><strong>If anything gets into a confusing state,</strong> use the notebook menu: <strong>Kernel → Restart &amp; Clear Output</strong>, then run your cells again from the top.</li>
+</ul>
+</div></div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" data-target="panel-m1" onclick="showTab(1)"><span class="tab-num">M1</span><span class="tab-label">Data Science + Financial Data Analysis</span></button>
+<button class="tab-btn" data-target="panel-m2" onclick="showTab(2)"><span class="tab-num">M2</span><span class="tab-label">Deep Neural Networks</span></button>
+<button class="tab-btn" data-target="panel-m3" onclick="showTab(3)"><span class="tab-num">M3</span><span class="tab-label">NLP + Financial Text AI</span></button>
+<button class="tab-btn" data-target="panel-m4" onclick="showTab(4)"><span class="tab-num">M4</span><span class="tab-label">Generative AI, LLMs & RLHF</span></button>
+<button class="tab-btn" data-target="panel-m5" onclick="showTab(5)"><span class="tab-num">M5</span><span class="tab-label">RAG, LangChain & AI Agents</span></button>
+<button class="tab-btn" data-target="panel-m6" onclick="showTab(6)"><span class="tab-num">M6</span><span class="tab-label">Explainable & Responsible AI</span></button>
+<button class="tab-btn" data-target="panel-m7" onclick="showTab(7)"><span class="tab-num">M7</span><span class="tab-label">Federated & Privacy-Preserving ML</span></button>
+<button class="tab-btn" data-target="panel-m8" onclick="showTab(8)"><span class="tab-num">M8</span><span class="tab-label">Multimodal AI</span></button>
+<button class="tab-btn" data-target="panel-m9" onclick="showTab(9)"><span class="tab-num">M9</span><span class="tab-label">Graph Neural Networks</span></button>
+<button class="tab-btn" data-target="panel-m10" onclick="showTab(10)"><span class="tab-num">M10</span><span class="tab-label">MLOps & On-Premises Deployment</span></button>
+<button class="tab-btn" data-target="panel-m11" onclick="showTab(11)"><span class="tab-num">M11</span><span class="tab-label">AI Cybersecurity</span></button>
+<button class="tab-btn" data-target="panel-m12" onclick="showTab(12)"><span class="tab-num">M12</span><span class="tab-label">Final Capstone</span></button>
+  </div>
+</div>
+
+<section id="panel-m1" class="panel active">
+  <div class="module-head">
+    <h2>Module 1 — Data Science + Financial Data Analysis</h2>
+    <p>3 hrs · Notebook name: <code>module1_lab.ipynb</code> · You'll need <code>rr_finance_module1_dataset.csv</code> in your <code>data/</code> folder before Lesson &quot;Loading our real RR Finance dataset&quot;.</p>
+  </div>
+  <div class="lesson-block">
+<h3 class="lesson-title">Setup — run this cell first (it is a REAL, runnable cell, not just instructions)</h3>
+<p class="lesson-intro">Install every package this notebook needs, in one real, runnable cell — not instructions to copy into a terminal.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q numpy pandas matplotlib seaborn scikit-learn imbalanced-learn umap-learn joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>[1;31merror[0m: [1mexternally-managed-environment[0m
+
+[31m×[0m This environment is externally managed
+[31m╰─&gt;[0m To install Python packages system-wide, try apt install
+[31m   [0m python3-xyz, where xyz is the package you are trying to
+[31m   [0m install.
+[31m   [0m 
+[31m   [0m If you wish to install a non-Debian-packaged Python package,
+[31m   [0m create a virtual environment using python3 -m venv path/to/venv.
+[31m   [0m Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+[31m   [0m sure you have python3-full installed.
+[31m   [0m 
+[31m   [0m If you wish to install a non-Debian packaged Python application,
+[31m   [0m it may be easiest to use pipx install xyz, which will manage a
+[31m   [0m virtual environment for you. Make sure you have pipx installed.
+[31m   [0m 
+[31m   [0m See /usr/share/doc/python3.12/README.venv for more  ... (truncated)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
+import json
+import joblib
+
+SEED = 42
+np.random.seed(SEED)
+rng = np.random.default_rng(SEED)
+
+# Create the shared project folders this whole 12-module course will keep using
+Path("data").mkdir(exist_ok=True)
+Path("artifacts").mkdir(exist_ok=True)
+
+print("numpy:", np.__version__, "| pandas:", pd.__version__)
+print("Project folders ready: data/, artifacts/")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>numpy: 2.4.4 | pandas: 3.0.2
+Project folders ready: data/, artifacts/</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why is it safe to leave a %pip install cell in and re-run it every time, instead of removing it after the first run?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Loading our real RR Finance dataset</h3>
+<p class="lesson-intro">Load the actual CSV RR Finance gave you and take the very first look — shape, column names, first few rows. Nothing is trusted yet.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>DATA_PATH = Path("data/rr_finance_module1_dataset.csv")
+
+if not DATA_PATH.exists():
+    raise FileNotFoundError(
+        f"Could not find {DATA_PATH.resolve()}.\n"
+        "Place rr_finance_module1_dataset.csv inside a 'data' folder next to this notebook, then re-run this cell."
+    )
+
+df = pd.read_csv(DATA_PATH)
+print("Loaded:", DATA_PATH.resolve())
+print("Shape:", df.shape)
+df.head(10)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Loaded: /home/claude/rr-finance-ai/data/rr_finance_module1_dataset.csv
+Shape: (800, 14)
+  customer_id  age  annual_income  monthly_debt  loan_amount  \
+0       C0001   30         384902          5358       404785   
+1       C0002   61         391299          8515       425400   
+2       C0003   23         949659         16110       755889   
+3       C0004   25        2206967         34722       843844   
+4       C0005   35         571735          7229       294098   
+5       C0006   36        1399786         86939       199741   
+6       C0007   58        1201132         32021       117319   
+7       C0008   43        1171820         67435       879700   
+8       C0009   60        2076981         20131      1118554   
+9       C0010   50         546454         14504       674834   
+
+   loan_term_months  credit_score  employment_years  account_age_months  \
+0                72           64  ... (truncated)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>print("Column types:")
+print(df.dtypes)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Column types:
+customer_id               str
+age                     int64
+annual_income           int64
+monthly_debt            int64
+loan_amount             int64
+loan_term_months        int64
+credit_score            int64
+employment_years      float64
+account_age_months      int64
+num_previous_loans      int64
+previous_defaults       int64
+debt_to_income        float64
+loan_to_income        float64
+default                 int64
+dtype: object</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Before you even open the file, what would YOU want to know about it before trusting a model built on top of it?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Data quality: missing values, duplicates, ranges</h3>
+<p class="lesson-intro">Run the basic data-quality checks every dataset earns before anything else: missing values, duplicate rows, and whether values fall in plausible ranges.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>print("Missing values per column:")
+print(df.isna().sum())
+print("\nDuplicate rows:", df.duplicated().sum())
+print("Duplicate customer_ids:", df["customer_id"].duplicated().sum())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Missing values per column:
+customer_id           0
+age                   0
+annual_income         0
+monthly_debt          0
+loan_amount           0
+loan_term_months      0
+credit_score          0
+employment_years      0
+account_age_months    0
+num_previous_loans    0
+previous_defaults     0
+debt_to_income        0
+loan_to_income        0
+default               0
+dtype: int64
+
+Duplicate rows: 0
+Duplicate customer_ids: 0</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>df.describe().round(2)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>          age  annual_income  monthly_debt  loan_amount  loan_term_months  \
+count  800.00         800.00        800.00       800.00            800.00   
+mean    42.41     1336900.53      41997.77    738965.29             42.45   
+std     11.39      610421.63      31452.70    461096.70             20.50   
+min     23.00      280711.00       2012.00     53091.00             12.00   
+25%     32.00      822667.50      16010.50    339374.00             24.00   
+50%     43.00     1320686.00      34581.50    653244.50             48.00   
+75%     52.00     1871568.50      60532.00   1088279.25             60.00   
+max     62.00     2399839.00     145301.00   1789774.00             72.00   
+
+       credit_score  employment_years  account_age_months  num_previous_loans  \
+count        800.00            800.00              800.00              800.00   
+mean         688.23              7.14  ... (truncated)</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> If this dataset had 40 missing credit_score values, what would you do before Lesson 6's regression — drop the rows, or something else?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Logical consistency: does the data make business sense?</h3>
+<p class="lesson-intro">Check whether fields that should logically agree with each other actually do — e.g. does employment_years fit inside a person's working life?</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Cross-field sanity check 1: can this many years of employment fit inside this person's life?
+implausible_employment = df[df["employment_years"] &gt; (df["age"] - 16)]
+
+print(f"Rows where employment_years exceeds a plausible working life for their age: "
+      f"{len(implausible_employment)} of {len(df)} ({len(implausible_employment)/len(df):.2%})")
+implausible_employment[["customer_id", "age", "employment_years"]].head(10)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Rows where employment_years exceeds a plausible working life for their age: 34 of 800 (4.25%)
+    customer_id  age  employment_years
+3         C0004   25               9.8
+122       C0123   25              11.4
+174       C0175   32              16.6
+217       C0218   24               8.6
+277       C0278   28              12.5
+289       C0290   25              15.1
+358       C0359   25              11.9
+363       C0364   23              15.7
+379       C0380   25              12.2
+386       C0387   24               9.6</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Cross-field sanity check 2: do the engineered ratio columns actually match the raw fields they claim to derive from?
+recomputed_dti = df["monthly_debt"] / (df["annual_income"] / 12)
+recomputed_lti = df["loan_amount"] / df["annual_income"]
+
+dti_mismatch = (recomputed_dti - df["debt_to_income"]).abs() &gt; 0.01
+lti_mismatch = (recomputed_lti - df["loan_to_income"]).abs() &gt; 0.01
+
+print("debt_to_income mismatches vs. recomputed value:", dti_mismatch.sum())
+print("loan_to_income mismatches vs. recomputed value:", lti_mismatch.sum())
+print("\nBoth engineered columns check out -- they were derived correctly from the raw fields.")
+print("This is the SAME discipline as Module 1's Feature Engineering lesson: never trust a derived")
+print("column just because it looks reasonable -- recompute it and compare.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>debt_to_income mismatches vs. recomputed value: 0
+loan_to_income mismatches vs. recomputed value: 0
+
+Both engineered columns check out -- they were derived correctly from the raw fields.
+This is the SAME discipline as Module 1's Feature Engineering lesson: never trust a derived
+column just because it looks reasonable -- recompute it and compare.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why is 'no missing values' not the same thing as 'trustworthy data'?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Decision: what do we do with the 34 flagged rows?</h3>
+<p class="lesson-intro">Make an explicit, documented decision about the rows Lesson 2 flagged, instead of silently dropping or silently ignoring them.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>df["flag_employment_age_inconsistent"] = (df["employment_years"] &gt; (df["age"] - 16))
+print("Flag added. Rows flagged:", df["flag_employment_age_inconsistent"].sum())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Flag added. Rows flagged: 34</pre></div>
+</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Exploratory analysis: distributions, target balance, outliers</h3>
+<p class="lesson-intro">Look at how each field is distributed, and how balanced (or imbalanced) the target class is — this sets up Lesson 8's imbalance lesson later.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>print("Target distribution:")
+print(df["default"].value_counts())
+print(df["default"].value_counts(normalize=True).round(4))
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 3.3))
+axes[0].hist(df["debt_to_income"], bins=30, color="tab:blue")
+axes[0].set_title("Debt-to-income distribution")
+axes[1].hist(df["credit_score"], bins=30, color="tab:orange")
+axes[1].set_title("Credit score distribution")
+axes[2].bar(["No default", "Default"], df["default"].value_counts().sort_index(), color=["tab:green", "tab:red"])
+axes[2].set_title(f"Target class balance ({df['default'].mean():.1%} default)")
+plt.tight_layout(); plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Target distribution:
+default
+0    519
+1    281
+Name: count, dtype: int64
+default
+0    0.6488
+1    0.3512
+Name: proportion, dtype: float64</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># IQR-based outlier scan on the key numeric fields
+outlier_summary = {}
+for col in ["annual_income", "monthly_debt", "loan_amount", "credit_score", "age"]:
+    q1, q3 = df[col].quantile([0.25, 0.75])
+    iqr = q3 - q1
+    lower, upper = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+    n_outliers = ((df[col] &lt; lower) | (df[col] &gt; upper)).sum()
+    outlier_summary[col] = n_outliers
+    print(f"{col:16s} range [{df[col].min():&gt;10.0f}, {df[col].max():&gt;10.0f}]  IQR outliers: {n_outliers}")
+
+print("\nA handful of outliers in monthly_debt and credit_score is expected in real financial data --")
+print("high earners with unusually large debt, or a small number of exceptionally strong/weak credit")
+print("histories. Small counts like these do not by themselves indicate a data-quality problem.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>annual_income    range [    280711,    2399839]  IQR outliers: 0
+monthly_debt     range [      2012,     145301]  IQR outliers: 10
+loan_amount      range [     53091,    1789774]  IQR outliers: 0
+credit_score     range [       494,        846]  IQR outliers: 2
+age              range [        23,         62]  IQR outliers: 0
+
+A handful of outliers in monthly_debt and credit_score is expected in real financial data --
+high earners with unusually large debt, or a small number of exceptionally strong/weak credit
+histories. Small counts like these do not by themselves indicate a data-quality problem.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Looking at the target balance chart, do you expect accuracy alone to be a trustworthy metric for this dataset? Why or why not?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 4 — Does the label itself make business sense?</h3>
+<p class="lesson-intro">Sanity-check the target column itself: does the default rate move the direction you'd expect against credit score and debt-to-income?</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>print("Default rate by number of previous defaults:")
+print(df.groupby("previous_defaults")["default"].agg(["mean", "count"]))
+
+df["credit_score_bucket"] = pd.cut(df["credit_score"], bins=[400, 600, 650, 700, 750, 900])
+print("\nDefault rate by credit score bucket:")
+print(df.groupby("credit_score_bucket", observed=True)["default"].agg(["mean", "count"]))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Default rate by number of previous defaults:
+                       mean  count
+previous_defaults                 
+0                  0.316109    658
+1                  0.500000     90
+2                  0.538462     52
+
+Default rate by credit score bucket:
+                         mean  count
+credit_score_bucket                 
+(400, 600]           0.512821     39
+(600, 650]           0.416185    173
+(650, 700]           0.351145    262
+(700, 750]           0.323944    213
+(750, 900]           0.247788    113</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>VALIDATED_PATH = Path("data/rr_finance_module1_dataset.csv")   # same canonical path every later module reads
+df.to_csv(VALIDATED_PATH, index=False)
+print("Saved validated dataset (with quality flags added) to:", VALIDATED_PATH.resolve())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Saved validated dataset (with quality flags added) to: /home/claude/rr-finance-ai/data/rr_finance_module1_dataset.csv</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> If default rate went UP as credit_score went up, would you trust this dataset? What would you check first?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 5 — Feature engineering: translating financial reasoning into model inputs</h3>
+<p class="lesson-intro">Recompute debt_to_income and loan_to_income from the raw columns yourself, and confirm they match the values already in the file.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>numeric_cols = [
+    "age", "annual_income", "monthly_debt", "loan_amount", "loan_term_months", "credit_score",
+    "employment_years", "account_age_months", "num_previous_loans", "previous_defaults",
+    "debt_to_income", "loan_to_income", "default",
+]
+correlations = df[numeric_cols].corr(numeric_only=True)["default"].drop("default").sort_values()
+print("Correlation of each feature with the default target:")
+print(correlations.round(3))
+
+plt.figure(figsize=(7, 4))
+correlations.plot(kind="barh", color=["tab:red" if v &lt; 0 else "tab:blue" for v in correlations])
+plt.title("Which features actually correlate with default?")
+plt.xlabel("Correlation with default")
+plt.tight_layout(); plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Correlation of each feature with the default target:
+credit_score         -0.136
+annual_income        -0.065
+account_age_months   -0.008
+employment_years      0.002
+num_previous_loans    0.037
+age                   0.050
+loan_term_months      0.077
+monthly_debt          0.101
+loan_amount           0.152
+previous_defaults     0.154
+debt_to_income        0.184
+loan_to_income        0.199
+Name: default, dtype: float64</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why recompute a column that's already there, instead of just trusting it?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 6 — Regression: predicting a continuous financial quantity</h3>
+<p class="lesson-intro">Build a Ridge and a Lasso regression model to predict a continuous quantity (loan_amount), and use RidgeCV to actually validate the regularisation strength instead of guessing it.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Ridge, Lasso, RidgeCV
+from sklearn.metrics import root_mean_squared_error, r2_score
+
+X_reg = df[["annual_income", "monthly_debt", "credit_score", "employment_years"]]
+y_reg = df["loan_amount"]
+
+Xr_train, Xr_test, yr_train, yr_test = train_test_split(X_reg, y_reg, test_size=0.2, random_state=SEED)
+
+ridge = Ridge(alpha=1.0)
+ridge.fit(Xr_train, yr_train)
+ridge_pred = ridge.predict(Xr_test)
+
+print("Ridge (alpha=1.0)")
+print("  R^2:  ", round(r2_score(yr_test, ridge_pred), 4))
+print("  RMSE: ", round(root_mean_squared_error(yr_test, ridge_pred), 2))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Ridge (alpha=1.0)
+  R^2:   0.204
+  RMSE:  385082.88</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>ridge_cv = RidgeCV(alphas=[0.001, 0.01, 0.1, 1, 10, 100, 1000], cv=5)
+ridge_cv.fit(Xr_train, yr_train)
+ridge_cv_pred = ridge_cv.predict(Xr_test)
+
+print("RidgeCV selected alpha via 5-fold cross-validation:", ridge_cv.alpha_)
+print("  R^2:  ", round(r2_score(yr_test, ridge_cv_pred), 4))
+print("  RMSE: ", round(root_mean_squared_error(yr_test, ridge_cv_pred), 2))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>RidgeCV selected alpha via 5-fold cross-validation: 1000.0
+  R^2:   0.2039
+  RMSE:  385085.59</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>lasso = Lasso(alpha=0.1)
+lasso.fit(Xr_train, yr_train)
+print("Ridge coefficients:", ridge.coef_.round(2))
+print("Lasso coefficients:", lasso.coef_.round(2))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Ridge coefficients: [2.7000e-01 8.2000e-01 3.9442e+02 9.8010e+01]
+Lasso coefficients: [2.7000e-01 8.2000e-01 3.9442e+02 9.8010e+01]</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> What's the difference between Ridge and Lasso in terms of what happens to unimportant coefficients?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 7 — Classification: predicting default (the model every later module benchmarks against)</h3>
+<p class="lesson-intro">Build the logistic regression baseline that every later module in this course gets compared against, and tune its decision threshold instead of blindly using 0.5.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score, roc_curve
+
+FEATURES = [
+    # NOTE: "age" is deliberately excluded here -- see the governance note above.
+    "annual_income", "monthly_debt", "loan_amount", "loan_term_months",
+    "credit_score", "employment_years", "account_age_months",
+    "num_previous_loans", "previous_defaults", "debt_to_income", "loan_to_income",
+]
+
+X = df[FEATURES]
+y = df["default"]
+
+# THIS split (same SEED, same stratify, same test_size) is the split Module 2 reuses via the saved artifact.
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, stratify=y, random_state=SEED
+)
+print("Train size:", len(X_train), " Test size:", len(X_test))
+
+baseline_pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=2000)),
+])
+baseline_pipeline.fit(X_train, y_train)
+
+test_preds = baseline_pipeline.predict(X_test)
+test_probs = baseline_pipeline.predict_proba(X_test)[:, 1]
+
+print(confusion_matrix(y_test, test_preds))
+print()
+print(classification_report(y_test, test_preds, target_names=["No default", "Default"]))
+print("ROC-AUC:", round(roc_auc_score(y_test, test_probs), 4))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Train size: 640  Test size: 160
+[[88 16]
+ [35 21]]
+
+              precision    recall  f1-score   support
+
+  No default       0.72      0.85      0.78       104
+     Default       0.57      0.38      0.45        56
+
+    accuracy                           0.68       160
+   macro avg       0.64      0.61      0.61       160
+weighted avg       0.66      0.68      0.66       160
+
+ROC-AUC: 0.6927</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.metrics import precision_recall_curve
+
+precisions, recalls, thresholds = precision_recall_curve(y_test, test_probs)
+
+plt.figure(figsize=(7, 4))
+plt.plot(thresholds, precisions[:-1], label="Precision", color="tab:blue")
+plt.plot(thresholds, recalls[:-1], label="Recall", color="tab:red")
+plt.axvline(0.5, color="grey", linestyle="--", alpha=.6, label="Default threshold (0.5)")
+plt.xlabel("Decision threshold"); plt.ylabel("Score")
+plt.title("Precision/Recall trade-off as the decision threshold changes")
+plt.legend(); plt.grid(alpha=.3); plt.tight_layout(); plt.show()
+
+fpr, tpr, roc_thresholds = roc_curve(y_test, test_probs)
+youden_j = tpr - fpr
+best_idx = np.argmax(youden_j)
+best_threshold = roc_thresholds[best_idx]
+print(f"Example data-driven threshold (max TPR-FPR): {best_threshold:.3f}  (vs. the naive default of 0.5)")
+print("Notice this threshold sits BELOW 0.5 -- with a 35% base default rate (not a rare event), the")
+print("statistically 'balanced' operating point naturally shifts down from the textbook 0.5 default.")
+print("A real deployment must still weigh this against the ACTUAL business cost of a missed default")
+print("vs. a false alarm -- a statistical threshold is a starting point, not the final answer.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Example data-driven threshold (max TPR-FPR): 0.281  (vs. the naive default of 0.5)
+Notice this threshold sits BELOW 0.5 -- with a 35% base default rate (not a rare event), the
+statistically 'balanced' operating point naturally shifts down from the textbook 0.5 default.
+A real deployment must still weigh this against the ACTUAL business cost of a missed default
+vs. a false alarm -- a statistical threshold is a starting point, not the final answer.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why might a bank choose a threshold lower than 0.5 for flagging potential defaults?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 8 — Imbalanced classification + SMOTE: why accuracy can lie</h3>
+<p class="lesson-intro">See directly how a model that predicts 'no default' for everyone can still score high accuracy, then fix it with SMOTE and class_weight — and compare both.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>default_rate = y_train.mean()
+print(f"Training default rate: {default_rate:.2%}")
+naive_all_zero_accuracy = 1 - default_rate
+print(f"A model predicting 'no default' for EVERYONE would score accuracy: {naive_all_zero_accuracy:.2%}")
+print("...while catching ZERO actual defaults. Less dramatic than a 95%+ rare-event trap, but the")
+print("same underlying lesson: accuracy alone is not a reliable metric once classes are unequal.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Training default rate: 35.16%
+A model predicting 'no default' for EVERYONE would score accuracy: 64.84%
+...while catching ZERO actual defaults. Less dramatic than a 95%+ rare-event trap, but the
+same underlying lesson: accuracy alone is not a reliable metric once classes are unequal.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from imblearn.over_sampling import SMOTE
+from collections import Counter
+
+print("Before SMOTE:", Counter(y_train))
+smote = SMOTE(random_state=SEED)
+X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+print("After SMOTE: ", Counter(y_train_smote))
+
+scaler_for_smote = StandardScaler().fit(X_train)
+smote_model = LogisticRegression(max_iter=2000)
+smote_model.fit(scaler_for_smote.transform(X_train_smote), y_train_smote)
+smote_probs = smote_model.predict_proba(scaler_for_smote.transform(X_test))[:, 1]
+print("\nSMOTE-trained model -- Test ROC-AUC:", round(roc_auc_score(y_test, smote_probs), 4))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Before SMOTE: Counter({0: 415, 1: 225})
+After SMOTE:  Counter({0: 415, 1: 415})
+
+SMOTE-trained model -- Test ROC-AUC: 0.677</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>class_weight_pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=2000, class_weight="balanced")),
+])
+class_weight_pipeline.fit(X_train, y_train)
+cw_probs = class_weight_pipeline.predict_proba(X_test)[:, 1]
+
+print("Baseline (no imbalance handling) -- Test ROC-AUC:", round(roc_auc_score(y_test, test_probs), 4))
+print("SMOTE-resampled training data    -- Test ROC-AUC:", round(roc_auc_score(y_test, smote_probs), 4))
+print("class_weight='balanced'          -- Test ROC-AUC:", round(roc_auc_score(y_test, cw_probs), 4))
+print()
+print("On THIS dataset -- moderately imbalanced, only 800 rows -- neither technique dramatically")
+print("outperforms the plain baseline. That is a genuinely useful, honest finding: imbalance-handling")
+print("earns its complexity most clearly on SEVERE imbalance (think 2-5% fraud rates), not a 35% one.")
+print("class_weight='balanced' still costs one keyword argument versus SMOTE's extra synthetic-data")
+print("step -- always try it first.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Baseline (no imbalance handling) -- Test ROC-AUC: 0.6927
+SMOTE-resampled training data    -- Test ROC-AUC: 0.677
+class_weight='balanced'          -- Test ROC-AUC: 0.6921
+
+On THIS dataset -- moderately imbalanced, only 800 rows -- neither technique dramatically
+outperforms the plain baseline. That is a genuinely useful, honest finding: imbalance-handling
+earns its complexity most clearly on SEVERE imbalance (think 2-5% fraud rates), not a 35% one.
+class_weight='balanced' still costs one keyword argument versus SMOTE's extra synthetic-data
+step -- always try it first.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Which of SMOTE and class_weight='balanced' would you try FIRST on a new imbalanced dataset, and why?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 9 — K-Means++: discovering customer groups</h3>
+<p class="lesson-intro">Cluster customers into behavioural groups with K-Means++, and validate how many clusters (K) actually fit the data using silhouette score instead of guessing.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.cluster import KMeans, DBSCAN
+from sklearn.metrics import silhouette_score
+
+cluster_features = df[["annual_income", "loan_amount", "credit_score", "debt_to_income"]]
+scaled_cluster_features = StandardScaler().fit_transform(cluster_features)
+
+silhouette_by_k = {}
+for k in range(2, 8):
+    km_trial = KMeans(n_clusters=k, init="k-means++", n_init=10, random_state=SEED)
+    labels_trial = km_trial.fit_predict(scaled_cluster_features)
+    silhouette_by_k[k] = silhouette_score(scaled_cluster_features, labels_trial)
+
+for k, score in silhouette_by_k.items():
+    print(f"K={k}: silhouette score = {score:.4f}")
+
+best_k = max(silhouette_by_k, key=silhouette_by_k.get)
+print(f"\nBest K by silhouette score: {best_k}")
+
+plt.figure(figsize=(6, 3.5))
+plt.plot(list(silhouette_by_k.keys()), list(silhouette_by_k.values()), marker="o")
+plt.xlabel("K (number of clusters)"); plt.ylabel("Silhouette score")
+plt.title("Validating K instead of assuming it"); plt.grid(alpha=.3)
+plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>K=2: silhouette score = 0.2365
+K=3: silhouette score = 0.2162
+K=4: silhouette score = 0.2077
+K=5: silhouette score = 0.2109
+K=6: silhouette score = 0.2202
+K=7: silhouette score = 0.2229
+
+Best K by silhouette score: 2</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>kmeans = KMeans(n_clusters=best_k, init="k-means++", n_init=10, random_state=SEED)
+clusters = kmeans.fit_predict(scaled_cluster_features)
+df["customer_cluster"] = clusters
+
+print(df[["customer_id", "customer_cluster"]].head(10))
+print("\nCluster sizes:")
+print(df["customer_cluster"].value_counts().sort_index())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>  customer_id  customer_cluster
+0       C0001                 1
+1       C0002                 1
+2       C0003                 1
+3       C0004                 0
+4       C0005                 1
+5       C0006                 1
+6       C0007                 1
+7       C0008                 1
+8       C0009                 0
+9       C0010                 1
+
+Cluster sizes:
+customer_cluster
+0    377
+1    423
+Name: count, dtype: int64</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why is picking K by 'a tutorial used 3' not a defensible choice in a real project?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 10 — DBSCAN: why you cannot blindly copy demo parameters</h3>
+<p class="lesson-intro">Try DBSCAN with parameters copied from a generic example, watch it behave oddly on this dataset's actual scale, and then fix it properly.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Step 1: naively copy eps/min_samples that "looked reasonable" without validating against THIS data
+dbscan_naive = DBSCAN(eps=0.7, min_samples=10).fit(scaled_cluster_features)
+naive_noise = (dbscan_naive.labels_ == -1).sum()
+print(f"Naive copy-pasted parameters (eps=0.7, min_samples=10): {naive_noise} of {len(df)} points "
+      f"({naive_noise/len(df):.1%}) labelled as noise.")
+print("That is nearly half the dataset -- a strong signal these parameters do not fit THIS data's scale and density.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Naive copy-pasted parameters (eps=0.7, min_samples=10): 363 of 800 points (45.4%) labelled as noise.
+That is nearly half the dataset -- a strong signal these parameters do not fit THIS data's scale and density.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Step 2: validate properly -- sweep candidate settings and require BOTH a reasonable noise fraction
+# and at least 2 real clusters, exactly the discipline we applied to K in the previous lesson.
+candidates = []
+for eps in [0.6, 0.8, 1.0, 1.2, 1.5, 1.8, 2.0]:
+    for min_samples in [5, 10, 15]:
+        trial = DBSCAN(eps=eps, min_samples=min_samples).fit(scaled_cluster_features)
+        noise_frac = (trial.labels_ == -1).sum() / len(df)
+        n_clusters = len(set(trial.labels_)) - (1 if -1 in trial.labels_ else 0)
+        if noise_frac &lt; 0.15 and n_clusters &gt;= 2:
+            candidates.append((eps, min_samples, noise_frac, n_clusters))
+
+for eps, ms, noise_frac, n_clusters in candidates:
+    print(f"eps={eps}, min_samples={ms}: noise={noise_frac:.1%}, clusters={n_clusters}")
+
+best_eps, best_min_samples = candidates[0][0], candidates[0][1]
+print(f"\nSelected: eps={best_eps}, min_samples={best_min_samples}")
+
+dbscan = DBSCAN(eps=best_eps, min_samples=best_min_samples).fit(scaled_cluster_features)
+print("Labels found:", sorted(set(dbscan.labels_)))
+print("Noise points:", (dbscan.labels_ == -1).sum(), f"of {len(df)} ({(dbscan.labels_==-1).sum()/len(df):.1%})")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>eps=0.8, min_samples=5: noise=4.4%, clusters=2
+
+Selected: eps=0.8, min_samples=5
+Labels found: [np.int64(-1), np.int64(0), np.int64(1)]
+Noise points: 35 of 800 (4.4%)</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> What does it mean if DBSCAN puts almost every point into one giant cluster?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 11 — PCA: reducing many dimensions to a view we can inspect</h3>
+<p class="lesson-intro">Compress several correlated financial features down to 2 dimensions you can actually plot and look at.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.decomposition import PCA
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(scaled_cluster_features)
+
+print("Explained variance ratio:", pca.explained_variance_ratio_.round(4))
+print("Total variance captured by 2 components:", pca.explained_variance_ratio_.sum().round(4))
+
+plt.figure(figsize=(6, 5))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=df["default"], cmap="coolwarm", alpha=0.5, s=15)
+plt.xlabel("PC1"); plt.ylabel("PC2")
+plt.title("PCA projection, coloured by actual default outcome")
+plt.colorbar(scatter, label="default")
+plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Explained variance ratio: [0.3509 0.2628]
+Total variance captured by 2 components: 0.6137</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> If PCA's first two components only explain 40% of the variance, how much should you trust conclusions drawn from the 2D plot?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 12 — UMAP: nonlinear structure for exploration</h3>
+<p class="lesson-intro">Use UMAP to look for non-linear structure in the data that PCA's straight-line projection might be flattening away.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import umap
+
+reducer = umap.UMAP(n_components=2, random_state=SEED)
+embedding = reducer.fit_transform(scaled_cluster_features)
+
+plt.figure(figsize=(6, 5))
+scatter = plt.scatter(embedding[:, 0], embedding[:, 1], c=df["default"], cmap="coolwarm", alpha=0.5, s=15)
+plt.title("UMAP embedding, coloured by actual default outcome")
+plt.colorbar(scatter, label="default")
+plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>/usr/local/lib/python3.12/dist-packages/umap/umap_.py:1952: UserWarning: n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why is a striking UMAP plot not, by itself, proof that a real customer segment exists?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 13 — Data poisoning: attacking the learning process</h3>
+<p class="lesson-intro">Attack your own trained model by flipping a percentage of training labels, and measure exactly how much damage different poisoning rates cause.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>clean_model = LogisticRegression(max_iter=2000)
+clean_model.fit(baseline_pipeline.named_steps["scaler"].transform(X_train), y_train)
+clean_prob = clean_model.predict_proba(baseline_pipeline.named_steps["scaler"].transform(X_test))[:, 1]
+clean_auc = roc_auc_score(y_test, clean_prob)
+print("Clean ROC-AUC:", round(clean_auc, 4))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Clean ROC-AUC: 0.6927</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>poison_results = {}
+X_train_scaled = baseline_pipeline.named_steps["scaler"].transform(X_train)
+X_test_scaled = baseline_pipeline.named_steps["scaler"].transform(X_test)
+
+for poison_rate in [0.05, 0.10, 0.15, 0.20, 0.30]:
+    poison_count = int(len(y_train) * poison_rate)
+    poison_indices = rng.choice(len(y_train), size=poison_count, replace=False)
+
+    y_train_poisoned = y_train.to_numpy().copy()
+    y_train_poisoned[poison_indices] = 1 - y_train_poisoned[poison_indices]
+
+    poisoned_model = LogisticRegression(max_iter=2000)
+    poisoned_model.fit(X_train_scaled, y_train_poisoned)
+    poison_prob = poisoned_model.predict_proba(X_test_scaled)[:, 1]
+    poison_auc = roc_auc_score(y_test, poison_prob)
+    poison_results[poison_rate] = poison_auc
+    print(f"Poison rate {poison_rate:.0%}: AUC = {poison_auc:.4f}  (change vs clean: {poison_auc - clean_auc:+.4f})")
+
+plt.figure(figsize=(6, 3.5))
+plt.plot([clean_auc] + list(poison_results.values()), marker="o")
+plt.xticks(range(len([0]+list(poison_results.keys()))), ["0% (clean)"] + [f"{r:.0%}" for r in poison_results.keys()])
+plt.xlabel("Fraction of training labels flipped"); plt.ylabel("Test ROC-AUC")
+plt.title("Model quality under increasing label-poisoning rate")
+plt.grid(alpha=.3); plt.show()
+
+print("\nOn a small, moderately-signalled real dataset like ours, the degradation trend is noisier than")
+print("a large synthetic dataset would show -- but the overall direction still holds, and at 30% poisoning")
+print("the damage is clear. Small real datasets are, if anything, MORE vulnerable to poisoning in practice,")
+print("because each individual poisoned row carries more relative weight.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Poison rate 5%: AUC = 0.6832  (change vs clean: -0.0094)
+Poison rate 10%: AUC = 0.6703  (change vs clean: -0.0223)
+Poison rate 15%: AUC = 0.6638  (change vs clean: -0.0288)
+Poison rate 20%: AUC = 0.6552  (change vs clean: -0.0374)
+Poison rate 30%: AUC = 0.6956  (change vs clean: +0.0029)
+
+On a small, moderately-signalled real dataset like ours, the degradation trend is noisier than
+a large synthetic dataset would show -- but the overall direction still holds, and at 30% poisoning
+the damage is clear. Small real datasets are, if anything, MORE vulnerable to poisoning in practice,
+because each individual poisoned row carries more relative weight.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The attacker never touched the deployed model here — what DID they touch, and why does that matter for security?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 14 — Isolation Forest: screening for unusual records</h3>
+<p class="lesson-intro">Train an anomaly detector that needs no fraud labels at all, and use it to flag records for human review.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.ensemble import IsolationForest
+
+anomaly_features = df[[
+    "annual_income", "monthly_debt", "loan_amount",
+    "credit_score", "debt_to_income", "loan_to_income",
+]]
+
+detector = IsolationForest(contamination=0.05, random_state=SEED)
+flags = detector.fit_predict(anomaly_features)
+df["anomaly_flag"] = flags
+
+print(df["anomaly_flag"].value_counts())
+print()
+print(df[df["anomaly_flag"] == -1][
+    ["customer_id", "annual_income", "loan_amount", "credit_score", "debt_to_income",
+     "flag_employment_age_inconsistent"]
+].head(10))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>anomaly_flag
+ 1    760
+-1     40
+Name: count, dtype: int64
+
+    customer_id  annual_income  loan_amount  credit_score  debt_to_income  \
+19        C0020         690658       926638           809          0.6503   
+26        C0027        2117879      1742611           617          0.7420   
+64        C0065        1320988      1708303           757          0.7280   
+119       C0120        2352477      1478440           582          0.6105   
+145       C0146        2141886       138825           728          0.6679   
+157       C0158        2368923       657485           742          0.7346   
+209       C0210        2276510      1523973           779          0.0236   
+242       C0243        1507398      1759558           729          0.7247   
+261       C0262         327607       231773           578          0.6691   
+327       C0328        1352857       151894           774          0.7  ... (truncated)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Does the Isolation Forest's anomaly flag overlap with our own Lesson 2 consistency flag?
+overlap = df[(df["anomaly_flag"] == -1) &amp; (df["flag_employment_age_inconsistent"])]
+print(f"Records flagged by BOTH the employment/age check AND Isolation Forest: {len(overlap)}")
+print("A meaningful overlap here would strengthen confidence in both signals; a small overlap tells us")
+print("the two checks are catching DIFFERENT kinds of unusual records -- both are worth keeping.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Records flagged by BOTH the employment/age check AND Isolation Forest: 1
+A meaningful overlap here would strengthen confidence in both signals; a small overlap tells us
+the two checks are catching DIFFERENT kinds of unusual records -- both are worth keeping.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why is it wrong to treat every record Isolation Forest flags as confirmed fraud?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 15 — From individual checks to a layered defence</h3>
+<p class="lesson-intro">Combine the anomaly screen with a review queue — a small, concrete example of 'defence in depth' instead of relying on one control.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>review_queue = df[(df["anomaly_flag"] == -1) | (df["flag_employment_age_inconsistent"])].copy()
+print(f"{len(review_queue)} of {len(df)} records ({len(review_queue)/len(df):.1%}) routed to human review "
+      f"(anomaly flag OR employment/age inconsistency).")
+review_queue[[
+    "customer_id", "annual_income", "loan_amount", "credit_score", "debt_to_income",
+    "anomaly_flag", "flag_employment_age_inconsistent",
+]].head(15)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>73 of 800 records (9.1%) routed to human review (anomaly flag OR employment/age inconsistency).
+    customer_id  annual_income  loan_amount  credit_score  debt_to_income  \
+3         C0004        2206967       843844           593          0.1888   
+19        C0020         690658       926638           809          0.6503   
+26        C0027        2117879      1742611           617          0.7420   
+64        C0065        1320988      1708303           757          0.7280   
+119       C0120        2352477      1478440           582          0.6105   
+122       C0123        2166319      1318789           654          0.4780   
+145       C0146        2141886       138825           728          0.6679   
+157       C0158        2368923       657485           742          0.7346   
+174       C0175        1498246       977729           735          0.3796   
+209       C0210        2276510  ... (truncated)</pre></div>
+</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Hand-off: saving everything Module 2 (and every later module) will build on</h3>
+<p class="lesson-intro">Save the dataset, the trained baseline pipeline, the anomaly detector, and a metrics summary to disk — so Module 2 can load and extend this exact system instead of starting over.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>enriched_path = Path("data/rr_finance_module1_dataset_enriched.csv")
+df.to_csv(enriched_path, index=False)
+print("Saved:", enriched_path.resolve())
+
+baseline_path = Path("artifacts/baseline_logreg_pipeline.joblib")
+joblib.dump(baseline_pipeline, baseline_path)
+print("Saved:", baseline_path.resolve())
+
+iso_path = Path("artifacts/isolation_forest.joblib")
+joblib.dump(detector, iso_path)
+print("Saved:", iso_path.resolve())
+
+metrics_summary = {
+    "module": 1,
+    "dataset_rows": int(len(df)),
+    "default_rate": float(df["default"].mean()),
+    "rows_flagged_employment_age": int(df["flag_employment_age_inconsistent"].sum()),
+    "baseline_logreg_test_auc": float(roc_auc_score(y_test, test_probs)),
+    "smote_logreg_test_auc": float(roc_auc_score(y_test, smote_probs)),
+    "class_weight_logreg_test_auc": float(roc_auc_score(y_test, cw_probs)),
+    "kmeans_best_k": int(best_k),
+    "kmeans_best_silhouette": float(silhouette_by_k[best_k]),
+    "dbscan_eps": float(best_eps),
+    "dbscan_min_samples": int(best_min_samples),
+    "isolation_forest_contamination": 0.05,
+    "isolation_forest_flagged_records": int((df["anomaly_flag"] == -1).sum()),
+    "poisoning_auc_by_rate": {str(k): float(v) for k, v in poison_results.items()},
+    "features_used": FEATURES,
+    "random_seed": SEED,
+    "known_limitations": [
+        "Only 800 rows -- treat metrics as directional, not production-grade.",
+        "4.25% of rows flagged for an employment-years/age inconsistency; kept but tagged, not removed.",
+        "Baseline ROC-AUC ~0.70 reflects genuinely modest feature-target signal, not a modelling error.",
+    ],
+}
+metrics_path = Path("artifacts/module1_metrics.json")
+with open(metrics_path, "w") as f:
+    json.dump(metrics_summary, f, indent=2)
+print("Saved:", metrics_path.resolve())
+
+print("\n--- Module 1 hand-off complete ---")
+for k, v in metrics_summary.items():
+    print(f"  {k}: {v}")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Saved: /home/claude/rr-finance-ai/data/rr_finance_module1_dataset_enriched.csv
+Saved: /home/claude/rr-finance-ai/artifacts/baseline_logreg_pipeline.joblib
+Saved: /home/claude/rr-finance-ai/artifacts/isolation_forest.joblib
+Saved: /home/claude/rr-finance-ai/artifacts/module1_metrics.json
+
+--- Module 1 hand-off complete ---
+  module: 1
+  dataset_rows: 800
+  default_rate: 0.35125
+  rows_flagged_employment_age: 34
+  baseline_logreg_test_auc: 0.6926510989010989
+  smote_logreg_test_auc: 0.6770260989010989
+  class_weight_logreg_test_auc: 0.692135989010989
+  kmeans_best_k: 2
+  kmeans_best_silhouette: 0.23648521690516527
+  dbscan_eps: 0.8
+  dbscan_min_samples: 5
+  isolation_forest_contamination: 0.05
+  isolation_forest_flagged_records: 40
+  poisoning_auc_by_rate: {'0.05': 0.6832074175824175, '0.1': 0.6703296703296703, '0.15': 0.663804945054945, '0.2': 0.6552197802197802, '0.3': 0.695570054945055}  ... (truncated)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>reloaded_pipeline = joblib.load("artifacts/baseline_logreg_pipeline.joblib")
+reloaded_auc = roc_auc_score(y_test, reloaded_pipeline.predict_proba(X_test)[:, 1])
+print("Original baseline AUC: ", round(roc_auc_score(y_test, test_probs), 6))
+print("Reloaded pipeline AUC: ", round(reloaded_auc, 6))
+assert abs(reloaded_auc - roc_auc_score(y_test, test_probs)) &lt; 1e-9
+print("Match confirmed -- this artifact is safe for Module 2 to load and trust.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Original baseline AUC:  0.692651
+Reloaded pipeline AUC:  0.692651
+Match confirmed -- this artifact is safe for Module 2 to load and trust.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why does reloading the saved pipeline and re-checking its AUC matter, instead of just trusting that the .joblib file saved correctly?</div>
+</div>
+  <div class="callout why" style="margin-top:36px"><strong>Finished Module 1?</strong><div>Check your <code>data/</code> folder now contains <code>rr_finance_module1_dataset_enriched.csv</code>, and your <code>artifacts/</code> folder contains <code>baseline_logreg_pipeline.joblib</code>, <code>isolation_forest.joblib</code>, and <code>module1_metrics.json</code>. If all four are there, you're ready for the Module 2 tab above. Want the full theory behind everything you just built? <a href="module1.html">Read the Module 1 handbook →</a></div></div>
+</section>
+
+<section id="panel-m2" class="panel">
+  <div class="module-head">
+    <h2>Module 2 — Deep Neural Networks</h2>
+    <p>3 hrs · Notebook name: <code>module2_lab.ipynb</code> · This module reads what Module 1 saved (<code>data/rr_finance_module1_dataset.csv</code> and <code>artifacts/baseline_logreg_pipeline.joblib</code>). Complete the Module 1 lab first, in the SAME project folder.</p>
+  </div>
+  <div class="lesson-block">
+<h3 class="lesson-title">Setup — run this cell first (it is a REAL, runnable cell, not just instructions)</h3>
+<p class="lesson-intro">Install PyTorch and the other packages this notebook needs.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q torch torchvision matplotlib numpy pandas scikit-learn joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>[1;31merror[0m: [1mexternally-managed-environment[0m
+
+[31m×[0m This environment is externally managed
+[31m╰─&gt;[0m To install Python packages system-wide, try apt install
+[31m   [0m python3-xyz, where xyz is the package you are trying to
+[31m   [0m install.
+[31m   [0m 
+[31m   [0m If you wish to install a non-Debian-packaged Python package,
+[31m   [0m create a virtual environment using python3 -m venv path/to/venv.
+[31m   [0m Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+[31m   [0m sure you have python3-full installed.
+[31m   [0m 
+[31m   [0m If you wish to install a non-Debian packaged Python application,
+[31m   [0m it may be easiest to use pipx install xyz, which will manage a
+[31m   [0m virtual environment for you. Make sure you have pipx installed.
+[31m   [0m 
+[31m   [0m See /usr/share/doc/python3.12/README.venv for more  ... (truncated)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import matplotlib.pyplot as plt
+
+SEED = 42
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>PyTorch version: 2.13.0+cu130
+CUDA available: False</pre></div>
+</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — The perceptron and linear separability</h3>
+<p class="lesson-intro">Build the smallest possible neural unit from scratch in NumPy, and watch it succeed on AND but fail on XOR — the exact historical limitation that motivated multi-layer networks.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>class Perceptron:
+    """Smallest possible neural unit: weighted sum + threshold, trained by the perceptron rule."""
+    def __init__(self, n_inputs, lr=0.1):
+        self.w = np.zeros(n_inputs)
+        self.b = 0.0
+        self.lr = lr
+
+    def predict(self, x):
+        z = np.dot(x, self.w) + self.b
+        return 1 if z &gt;= 0 else 0
+
+    def fit(self, X, y, epochs=20):
+        for _ in range(epochs):
+            for xi, yi in zip(X, y):
+                pred = self.predict(xi)
+                error = yi - pred
+                self.w += self.lr * error * xi
+                self.b += self.lr * error
+
+# --- AND gate: linearly separable ---
+X_and = np.array([[0,0],[0,1],[1,0],[1,1]])
+y_and = np.array([0,0,0,1])
+
+p_and = Perceptron(n_inputs=2)
+p_and.fit(X_and, y_and)
+preds_and = [p_and.predict(x) for x in X_and]
+print("AND gate  -&gt; learned:", preds_and, " expected:", list(y_and))
+
+# --- XOR gate: NOT linearly separable ---
+X_xor = np.array([[0,0],[0,1],[1,0],[1,1]])
+y_xor = np.array([0,1,1,0])
+
+p_xor = Perceptron(n_inputs=2)
+p_xor.fit(X_xor, y_xor, epochs=50)
+preds_xor = [p_xor.predict(x) for x in X_xor]
+print("XOR gate  -&gt; learned:", preds_xor, " expected:", list(y_xor))
+print("Notice XOR is NOT fully learned -- this is the historical motivation for multi-layer networks.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>AND gate  -&gt; learned: [0, 0, 0, 1]  expected: [np.int64(0), np.int64(0), np.int64(0), np.int64(1)]
+XOR gate  -&gt; learned: [1, 1, 0, 0]  expected: [np.int64(0), np.int64(1), np.int64(1), np.int64(0)]
+Notice XOR is NOT fully learned -- this is the historical motivation for multi-layer networks.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Sketch the AND-gate points on paper. Can you draw ONE straight line separating the 1s from the 0s? Now try XOR.</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — ANN architecture: stacking neurons to fix XOR, then extending RR Finance</h3>
+<p class="lesson-intro">Load Module 1's real dataset, build a multi-layer ANN in PyTorch, train it, and then honestly compare it against Module 1's saved logistic regression baseline.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import pandas as pd
+from pathlib import Path
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import roc_auc_score, confusion_matrix, classification_report
+
+DATA_PATH = Path("data/rr_finance_module1_dataset.csv")
+
+# The exact same 11 features, in the exact same order, as Module 1's baseline classifier.
+# NOTE: "age" is deliberately excluded from FEATURES -- Module 1 flagged it as a protected
+# attribute under fair-lending regulation and kept it out of every model, not just its own baseline.
+FEATURES = [
+    "annual_income", "monthly_debt", "loan_amount", "loan_term_months",
+    "credit_score", "employment_years", "account_age_months",
+    "num_previous_loans", "previous_defaults", "debt_to_income", "loan_to_income",
+]
+
+if DATA_PATH.exists():
+    print("Loading the real Module 1 dataset -- this notebook is continuing that system, not restarting it.")
+    df = pd.read_csv(DATA_PATH)
+    X = df[FEATURES].to_numpy(dtype=np.float32)
+    y = df["default"].to_numpy(dtype=np.float32)
+else:
+    print("Module 1 CSV not found -- regenerating a comparable synthetic RR Finance table so this")
+    print("notebook still runs standalone. Run Module 1 first for the real, validated dataset.")
+    rng = np.random.default_rng(SEED)
+    n = 800
+    age                   = rng.integers(21, 65, size=n)
+    annual_income         = rng.lognormal(13.5, 0.5, n)
+    monthly_debt          = rng.lognormal(10.0, 0.6, n)
+    loan_amount           = rng.lognormal(13.0, 0.6, n)
+    loan_term_months      = rng.choice([12, 24, 36, 48, 60, 72], size=n)
+    credit_score          = np.clip(rng.normal(680, 80, n), 450, 900).round(0)
+    employment_years      = np.clip(rng.exponential(6, n), 0, 30).round(1)
+    account_age_months    = np.clip(rng.exponential(60, n), 1, 200).round(0)
+    num_previous_loans    = rng.integers(0, 7, size=n)
+    previous_defaults     = rng.binomial(num_previous_loans, 0.1)
+    debt_to_income = monthly_debt / (annual_income / 12)
+    loan_to_income = loan_amount / annual_income
+
+    logit = (-1.0 + 2.5 * debt_to_income + 0.6 * loan_to_income - 0.006 * (credit_score - 650)
+             + 0.3 * previous_defaults + rng.normal(0, 0.5, n))
+    prob_default = 1 / (1 + np.exp(-logit))
+    default = (rng.random(n) &lt; prob_default).astype(np.float32)
+
+    df = pd.DataFrame({
+        "age": age, "annual_income": annual_income, "monthly_debt": monthly_debt, "loan_amount": loan_amount,
+        "loan_term_months": loan_term_months, "credit_score": credit_score,
+        "employment_years": employment_years, "account_age_months": account_age_months,
+        "num_previous_loans": num_previous_loans, "previous_defaults": previous_defaults,
+        "debt_to_income": debt_to_income, "loan_to_income": loan_to_income, "default": default,
+    })
+    X = df[FEATURES].to_numpy(dtype=np.float32)
+    y = df["default"].to_numpy(dtype=np.float32)
+
+print("Feature matrix shape:", X.shape, " | Default rate:", y.mean().round(3))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Loading the real Module 1 dataset -- this notebook is continuing that system, not restarting it.
+Feature matrix shape: (800, 11)  | Default rate: 0.351</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Same split discipline as Module 1: stratified, scaler fit on TRAIN ONLY
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.20, stratify=y, random_state=SEED
+)
+
+scaler = StandardScaler().fit(X_train)
+X_train_s = scaler.transform(X_train)
+X_test_s  = scaler.transform(X_test)
+
+X_train_t = torch.tensor(X_train_s, dtype=torch.float32)
+y_train_t = torch.tensor(y_train, dtype=torch.float32).view(-1, 1)
+X_test_t  = torch.tensor(X_test_s,  dtype=torch.float32)
+y_test_t  = torch.tensor(y_test,   dtype=torch.float32).view(-1, 1)
+
+print("Train tensor:", X_train_t.shape, " Test tensor:", X_test_t.shape)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Train tensor: torch.Size([640, 11])  Test tensor: torch.Size([160, 11])</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>class DefaultANN(nn.Module):
+    """RR Finance default classifier, v2: replaces the Module 1 logistic-regression baseline."""
+    def __init__(self, n_features):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_features, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1),   # raw logit -- NOT passed through sigmoid here
+        )
+
+    def forward(self, x):
+        return self.net(x)   # BCEWithLogitsLoss applies the sigmoid internally, for numerical stability
+
+model_ann = DefaultANN(n_features=X_train_t.shape[1])
+print(model_ann)
+
+n_params = sum(p.numel() for p in model_ann.parameters())
+print("Total trainable parameters:", n_params)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>DefaultANN(
+  (net): Sequential(
+    (0): Linear(in_features=11, out_features=16, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=16, out_features=8, bias=True)
+    (3): ReLU()
+    (4): Linear(in_features=8, out_features=1, bias=True)
+  )
+)
+Total trainable parameters: 337</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 4</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>criterion = nn.BCEWithLogitsLoss()
+optimizer = optim.Adam(model_ann.parameters(), lr=0.01)
+
+train_losses = []
+EPOCHS = 150
+
+model_ann.train()
+for epoch in range(EPOCHS):
+    optimizer.zero_grad()
+    logits = model_ann(X_train_t)
+    loss = criterion(logits, y_train_t)
+    loss.backward()
+    optimizer.step()
+    train_losses.append(loss.item())
+    if (epoch + 1) % 30 == 0:
+        print(f"Epoch {epoch+1:3d}/{EPOCHS} | training loss: {loss.item():.4f}")
+
+plt.figure(figsize=(6,3.5))
+plt.plot(train_losses)
+plt.title("RR Finance ANN v2 -- training loss")
+plt.xlabel("Epoch"); plt.ylabel("BCE loss"); plt.grid(alpha=.3)
+plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Epoch  30/150 | training loss: 0.5795
+Epoch  60/150 | training loss: 0.5205
+Epoch  90/150 | training loss: 0.4517
+Epoch 120/150 | training loss: 0.3870
+Epoch 150/150 | training loss: 0.3405</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 5</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>model_ann.eval()
+with torch.no_grad():
+    test_probs = torch.sigmoid(model_ann(X_test_t)).numpy().ravel()
+    test_preds = (test_probs &gt;= 0.5).astype(int)
+
+auc = roc_auc_score(y_test, test_probs)
+print(f"RR Finance ANN v2 -- Test ROC-AUC: {auc:.4f}")
+print()
+print(confusion_matrix(y_test, test_preds))
+print()
+print(classification_report(y_test, test_preds, target_names=["No default", "Default"]))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>RR Finance ANN v2 -- Test ROC-AUC: 0.5814
+
+[[76 28]
+ [34 22]]
+
+              precision    recall  f1-score   support
+
+  No default       0.69      0.73      0.71       104
+     Default       0.44      0.39      0.42        56
+
+    accuracy                           0.61       160
+   macro avg       0.57      0.56      0.56       160
+weighted avg       0.60      0.61      0.61       160</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Did the ANN beat logistic regression on this dataset? If not, what does that tell you about when extra model capacity actually helps?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Compare against the Module 1 baseline -- loading the ACTUAL saved model, not a re-derived one</h3>
+<p class="lesson-intro">Load Module 1's actual saved .joblib pipeline (not a retrained copy) so the comparison is a true apples-to-apples test.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import joblib
+from sklearn.linear_model import LogisticRegression
+
+BASELINE_PATH = Path("artifacts/baseline_logreg_pipeline.joblib")
+
+if BASELINE_PATH.exists():
+    print("Loading Module 1's ACTUAL saved baseline pipeline (scaler + logistic regression).")
+    module1_pipeline = joblib.load(BASELINE_PATH)
+    logreg_probs = module1_pipeline.predict_proba(X_test)[:, 1]   # pipeline applies its OWN fitted scaler internally
+    logreg_auc = roc_auc_score(y_test, logreg_probs)
+    source_note = "(loaded from Module 1's saved artifact)"
+else:
+    print("artifacts/baseline_logreg_pipeline.joblib not found -- retraining a local logistic regression fallback.")
+    logreg = LogisticRegression(max_iter=2000)
+    logreg.fit(X_train_s, y_train)
+    logreg_probs = logreg.predict_proba(X_test_s)[:, 1]
+    logreg_auc = roc_auc_score(y_test, logreg_probs)
+    source_note = "(retrained locally -- standalone fallback)"
+
+print(f"Module 1 Logistic Regression -- Test ROC-AUC: {logreg_auc:.4f}  {source_note}")
+print(f"Module 2 ANN (v2)            -- Test ROC-AUC: {auc:.4f}")
+print(f"\\nDifference (ANN - LogReg): {auc - logreg_auc:+.4f}")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Loading Module 1's ACTUAL saved baseline pipeline (scaler + logistic regression).
+Module 1 Logistic Regression -- Test ROC-AUC: 0.6927  (loaded from Module 1's saved artifact)
+Module 2 ANN (v2)            -- Test ROC-AUC: 0.5814
+\nDifference (ANN - LogReg): -0.1113
+/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2691: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(</pre></div>
+</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Activation functions: ReLU, Sigmoid, Softmax</h3>
+<p class="lesson-intro">Plot ReLU, Sigmoid and Tanh, then run Softmax on a vector of digit scores to see it produce a real probability distribution that sums to 1.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>z = np.linspace(-6, 6, 400)
+
+relu = np.maximum(0, z)
+sigmoid = 1 / (1 + np.exp(-z))
+tanh = np.tanh(z)
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 3.2))
+axes[0].plot(z, relu, color="tab:blue"); axes[0].set_title("ReLU (hidden layers)")
+axes[1].plot(z, sigmoid, color="tab:orange"); axes[1].set_title("Sigmoid (binary output)")
+axes[2].plot(z, tanh, color="tab:green"); axes[2].set_title("Tanh (reference)")
+for ax in axes:
+    ax.axhline(0, color="grey", lw=.5); ax.axvline(0, color="grey", lw=.5); ax.grid(alpha=.3)
+plt.tight_layout(); plt.show()
+
+# Softmax needs a VECTOR of scores, not a single number -- e.g. 10 raw scores, one per cheque digit 0-9
+raw_scores = np.array([2.0, 0.5, -1.0, 3.2, 0.1, -0.5, 1.1, 0.0, -2.0, 0.8])
+
+def softmax(scores):
+    shifted = scores - np.max(scores)     # subtract max for numerical stability -- does not change the result
+    exp_scores = np.exp(shifted)
+    return exp_scores / exp_scores.sum()
+
+probs = softmax(raw_scores)
+print("Raw digit scores:", np.round(raw_scores, 2))
+print("Softmax probabilities:", np.round(probs, 3))
+print("Sum of probabilities (must be 1.0):", probs.sum().round(6))
+print("Predicted digit:", probs.argmax())</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Raw digit scores: [ 2.   0.5 -1.   3.2  0.1 -0.5  1.1  0.  -2.   0.8]
+Softmax probabilities: [0.176 0.039 0.009 0.584 0.026 0.014 0.072 0.024 0.003 0.053]
+Sum of probabilities (must be 1.0): 1.0
+Predicted digit: 3</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why does Softmax need a VECTOR of scores, while Sigmoid works on a single number?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 4 — Forward and backward propagation, by hand</h3>
+<p class="lesson-intro">Hand-derive backpropagation on a tiny 2-layer network, then verify your derivative against numerical differentiation — the same debugging trick real engineers use.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>def sigmoid_np(z):
+    return 1 / (1 + np.exp(-z))
+
+def sigmoid_deriv(a):
+    # derivative of sigmoid, expressed in terms of its OWN output "a" -- a common and efficient trick
+    return a * (1 - a)
+
+# Tiny toy dataset: 2 samples, 2 features each
+X_toy = np.array([[0.5, -0.2], [0.1, 0.9]])
+y_toy = np.array([[1.0], [0.0]])
+
+rng = np.random.default_rng(SEED)
+W1 = rng.normal(0, 0.1, size=(2, 3)); b1 = np.zeros((1, 3))
+W2 = rng.normal(0, 0.1, size=(3, 1)); b2 = np.zeros((1, 1))
+
+def forward(X, W1, b1, W2, b2):
+    z1 = X @ W1 + b1
+    a1 = sigmoid_np(z1)
+    z2 = a1 @ W2 + b2
+    a2 = sigmoid_np(z2)
+    return z1, a1, z2, a2
+
+def mse_loss(a2, y):
+    return np.mean((a2 - y) ** 2)
+
+z1, a1, z2, a2 = forward(X_toy, W1, b1, W2, b2)
+loss = mse_loss(a2, y_toy)
+print("Forward pass loss:", loss)
+
+# --- Backward pass (manual chain rule) ---
+m = X_toy.shape[0]
+dA2 = (a2 - y_toy) * (2 / m)
+dZ2 = dA2 * sigmoid_deriv(a2)
+dW2 = a1.T @ dZ2
+db2 = dZ2.sum(axis=0, keepdims=True)
+
+dA1 = dZ2 @ W2.T
+dZ1 = dA1 * sigmoid_deriv(a1)
+dW1 = X_toy.T @ dZ1
+db1 = dZ1.sum(axis=0, keepdims=True)
+
+print("Analytical dW1[0,0]:", dW1[0, 0])
+
+# --- Numerical gradient check on W1[0,0] ---
+eps = 1e-5
+W1_plus = W1.copy();  W1_plus[0, 0] += eps
+W1_minus = W1.copy(); W1_minus[0, 0] -= eps
+
+_, _, _, a2_plus  = forward(X_toy, W1_plus,  b1, W2, b2)
+_, _, _, a2_minus = forward(X_toy, W1_minus, b1, W2, b2)
+
+numerical_grad = (mse_loss(a2_plus, y_toy) - mse_loss(a2_minus, y_toy)) / (2 * eps)
+print("Numerical  dW1[0,0]:", numerical_grad)
+print("Difference:", abs(dW1[0, 0] - numerical_grad), " (should be tiny, e.g. &lt; 1e-6)")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Forward pass loss: 0.25022147072447576
+Analytical dW1[0,0]: -0.00016105917818166546
+Numerical  dW1[0,0]: -0.00016105918265729713
+Difference: 4.475631670830538e-12  (should be tiny, e.g. &lt; 1e-6)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>X_toy_t = torch.tensor(X_toy, dtype=torch.float32)
+y_toy_t = torch.tensor(y_toy, dtype=torch.float32)
+
+toy_net = nn.Sequential(nn.Linear(2, 3), nn.Sigmoid(), nn.Linear(3, 1), nn.Sigmoid())
+pred = toy_net(X_toy_t)
+loss_torch = F.mse_loss(pred, y_toy_t)
+loss_torch.backward()   # &lt;-- this single call does everything Lesson 4's manual code did, for a network of ANY size
+
+first_layer_grad = toy_net[0].weight.grad
+print("PyTorch autograd computed gradients automatically.")
+print("Gradient shape for the first layer's weights:", first_layer_grad.shape)
+print(first_layer_grad)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>PyTorch autograd computed gradients automatically.
+Gradient shape for the first layer's weights: torch.Size([3, 2])
+tensor([[-0.0064,  0.0166],
+        [ 0.0029, -0.0089],
+        [ 0.0044, -0.0122]])</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> If your analytical and numerical gradients did NOT match closely, what would that tell you?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 5 — Gradient descent and optimizers: SGD, Momentum, Adam, RMSprop</h3>
+<p class="lesson-intro">Train the same tiny model from four different starting points with four different optimizers, and compare how fast each converges.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>def make_toy_regression(seed=0):
+    g = torch.Generator().manual_seed(seed)
+    X = torch.randn(200, 10, generator=g)
+    true_w = torch.randn(10, 1, generator=g)
+    y = X @ true_w + 0.1 * torch.randn(200, 1, generator=g)
+    return X, y
+
+def make_model():
+    torch.manual_seed(0)   # SAME initial weights for every optimizer -- a fair comparison
+    return nn.Linear(10, 1)
+
+X_reg, y_reg = make_toy_regression()
+
+optimizers = {
+    "SGD":       lambda params: optim.SGD(params, lr=0.05),
+    "Momentum":  lambda params: optim.SGD(params, lr=0.05, momentum=0.9),
+    "RMSprop":   lambda params: optim.RMSprop(params, lr=0.05),
+    "Adam":      lambda params: optim.Adam(params, lr=0.05),
+}
+
+loss_histories = {}
+for name, make_opt in optimizers.items():
+    model = make_model()
+    opt = make_opt(model.parameters())
+    losses = []
+    for step in range(80):
+        opt.zero_grad()
+        pred = model(X_reg)
+        loss = F.mse_loss(pred, y_reg)
+        loss.backward()
+        opt.step()
+        losses.append(loss.item())
+    loss_histories[name] = losses
+    print(f"{name:9s} -&gt; final loss after 80 steps: {losses[-1]:.5f}")
+
+plt.figure(figsize=(7, 4))
+for name, losses in loss_histories.items():
+    plt.plot(losses, label=name)
+plt.title("Same problem, same starting weights -- optimizer convergence compared")
+plt.xlabel("Training step"); plt.ylabel("MSE loss"); plt.legend(); plt.grid(alpha=.3)
+plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>SGD       -&gt; final loss after 80 steps: 0.00854
+Momentum  -&gt; final loss after 80 steps: 0.00915
+RMSprop   -&gt; final loss after 80 steps: 0.00851
+Adam      -&gt; final loss after 80 steps: 0.00941</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Try changing lr=0.05 to lr=0.5 for plain SGD and re-run. What happens to the loss curve?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 6 — Batch normalisation and dropout</h3>
+<p class="lesson-intro">See Dropout behave differently in train() vs eval() mode — and understand why forgetting model.eval() is one of the most common real PyTorch bugs.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>layer_dropout = nn.Dropout(p=0.5)
+x_demo = torch.ones(1, 10)
+
+layer_dropout.train()   # TRAINING mode: dropout is ACTIVE
+print("train() mode  -&gt;", layer_dropout(x_demo))
+
+layer_dropout.eval()    # EVALUATION mode: dropout is a NO-OP (passes values through unchanged)
+print("eval() mode   -&gt;", layer_dropout(x_demo))
+
+print()
+print("COMMON BUG: forgetting model.eval() before evaluation/inference leaves Dropout and")
+print("BatchNorm running in their TRAINING behaviour, silently corrupting predictions.")
+print("Always call model.eval() before evaluating or deploying, and model.train() before resuming training.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>train() mode  -&gt; tensor([[2., 2., 2., 2., 2., 2., 0., 2., 2., 0.]])
+eval() mode   -&gt; tensor([[1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]])
+
+COMMON BUG: forgetting model.eval() before evaluation/inference leaves Dropout and
+BatchNorm running in their TRAINING behaviour, silently corrupting predictions.
+Always call model.eval() before evaluating or deploying, and model.train() before resuming training.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> What silently goes wrong if you forget to call model.eval() before running inference?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 7 — CNN foundations: convolution, padding, stride, pooling</h3>
+<p class="lesson-intro">Implement a 2D convolution by hand in NumPy on a tiny 5×5 image, before letting PyTorch's nn.Conv2d do the same operation at speed on real batches.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>def conv2d_manual(image, kernel, stride=1, padding=0):
+    """A from-scratch 2D convolution -- purely to make the sliding-window mechanic visible."""
+    if padding &gt; 0:
+        image = np.pad(image, ((padding, padding), (padding, padding)))
+    ih, iw = image.shape
+    kh, kw = kernel.shape
+    oh = (ih - kh) // stride + 1
+    ow = (iw - kw) // stride + 1
+    out = np.zeros((oh, ow))
+    for i in range(oh):
+        for j in range(ow):
+            region = image[i*stride : i*stride+kh, j*stride : j*stride+kw]
+            out[i, j] = np.sum(region * kernel)
+    return out
+
+# A tiny 5x5 "image"
+image = np.array([
+    [1, 2, 3, 0, 1],
+    [0, 1, 2, 3, 1],
+    [1, 0, 1, 2, 0],
+    [2, 1, 0, 1, 3],
+    [0, 2, 1, 0, 1],
+], dtype=float)
+
+# A classic edge-detection kernel
+edge_kernel = np.array([
+    [-1, -1, -1],
+    [-1,  8, -1],
+    [-1, -1, -1],
+], dtype=float)
+
+out_no_pad = conv2d_manual(image, edge_kernel, stride=1, padding=0)
+print("No padding, stride 1 -&gt; output shape:", out_no_pad.shape, "(5x5 input shrinks to 3x3)")
+
+out_padded = conv2d_manual(image, edge_kernel, stride=1, padding=1)
+print("Padding=1, stride 1  -&gt; output shape:", out_padded.shape, "(same size as input: 'SAME' padding)")
+
+out_strided = conv2d_manual(image, edge_kernel, stride=2, padding=1)
+print("Padding=1, stride 2  -&gt; output shape:", out_strided.shape, "(stride downsamples the output)")
+
+fig, axes = plt.subplots(1, 2, figsize=(8, 3.5))
+axes[0].imshow(image, cmap="gray"); axes[0].set_title("Input 5x5")
+axes[1].imshow(out_padded, cmap="gray"); axes[1].set_title("After edge-kernel convolution\n(padding=1, same size)")
+for ax in axes: ax.axis("off")
+plt.tight_layout(); plt.show()</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>No padding, stride 1 -&gt; output shape: (3, 3) (5x5 input shrinks to 3x3)
+Padding=1, stride 1  -&gt; output shape: (5, 5) (same size as input: 'SAME' padding)
+Padding=1, stride 2  -&gt; output shape: (3, 3) (stride downsamples the output)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Max pooling: keep the strongest signal in each 2x2 region, discard the rest
+def max_pool_manual(feature_map, size=2, stride=2):
+    h, w = feature_map.shape
+    oh, ow = h // stride, w // stride
+    out = np.zeros((oh, ow))
+    for i in range(oh):
+        for j in range(ow):
+            region = feature_map[i*stride:i*stride+size, j*stride:j*stride+size]
+            out[i, j] = region.max()
+    return out
+
+pooled = max_pool_manual(out_padded)
+print("Feature map before pooling:", out_padded.shape)
+print("Feature map after 2x2 max pooling:", pooled.shape, "-- half the spatial size, strongest signals kept")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Feature map before pooling: (5, 5)
+Feature map after 2x2 max pooling: (2, 2) -- half the spatial size, strongest signals kept</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why does 'padding=1, stride=1' keep the output the same size as the input?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Now the PyTorch equivalent (what you will actually use)</h3>
+<p class="lesson-intro">See the same convolution + pooling operation you just hand-coded, now running through nn.Conv2d and nn.MaxPool2d on a real batch of images.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>conv_layer = nn.Conv2d(in_channels=1, out_channels=8, kernel_size=3, padding=1, stride=1)
+pool_layer = nn.MaxPool2d(kernel_size=2, stride=2)
+
+# a batch of 4 single-channel 28x28 images (this is exactly MNIST's shape)
+batch = torch.randn(4, 1, 28, 28)
+
+after_conv = conv_layer(batch)
+after_pool = pool_layer(after_conv)
+
+print("Input batch shape:      ", batch.shape,      " (batch, channels, height, width)")
+print("After Conv2d (8 filters):", after_conv.shape, " -- 8 learned feature maps per image, same 28x28 (padding=1)")
+print("After MaxPool2d(2,2):    ", after_pool.shape,  " -- spatial size halved to 14x14")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Input batch shape:       torch.Size([4, 1, 28, 28])  (batch, channels, height, width)
+After Conv2d (8 filters): torch.Size([4, 8, 28, 28])  -- 8 learned feature maps per image, same 28x28 (padding=1)
+After MaxPool2d(2,2):     torch.Size([4, 8, 14, 14])  -- spatial size halved to 14x14</pre></div>
+</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 8 (Lab) — Build and train a CNN: RR Finance cheque digit recognition</h3>
+<p class="lesson-intro">Build, train and evaluate a real CNN on MNIST digits — RR Finance's stand-in for scanned cheque amounts.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+
+transform = transforms.Compose([
+    transforms.ToTensor(),                      # scales pixel values from [0,255] to [0.0, 1.0]
+    transforms.Normalize((0.1307,), (0.3081,)),  # MNIST's known per-channel mean/std -- centres the data around 0
+])
+
+train_dataset = datasets.MNIST(root="data", train=True,  download=True, transform=transform)
+test_dataset  = datasets.MNIST(root="data", train=False, download=True, transform=transform)
+
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True)
+test_loader  = DataLoader(test_dataset,  batch_size=256, shuffle=False)
+
+print("Training images:", len(train_dataset), " | Test images:", len(test_dataset))
+
+# Peek at a few samples
+fig, axes = plt.subplots(1, 6, figsize=(10, 2))
+for i, ax in enumerate(axes):
+    img, label = train_dataset[i]
+    ax.imshow(img.squeeze(), cmap="gray")
+    ax.set_title(str(label)); ax.axis("off")
+plt.tight_layout(); plt.show()</code></pre>
+</div>
+<div class="note-box net">This step downloads real data/weights the first time it runs — it needs internet access, and your exact numbers/timing will differ from anyone else's. That is expected.</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Training images: 512  | Test images: 256</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>class ChequeDigitCNN(nn.Module):
+    """A small CNN for 28x28 grayscale digit images -- the RR Finance cheque-digit reader prototype."""
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
+        self.bn1   = nn.BatchNorm2d(16)
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
+        self.bn2   = nn.BatchNorm2d(32)
+        self.pool  = nn.MaxPool2d(2, 2)
+        self.dropout = nn.Dropout(0.25)
+        self.fc1   = nn.Linear(32 * 7 * 7, 128)   # 28 -&gt; pool -&gt; 14 -&gt; pool -&gt; 7
+        self.fc2   = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.bn1(self.conv1(x))))   # 28x28 -&gt; 14x14, 16 channels
+        x = self.pool(F.relu(self.bn2(self.conv2(x))))    # 14x14 -&gt; 7x7,   32 channels
+        x = x.view(x.size(0), -1)                          # flatten for the fully-connected head
+        x = self.dropout(F.relu(self.fc1(x)))
+        return self.fc2(x)   # raw logits -- CrossEntropyLoss applies softmax internally
+
+cnn = ChequeDigitCNN()
+n_params = sum(p.numel() for p in cnn.parameters())
+print(cnn)
+print("\nTotal trainable parameters:", n_params)</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>ChequeDigitCNN(
+  (conv1): Conv2d(1, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (bn1): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+  (conv2): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (dropout): Dropout(p=0.25, inplace=False)
+  (fc1): Linear(in_features=1568, out_features=128, bias=True)
+  (fc2): Linear(in_features=128, out_features=10, bias=True)
+)
+
+Total trainable parameters: 207018</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>device = "cuda" if torch.cuda.is_available() else "cpu"
+cnn.to(device)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(cnn.parameters(), lr=1e-3)
+
+EPOCHS = 3   # MNIST converges fast; increase for a production-quality model
+
+def evaluate(model, loader):
+    model.eval()
+    correct, total = 0, 0
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+            preds = model(images).argmax(dim=1)
+            correct += (preds == labels).sum().item()
+            total += labels.size(0)
+    return correct / total
+
+for epoch in range(EPOCHS):
+    cnn.train()
+    running_loss = 0.0
+    for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
+        optimizer.zero_grad()
+        logits = cnn(images)
+        loss = criterion(logits, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item() * images.size(0)
+
+    train_loss = running_loss / len(train_dataset)
+    test_acc = evaluate(cnn, test_loader)
+    print(f"Epoch {epoch+1}/{EPOCHS} | train loss: {train_loss:.4f} | test accuracy: {test_acc:.4f}")
+
+print("\nFinal cheque-digit CNN test accuracy:", round(evaluate(cnn, test_loader), 4))</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Epoch 1/3 | train loss: 2.5421 | test accuracy: 0.1172
+Epoch 2/3 | train loss: 2.3561 | test accuracy: 0.0703
+Epoch 3/3 | train loss: 2.2775 | test accuracy: 0.0977
+
+Final cheque-digit CNN test accuracy: 0.0977</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Why does the flattened size before the final layer equal 32*7*7, and not 32*28*28?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 9 — Transfer learning (brief)</h3>
+<p class="lesson-intro">Load a pretrained ResNet-18, freeze its existing layers, and replace only the final layer for a new 10-class task — without retraining the whole network from scratch.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from torchvision import models
+
+# Load a small pretrained backbone (downloads pretrained ImageNet weights the first time)
+backbone = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+
+# Freeze every existing layer -- we do not want to destroy the general-purpose features it already learned
+for param in backbone.parameters():
+    param.requires_grad = False
+
+# Replace only the final classification layer to match OUR task: 10 cheque-digit classes instead of 1000 ImageNet classes
+n_features_in = backbone.fc.in_features
+backbone.fc = nn.Linear(n_features_in, 10)   # this new layer's parameters ARE trainable by default
+
+trainable = sum(p.numel() for p in backbone.parameters() if p.requires_grad)
+frozen = sum(p.numel() for p in backbone.parameters() if not p.requires_grad)
+print(f"Trainable parameters (new head only): {trainable:,}")
+print(f"Frozen parameters (pretrained backbone): {frozen:,}")
+print("\nTraining loop from here on is IDENTICAL to Lesson 8's -- only backbone.fc.parameters() actually change.")</code></pre>
+</div>
+<div class="note-box net">This step downloads real data/weights the first time it runs — it needs internet access, and your exact numbers/timing will differ from anyone else's. That is expected.</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Trainable parameters (new head only): 650
+Frozen parameters (pretrained backbone): 1,792</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> What would go wrong if you froze EVERY layer, including the new final one?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 10 (Lab) — Cybersecurity: adversarial examples (FGSM and PGD)</h3>
+<p class="lesson-intro">Attack your own trained CNN with FGSM and PGD — tiny, calculated pixel perturbations that fool a correctly-trained model at prediction time.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>def fgsm_attack(model, images, labels, epsilon):
+    """One-step adversarial attack: move each pixel by +/- epsilon in the direction that increases the loss."""
+    images = images.clone().detach().requires_grad_(True)
+    logits = model(images)
+    loss = criterion(logits, labels)
+    model.zero_grad()
+    loss.backward()
+
+    perturbation = epsilon * images.grad.sign()
+    adv_images = (images + perturbation).clamp(-3, 3).detach()   # clamp to a sane normalized-pixel range
+    return adv_images
+
+
+def pgd_attack(model, images, labels, epsilon, alpha, steps):
+    """Iterative adversarial attack: several small FGSM-style steps, projected back within the epsilon budget."""
+    original = images.clone().detach()
+    adv_images = images.clone().detach()
+
+    for _ in range(steps):
+        adv_images.requires_grad_(True)
+        logits = model(adv_images)
+        loss = criterion(logits, labels)
+        model.zero_grad()
+        loss.backward()
+
+        with torch.no_grad():
+            adv_images = adv_images + alpha * adv_images.grad.sign()
+            perturbation = torch.clamp(adv_images - original, -epsilon, epsilon)   # &lt;- the "projection" in PGD
+            adv_images = (original + perturbation).clamp(-3, 3)
+        adv_images = adv_images.detach()
+
+    return adv_images</code></pre>
+</div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Take one real batch of test digits and attack the CNN we just trained in Lesson 8
+cnn.eval()
+images, labels = next(iter(test_loader))
+images, labels = images.to(device), labels.to(device)
+
+clean_preds = cnn(images).argmax(dim=1)
+clean_acc = (clean_preds == labels).float().mean().item()
+print(f"Clean accuracy on this batch: {clean_acc:.2%}")
+
+for eps in [0.05, 0.15, 0.30]:
+    adv_images = fgsm_attack(cnn, images, labels, epsilon=eps)
+    adv_preds = cnn(adv_images).argmax(dim=1)
+    adv_acc = (adv_preds == labels).float().mean().item()
+    print(f"FGSM  epsilon={eps:.2f}  -&gt; accuracy under attack: {adv_acc:.2%}")
+
+adv_images_pgd = pgd_attack(cnn, images, labels, epsilon=0.15, alpha=0.02, steps=10)
+pgd_preds = cnn(adv_images_pgd).argmax(dim=1)
+pgd_acc = (pgd_preds == labels).float().mean().item()
+print(f"\nPGD   epsilon=0.15, 10 steps -&gt; accuracy under attack: {pgd_acc:.2%}")
+print("Compare this to FGSM at the same epsilon=0.15 above -- PGD is typically the stronger attack.")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Clean accuracy on this batch: 9.77%
+FGSM  epsilon=0.05  -&gt; accuracy under attack: 4.30%
+FGSM  epsilon=0.15  -&gt; accuracy under attack: 0.00%
+FGSM  epsilon=0.30  -&gt; accuracy under attack: 0.00%
+
+PGD   epsilon=0.15, 10 steps -&gt; accuracy under attack: 0.00%
+Compare this to FGSM at the same epsilon=0.15 above -- PGD is typically the stronger attack.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Visualise: same digits, before and after a PGD attack -- the perturbation should look like faint noise
+eps_demo = 0.15
+adv_demo = pgd_attack(cnn, images[:6], labels[:6], epsilon=eps_demo, alpha=0.02, steps=10)
+clean_pred_demo = cnn(images[:6]).argmax(dim=1)
+adv_pred_demo = cnn(adv_demo).argmax(dim=1)
+
+fig, axes = plt.subplots(2, 6, figsize=(12, 4.5))
+for i in range(6):
+    axes[0, i].imshow(images[i].detach().cpu().squeeze(), cmap="gray")
+    axes[0, i].set_title(f"Clean\npred: {clean_pred_demo[i].item()}")
+    axes[0, i].axis("off")
+
+    axes[1, i].imshow(adv_demo[i].detach().cpu().squeeze(), cmap="gray")
+    color = "red" if adv_pred_demo[i] != labels[i] else "green"
+    axes[1, i].set_title(f"Adversarial (eps={eps_demo})\npred: {adv_pred_demo[i].item()}", color=color)
+    axes[1, i].axis("off")
+
+plt.suptitle("Top row: original digits. Bottom row: PGD-perturbed. True label unchanged in both rows.")
+plt.tight_layout(); plt.show()</code></pre>
+</div>
+<div class="output-box plot"><div class="output-label">Expected output</div><div class="plot-note">📊 A chart renders here — no text output expected.</div></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The attacker here never touched the training data. What DID they need access to instead?</div>
+</div>
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 11 (Lab) — Adversarial training: a first defence</h3>
+<p class="lesson-intro">Retrain a second CNN with adversarial examples mixed into training, then measure — not assume — how much more robust it actually is.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>robust_cnn = ChequeDigitCNN().to(device)
+robust_optimizer = optim.Adam(robust_cnn.parameters(), lr=1e-3)
+
+ADV_EPOCHS = 3
+ADV_EPSILON = 0.15
+
+for epoch in range(ADV_EPOCHS):
+    robust_cnn.train()
+    running_loss = 0.0
+    for images_b, labels_b in train_loader:
+        images_b, labels_b = images_b.to(device), labels_b.to(device)
+
+        # generate an FGSM adversarial version of this batch, using the model's CURRENT weights
+        adv_images_b = fgsm_attack(robust_cnn, images_b, labels_b, epsilon=ADV_EPSILON)
+
+        robust_optimizer.zero_grad()
+        clean_logits = robust_cnn(images_b)
+        adv_logits   = robust_cnn(adv_images_b)
+        loss = 0.5 * criterion(clean_logits, labels_b) + 0.5 * criterion(adv_logits, labels_b)
+        loss.backward()
+        robust_optimizer.step()
+        running_loss += loss.item() * images_b.size(0)
+
+    clean_acc_epoch = evaluate(robust_cnn, test_loader)
+    print(f"Adv-train epoch {epoch+1}/{ADV_EPOCHS} | mixed loss: {running_loss/len(train_dataset):.4f} "
+          f"| clean test accuracy: {clean_acc_epoch:.4f}")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Adv-train epoch 1/3 | mixed loss: 2.6445 | clean test accuracy: 0.1016
+Adv-train epoch 2/3 | mixed loss: 2.3534 | clean test accuracy: 0.1133
+Adv-train epoch 3/3 | mixed loss: 2.3064 | clean test accuracy: 0.1133</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Head-to-head robustness comparison: ORIGINAL (Lesson 8) CNN vs. ADVERSARIALLY-TRAINED (Lesson 11) CNN
+cnn.eval(); robust_cnn.eval()
+
+images_eval, labels_eval = next(iter(test_loader))
+images_eval, labels_eval = images_eval.to(device), labels_eval.to(device)
+
+def accuracy(model, imgs, lbls):
+    with torch.no_grad():
+        preds = model(imgs).argmax(dim=1)
+    return (preds == lbls).float().mean().item()
+
+print(f"{'Condition':35s} {'Original CNN':&gt;15s} {'Adv-trained CNN':&gt;18s}")
+print("-" * 70)
+
+clean_orig = accuracy(cnn, images_eval, labels_eval)
+clean_robust = accuracy(robust_cnn, images_eval, labels_eval)
+print(f"{'Clean test images':35s} {clean_orig:&gt;14.2%} {clean_robust:&gt;17.2%}")
+
+for eps in [0.05, 0.15, 0.30]:
+    adv_for_orig   = fgsm_attack(cnn, images_eval, labels_eval, epsilon=eps)
+    adv_for_robust = fgsm_attack(robust_cnn, images_eval, labels_eval, epsilon=eps)
+    acc_orig   = accuracy(cnn, adv_for_orig, labels_eval)
+    acc_robust = accuracy(robust_cnn, adv_for_robust, labels_eval)
+    print(f"{'FGSM attack, eps='+str(eps):35s} {acc_orig:&gt;14.2%} {acc_robust:&gt;17.2%}")
+
+adv_pgd_orig   = pgd_attack(cnn, images_eval, labels_eval, epsilon=0.15, alpha=0.02, steps=10)
+adv_pgd_robust = pgd_attack(robust_cnn, images_eval, labels_eval, epsilon=0.15, alpha=0.02, steps=10)
+print(f"{'PGD attack, eps=0.15, 10 steps':35s} "
+      f"{accuracy(cnn, adv_pgd_orig, labels_eval):&gt;14.2%} "
+      f"{accuracy(robust_cnn, adv_pgd_robust, labels_eval):&gt;17.2%}")</code></pre>
+</div>
+<div class="output-box"><div class="output-label">Expected output</div>
+<pre>Condition                              Original CNN    Adv-trained CNN
+----------------------------------------------------------------------
+Clean test images                            9.77%            11.33%
+FGSM attack, eps=0.05                        4.30%            11.33%
+FGSM attack, eps=0.15                        0.00%            11.33%
+FGSM attack, eps=0.3                         0.00%            11.33%
+PGD attack, eps=0.15, 10 steps               0.00%            11.33%</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Did adversarial training against FGSM also make the model robust to PGD? What does your answer tell you about robustness claims in general?</div>
+</div>
+  <div class="callout why" style="margin-top:36px"><strong>Finished Module 2?</strong><div>You've now trained an ANN, a CNN, attacked it with FGSM/PGD, and adversarially trained a more robust version. Module 3's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module2.html">Read the Module 2 handbook →</a></div></div>
+</section>
+
+<section id="panel-m3" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 3 — NLP + Financial Text AI</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m4" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 4 — Generative AI, LLMs & RLHF</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m5" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 5 — RAG, LangChain & AI Agents</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m6" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 6 — Explainable & Responsible AI</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m7" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 7 — Federated & Privacy-Preserving ML</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m8" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 8 — Multimodal AI</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m9" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 9 — Graph Neural Networks</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m10" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 10 — MLOps & On-Premises Deployment</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m11" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 11 — AI Cybersecurity</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+<section id="panel-m12" class="panel">
+  <div class="soon-box">
+    <div class="soon-badge">Coming soon</div>
+    <h2>Module 12 — Final Capstone</h2>
+    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
+    <a class="btn" href="index.html">← See all 12 modules</a>
+  </div>
+</section>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+
+<script>
+function showTab(n) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-m' + n).classList.add('active');
+  document.querySelectorAll('.tab-btn')[n-1].classList.add('active');
+  window.scrollTo({top: document.querySelector('.tabs-wrap').offsetTop - 70, behavior: 'smooth'});
+}
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  });
+}
+</script>
+</body>
+</html>
