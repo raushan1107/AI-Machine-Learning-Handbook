@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 3 Handbook | NLP + Financial Text AI</title>
+<meta name="description" content="Module 3 theory handbook: what each NLP technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module2.html">← Module 2</a>
+    <a class="dl" href="reference-notebooks/module3.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–2</a>
+    <a href="#foundation">Why text needs its own tools</a>
+    <h3>Concepts</h3>
+    <a href="#bow-tfidf">1 · Bag-of-Words &amp; TF-IDF</a>
+    <a href="#word2vec">2 · Word2Vec</a>
+    <a href="#contextual">3 · Contextual embeddings (BERT)</a>
+    <a href="#ner">4 · Named Entity Recognition</a>
+    <a href="#ner-finetune">5 · Fine-tuning NER</a>
+    <a href="#sentiment">6 · Sentiment analysis</a>
+    <a href="#event-study">7 · Event study</a>
+    <a href="#absa">8 · Aspect-based sentiment</a>
+    <a href="#prompt-injection">9 · Prompt injection</a>
+    <a href="#pii">10 · PII redaction</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 4</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 3 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 3 — <span>NLP + Financial Text AI</span></h1>
+  <p>Same theory-first structure as Modules 1 and 2: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Modules 1 and 2 worked on numbers and pixels; Module 3 adds a third kind of input entirely — free-flowing text — and the techniques here exist because text doesn't arrive as a table or a fixed-size grid.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module3.ipynb" download>⬇ Download the Module 3 notebook</a>
+    <a class="btn" href="module2.html">← Back to Module 2</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 3 is not a fresh start. Here's exactly what it inherits before adding text as a new capability.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>A validated 800-row loan-risk dataset, a logistic-regression baseline (ROC-AUC ≈ 0.70), an Isolation Forest anomaly screen, and a documented data-poisoning defence — all saved as reusable artifacts.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 2</div><p>An ANN benchmarked honestly against the Module 1 baseline, a cheque-digit CNN, and the first inference-time attack (FGSM/PGD adversarial examples) with a measured adversarial-training defence.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 3</strong><div>Everything so far assumed numeric input — a row of ratios, or a grid of pixels. Text is neither. This module's first four lessons exist purely to answer "how do we even turn text into numbers a model can use?" before anything else becomes possible.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why text needs its own techniques</h2>
+  <p class="lead">A sentence has no fixed length the way a 28×28 image always has 784 pixels, and the word "loan" is not a number. How you turn text into numbers is most of what this module teaches — and it brings two new risks with it that pixels and tabular ratios never did.</p>
+  <div class="card-grid">
+    <div class="card"><h3>A librarian, not a conversation partner</h3><p>Bag-of-Words/TF-IDF catalogue which words appear — blind to order and meaning. Contextual embeddings track what each word means given everything around it.</p></div>
+    <div class="card"><h3>A dictionary vs. context</h3><p>Word2Vec gives "bank" one fixed vector. BERT-style contextual embeddings give the same word a different vector depending on the sentence — a fundamentally different idea.</p></div>
+    <div class="card"><h3>Two new attack surfaces</h3><p><strong>Prompt injection</strong> — text trying to hijack instructions, not just describe facts — and <strong>PII exposure</strong>, both explored as this module's security lessons.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: BOW/TFIDF ============ -->
+<section class="concept" id="bow-tfidf">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Bag-of-Words &amp; TF-IDF</h2>
+    <p>The simplest possible way to turn text into numbers — and still a strong baseline today.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>Bag-of-Words</strong> represents a document as raw word counts, ignoring order entirely. <strong>TF-IDF</strong> (Term Frequency–Inverse Document Frequency) refines this by down-weighting words that appear in almost every document and up-weighting words distinctive to a specific one.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1960s–1972</div>
+    Term-frequency weighting in information retrieval dates to 1960s research; <strong>Karen Spärck Jones'</strong> 1972 paper introducing inverse document frequency is the standard citation for the "IDF" half of TF-IDF. This predates deep learning by decades and remains, even today, a fast and surprisingly strong first thing to try.
+  </div>
+
+  <div class="subhead">Alternatives — and why start here</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">TF-IDF</td><td class="picked">Fast, interpretable, no training corpus needed beyond your own documents — the right first baseline before reaching for embeddings</td></tr>
+    <tr><td>Word2Vec (next lesson)</td><td>Captures word meaning/similarity, needs a large training corpus</td></tr>
+    <tr><td>BERT embeddings (Lesson 3)</td><td>Captures context-dependent meaning, needs the most compute and data</td></tr>
+  </table>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need a fast, interpretable baseline classifier over text</li><li>Word order and deep context matter less than topic/keyword signal</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Word order and meaning genuinely matter — "the bank approved the loan" and "the loan approved the bank" are identical to a bag-of-words model</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's Module 3 notebook builds its news-sentiment baseline on exactly this — a fast, fully local model that reaches production-viable accuracy before anyone reaches for a heavier transformer model.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 2: WORD2VEC ============ -->
+<section class="concept" id="word2vec">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Word2Vec</h2>
+    <p>Giving words meaning by teaching a model to guess them from their neighbours.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Word2Vec learns a dense vector per word by training a shallow neural network to predict a word from its surrounding context (or vice versa) across a large corpus — words used in similar contexts end up with similar vectors, learned entirely without labels.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2013</div>
+    Introduced by <strong>Tomas Mikolov and colleagues at Google</strong>, Word2Vec was a major practical breakthrough — far faster to train than the neural language models that preceded it, and its vectors captured surprisingly linear relationships (the famous "king − man + woman ≈ queen" demonstration), which convinced the field that dense embeddings genuinely encode meaning, not just co-occurrence statistics.
+  </div>
+
+  <div class="subhead">Alternatives — and why Word2Vec's idea still matters</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">Word2Vec</td><td class="picked">Fast, well-understood, the historical breakthrough that made "dense word embeddings" the default — but gives every word exactly ONE vector, regardless of context</td></tr>
+    <tr><td>GloVe</td><td>A similar-era alternative using global co-occurrence statistics rather than a prediction task; comparable quality</td></tr>
+    <tr><td>fastText</td><td>Extends Word2Vec with subword information, handling misspellings and rare words better</td></tr>
+    <tr><td>Contextual embeddings (Lesson 3)</td><td>Solves Word2Vec's core limitation directly — the same word gets different vectors in different contexts</td></tr>
+  </table>
+
+  <div class="callout warn"><strong>A small corpus teaches the mechanism, not the quality</strong><div>The notebook trains Word2Vec on a ~10-sentence demo corpus — intentionally too small to produce reliable embeddings, but large enough to show exactly how the training mechanism works. Real Word2Vec needs a corpus of millions of words; in production you'd almost always load pretrained vectors rather than train from scratch on a small in-house dataset.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A sentiment or NER model that has learned "profits" and "earnings" occupy nearby regions of vector space generalises to headlines using either word — without needing every synonym labelled by hand.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 3: CONTEXTUAL EMBEDDINGS ============ -->
+<section class="concept" id="contextual">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Contextual Embeddings: The Idea Behind BERT</h2>
+    <p>The same word, a different vector, depending on what surrounds it.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A Transformer's <strong>self-attention</strong> mechanism computes each word's representation while looking at every other word in the sentence — so "bank" in "loan from the bank" and "bank" in "river bank" produce genuinely different output vectors, something Word2Vec structurally cannot do.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    The <strong>Transformer</strong> architecture (Vaswani et al., <em>"Attention Is All You Need"</em>) replaced the recurrent networks (RNNs/LSTMs) that previously dominated NLP — those processed text one word at a time and struggled to connect words far apart in a sentence.
+    <div class="yr" style="margin-top:10px">2018</div>
+    <strong>BERT</strong> (Devlin et al., Google) showed that pre-training a large Transformer on masked-word prediction across huge amounts of text, then fine-tuning it for a specific task, dramatically outperformed models trained from scratch per task — a shift the whole field followed, and the direct architectural ancestor of the LLMs in Module 4.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook shows</h4><ul><li>A tiny, fully local, from-scratch transformer encoder proving the mechanism: the same token produces different vectors in different sentences</li><li>Real pretrained BERT loaded from Hugging Face (when internet access allows) for genuinely meaningful contextual embeddings</li></ul></div>
+    <div class="use-box no"><h4>✗ What the toy encoder can't show</h4><ul><li>Untrained weights mean the toy version's exact numbers aren't meaningful — only the mechanism is real. Meaningful values require the pretrained model, or real training on real data.</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Financial text is full of context-dependent words — "credit" (a positive balance, or a risk category), "position" (a job, or a trading exposure), "return" (giving something back, or a financial gain). A model that only sees one fixed vector per word cannot tell these apart; a contextual model can.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 4: NER ============ -->
+<section class="concept" id="ner">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Named Entity Recognition (NER)</h2>
+    <p>Pulling structured facts out of prose.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>NER automatically identifies and labels spans of text as specific entity types — people, organisations, money amounts, dates — turning unstructured prose into structured, extractable facts.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1990s</div>
+    NER as a formal task traces to the <strong>Message Understanding Conferences (MUC)</strong>, originally motivated by extracting facts from news wire text for government and intelligence use.
+    <div class="yr" style="margin-top:10px">2015</div>
+    <strong>spaCy</strong> (Explosion AI) became popular specifically for being fast and production-ready, in deliberate contrast to academic NLP toolkits of the era that prioritised research flexibility over speed — exactly why it's the right first tool for a production-facing lesson like this one.
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A loan officer's free-text case note like "Approved ₹50,000 for Rajesh Kumar on March 15" contains structured data (amount, person, date) trapped in prose — NER extracts it automatically, without a human re-typing it into a form.</div>
+
+  <div class="callout warn"><strong>General-purpose models have gaps</strong><div>A pretrained NER model recognises common entity types well but has no idea "Gold Loan" or "Personal Loan" are meaningful financial-product entities — that gap is exactly what the next lesson closes.</div></div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 5: FINE-TUNING NER ============ -->
+<section class="concept" id="ner-finetune">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Fine-Tuning NER for Domain-Specific Entities</h2>
+    <p>Teaching a general-purpose model your organisation's own vocabulary.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Adding a new entity label (e.g. <code>LOAN_PRODUCT</code>) to an existing pretrained NER pipeline, then training just that component on a small set of labelled examples — far cheaper than training a full NER model from nothing.</p>
+
+  <div class="subhead">Why it exists</div>
+  <div class="history-card">
+    <div class="yr">The general principle: transfer learning for NLP</div>
+    Just as Module 2's CNN transfer learning reused a pretrained image backbone and retrained only the final layer, fine-tuning a pretrained NER pipeline reuses everything the base model already knows about general language structure, adding only the narrow, organisation-specific vocabulary on top.
+  </div>
+
+  <div class="subhead">Alternatives — light fine-tuning vs. full BERT fine-tuning</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">Fine-tune spaCy's existing NER component</td><td class="picked">Works with a handful of labelled examples, fast to train, lower capacity ceiling</td></tr>
+    <tr><td>Fine-tune a BERT-based token classifier</td><td>Higher capacity, generally better with hundreds+ of labelled examples, needs a GPU and meaningfully more time</td></tr>
+  </table>
+
+  <div class="callout ok"><strong>Validated on held-out sentences, not just the training examples</strong><div>The notebook tests the fine-tuned model on sentences it never saw during training — the only honest way to confirm it actually generalised the concept of "loan product," rather than memorising the exact training sentences.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Automatically tagging which loan product a case note discusses turns thousands of free-text notes into structured, queryable data — without a human reading every single one.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 6: SENTIMENT ============ -->
+<section class="concept" id="sentiment">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Sentiment Analysis: TF-IDF Baseline to FinBERT</h2>
+    <p>Classifying financial text as positive, negative or neutral — and why domain matters.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Sentiment analysis classifies text by emotional/evaluative tone. The notebook builds a fast TF-IDF + Logistic Regression baseline (Module 1's classification pattern, applied to text), then shows <strong>FinBERT</strong> — BERT further pretrained specifically on financial text — as the production upgrade.</p>
+
+  <div class="subhead">Why FinBERT exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2019</div>
+    <strong>Dogu Araci</strong> introduced FinBERT by further pretraining BERT on a large corpus of financial text (analyst reports, earnings calls, financial news) before fine-tuning it for sentiment — <strong>domain-adapted pretraining</strong>, not just a bigger generic model. This mattered because general-purpose sentiment models (often trained on movie reviews or tweets) perform poorly on financial text, where the same words carry different connotations: "aggressive growth" is positive, "aggressive accounting" is a red flag.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ When the TF-IDF baseline is enough</h4><ul><li>Text is fairly unambiguous, or you need something fast and fully local with no external dependency</li></ul></div>
+    <div class="use-box no"><h4>✗ When you need FinBERT instead</h4><ul><li>Real financial text is genuinely ambiguous — the notebook's baseline scores near-perfect accuracy on synthetic templates, then is shown honestly for what it is: a demo that doesn't yet face the ambiguity real headlines contain</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>"The company cut costs aggressively to protect margins" is genuinely ambiguous — financial discipline, or a distress signal? A domain-adapted model like FinBERT is built specifically to resolve that kind of context a generic bag-of-words approach cannot.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 7: EVENT STUDY ============ -->
+<section class="concept" id="event-study">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>Event Study: Sentiment vs. Next-Day Returns</h2>
+    <p>Testing whether a signal has real predictive value before trusting it.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>An event study compares outcomes (like next-day stock returns) around a defined event (like a strongly positive or negative news day) to test whether the event actually relates to what happens next — rather than assuming it does because a story sounds plausible.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1969</div>
+    The event-study framework in finance traces to <strong>Fama, Fisher, Jensen and Roll's</strong> paper studying stock splits — the general technique (measure abnormal returns around a defined event) has since been applied to earnings announcements, regulatory changes, and — as done here — news sentiment.
+  </div>
+
+  <div class="callout warn"><strong>Correlation, not proof of causation</strong><div>The notebook's synthetic market is built with a known, modest sentiment effect on purpose, so recovering a real (if noisy) correlation confirms the methodology works. A real event study must also control for confounds — market-wide moves, sector trends, earnings-date proximity — that this simplified demo intentionally sets aside, flagged rather than hidden.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Before any trading or risk system uses news sentiment as an input, this is the standard first check: does sentiment actually correlate with subsequent price movement in this specific market, or is that just an appealing story?</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 8: ABSA ============ -->
+<section class="concept" id="absa">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8</span>
+    <h2>Aspect-Based Sentiment on Earnings Calls</h2>
+    <p>One sentence can be simultaneously positive and negative — about different things.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Aspect-Based Sentiment Analysis (ABSA) assigns sentiment <em>per topic</em> within a document, rather than one blended label for the whole thing — "revenue grew strongly but costs also rose" is positive about revenue and negative about costs at the same time.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Mid-2000s</div>
+    ABSA emerged from product-review mining research — a customer rating a restaurant's "food" highly but its "service" poorly in one review — and was adapted to earnings-call analysis as NLP matured enough to handle longer, more technical financial text.
+  </div>
+
+  <div class="callout danger"><strong>A real, undisguised limitation</strong><div>The notebook's simple keyword-window approach genuinely fails on one of its own three test aspects — sentiment meant for one aspect ("beating guidance") bleeds into a nearby aspect's window ("costs"), producing a misleadingly neutral result where the true sentiment is negative. This is shown directly, not hidden, because it's exactly the limitation that motivates trained aspect-based sentiment models in production.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An analyst listening to an earnings call needs to know sentiment per aspect — revenue, costs, guidance — not one blended number that hides which specific area is actually struggling.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 9: PROMPT INJECTION ============ -->
+<section class="concept" id="prompt-injection">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9 · CYBERSECURITY</span>
+    <h2>Prompt Injection &amp; Evasion Attacks</h2>
+    <p>Text is the first data type in this course anyone can write directly.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>Evasion attacks</strong> manipulate a text classifier's output by exploiting how it represents text (e.g. stuffing buzzwords to shift a TF-IDF vector) without changing the underlying facts. <strong>Prompt injection</strong> specifically targets systems that follow instructions embedded in text, hijacking their behaviour via text crafted to look like a command.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Mid-2000s</div>
+    Adversarial manipulation of text classifiers has been studied since the spam-filter arms race — attackers have always tried to fool automated text systems.
+    <div class="yr" style="margin-top:10px">2022 onward</div>
+    <strong>Prompt injection</strong> specifically is a much more recent term, emerging directly alongside instruction-following LLMs, when researchers and practitioners noticed that text embedded in a document — not just a user's direct chat message — could hijack a language model's behaviour if the system didn't clearly separate "instructions" from "data."
+  </div>
+
+  <table class="alt-table">
+    <tr><th>Attack</th><th>Targets</th><th>Demonstrated how</th></tr>
+    <tr><td class="picked">Evasion (keyword stuffing)</td><td class="picked">Any text classifier, including plain TF-IDF/LogReg</td><td class="picked">Real, working attack in the notebook — buzzwords mechanically shift the model's decision</td></tr>
+    <tr><td>Prompt injection proper</td><td>Instruction-following systems (LLMs)</td><td>Illustrated with a deliberately naive mock system — the real thing arrives with real LLMs in Modules 4–5</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>A different attack surface than Modules 1 and 2</strong><div>The attacker here never touched training data (contrast Module 1's poisoning) and never perturbed pixels (contrast Module 2's FGSM/PGD) — only the input text itself. Text's openness to arbitrary input is precisely what makes it a distinct risk from Modules 1–2's structured numbers and fixed-size images.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If an attacker can manipulate what a sentiment pipeline concludes about a headline — or hijack what instructions an LLM-based report-generation system follows — financial decisions built on that output are compromised without the underlying facts changing at all.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 10: PII ============ -->
+<section class="concept" id="pii">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 10 · CYBERSECURITY</span>
+    <h2>PII Detection &amp; Redaction</h2>
+    <p>Free text leaks personal data in ways a spreadsheet of ratios never does.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Automatically finding and removing personally identifiable information — names, emails, phone numbers, ID numbers — from free text before it flows into training data, logs, or shared reports.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2019</div>
+    PII-detection tooling has existed in enterprise data-loss-prevention products for years, but often as proprietary, closed products. <strong>Microsoft open-sourced Presidio</strong> in 2019, combining pattern matching with NLP-based recognition (using the same NER mechanism as Lesson 4) — a modern, transparent option any team can run locally.
+  </div>
+
+  <div class="subhead">Alternatives — and why combine both</div>
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Regex only</td><td>Transparent and fast for fixed-pattern PII (emails, phone numbers) — but a person's name has no fixed pattern at all, so regex alone structurally cannot catch it</td></tr>
+    <tr><td class="picked">Presidio (NLP + patterns)</td><td class="picked">Catches names via NER, patterns via regex — genuinely more complete, though not perfect (see the honest false-positive finding below)</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>A real false positive, not a hidden one</strong><div>In the notebook's own PII-redaction lab, Presidio mis-tags a PAN code as a person's name alongside correctly catching the real name in the same sentence. This is shown directly: automated PII detection is a <strong>triage tool</strong>, exactly like Module 1's Isolation Forest — it should route text to faster, better-informed human review, not be trusted as a perfect, unsupervised final step. Region-specific identifiers (a PAN is India-specific) often need a custom recognizer added on top of a general-purpose tool.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A loan officer's case note mentioning a customer's name, email and phone number cannot go untouched into a training set or a shared analytics report — this lesson's redaction pipeline is exactly the control that prevents it.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 3 hand-off</h2>
+  <p class="lead">The notebook saves a sentiment baseline model, a fine-tuned NER pipeline recognising loan products, and redacted case-note datasets — extending RR Finance's system with a third data modality alongside Module 1's tables and Module 2's images.</p>
+  <div class="callout why"><strong>What Module 4 builds on this</strong><div>Module 4 (Generative AI, LLMs &amp; RLHF) scales the Transformer mechanism from Lesson 3 — kept deliberately small and local here — up to a real, locally-hosted LLM. The prompt-injection illustration from Lesson 9 stops being a toy mock and becomes a real, red-teamed attack against a real instruction-following model.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module2.html"><span class="n">←</span>Back to Module 2</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+</body>
+</html>
