@@ -85,6 +85,15 @@ td{color:#b9c9d9}
 footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
 @media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
 </style>
 </head>
 <body>
@@ -283,6 +292,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Predicting a continuous number, and taming an old problem: overconfident coefficients.</p>
   </div>
 
+  <div class="lens-tabs" id="regression-tabs"><div class="lens-tab active" onclick="switchLens('regression','overview')">Overview</div><div class="lens-tab" onclick="switchLens('regression','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="regression-overview">
   <div class="subhead">What it is</div>
   <p>Regression predicts a continuous quantity (e.g. expected loan amount) rather than a class. Ridge and Lasso are linear regression with a <em>penalty</em> added that discourages coefficients from growing too large.</p>
 
@@ -315,6 +327,20 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Predicting expected loan amount from income, debt and credit history — all three tend to move together, so plain OLS coefficients would be unstable and hard to trust in a report. Ridge keeps the estimate stable; Lasso would additionally tell you which of those correlated fields is actually pulling its weight.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="regression-math">
+    <div class="math-box">
+<div class="math-expr">OLS: L(w) = Σ(yᵢ − ŷᵢ)²<br>
+Ridge: L(w) = Σ(yᵢ − ŷᵢ)² + λ Σ wⱼ²<br>
+Lasso: L(w) = Σ(yᵢ − ŷᵢ)² + λ Σ |wⱼ|</div>
+<div class="term"><b>Σ(yᵢ − ŷᵢ)²</b> — residual sum of squares: how far predictions are from real values, squared so + and − errors don't cancel and big misses are punished more.</div>
+<div class="term"><b>λ (lambda)</b> — the penalty strength. λ=0 is plain OLS; larger λ shrinks coefficients harder toward zero, trading a little bias for much lower variance.</div>
+<div class="term"><b>Ridge's squared penalty</b> shrinks all weights smoothly toward zero but rarely to exactly zero — it's a smooth bowl-shaped penalty, differentiable everywhere.</div>
+<div class="term"><b>Lasso's absolute-value penalty</b> has a sharp corner at zero — geometrically, the optimum often lands exactly on that corner, zeroing out a coefficient entirely. That's why Lasso does feature selection and Ridge doesn't.</div>
+<div class="term">Both are solved by gradient descent (or closed-form for Ridge: w = (XᵀX + λI)⁻¹Xᵀy) — the +λI term is literally what stabilises the matrix inversion when features are correlated.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 5: CLASSIFICATION ============ -->
@@ -325,6 +351,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>The baseline every later module in this course gets benchmarked against.</p>
   </div>
 
+  <div class="lens-tabs" id="classification-tabs"><div class="lens-tab active" onclick="switchLens('classification','overview')">Overview</div><div class="lens-tab" onclick="switchLens('classification','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="classification-overview">
   <div class="subhead">What it is</div>
   <p>Logistic regression predicts the <em>probability</em> of a binary outcome (default vs. no default) by passing a linear combination of inputs through the sigmoid function, which squashes any real number into the range (0, 1).</p>
 
@@ -357,6 +386,18 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank's underwriting team needs a probability of default they can explain in one sentence to a risk committee: "for every one-unit increase in debt-to-income, the odds of default increase by X%." That sentence is only easy to say about a logistic regression coefficient — it gets much harder for a random forest or neural network.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="classification-math">
+    <div class="math-box">
+<div class="math-expr">p(default) = 1 / (1 + e^−(w·x + b))<br>
+Loss: L = −Σ [yᵢ log(pᵢ) + (1−yᵢ) log(1−pᵢ)]</div>
+<div class="term"><b>w·x + b</b> — the same linear combination as regression, but the raw number can be any real value (−∞ to +∞).</div>
+<div class="term"><b>The sigmoid 1/(1+e⁻ᶻ)</b> squashes that raw number into (0, 1) — a valid probability. As z→+∞, p→1; as z→−∞, p→0.</div>
+<div class="term"><b>Log-loss (cross-entropy)</b> — heavily penalises confident wrong predictions: if the true label is 1 but the model said p=0.01, −log(0.01)≈4.6 is a large penalty; a well-calibrated model minimises this on average.</div>
+<div class="term">Threshold tuning (e.g. moving the decision cutoff from 0.5) trades recall for precision — the sigmoid output is a probability, the 0.5 cutoff is just a convention you can move.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 6: IMBALANCE + SMOTE ============ -->
@@ -367,6 +408,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Why a 90%-accurate model can be catching zero of the cases you actually care about.</p>
   </div>
 
+  <div class="lens-tabs" id="imbalance-tabs"><div class="lens-tab active" onclick="switchLens('imbalance','overview')">Overview</div><div class="lens-tab" onclick="switchLens('imbalance','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="imbalance-overview">
   <div class="subhead">What it is</div>
   <p>When one class (default) is much rarer than the other, a classifier trained naively can achieve high <em>accuracy</em> purely by always predicting the majority class — while being useless at its actual job. SMOTE ("Synthetic Minority Over-sampling Technique") creates synthetic minority-class training examples to counteract this.</p>
 
@@ -394,6 +438,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A model that predicts "no fraud" for every single transaction can be 99.9% accurate in a dataset where 0.1% of transactions are fraudulent — and catch not one real case. This is exactly why fraud, default, and rare-event financial modelling never reports accuracy alone.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="imbalance-math">
+    <div class="math-box">
+<div class="math-expr">SMOTE: x_new = x_i + λ(x_neighbor − x_i), λ ∈ [0,1]<br>
+class_weight: loss weighted by 1/(class frequency)</div>
+<div class="term"><b>SMOTE</b> synthesises new minority-class points by linear interpolation between a real minority point x_i and one of its k-nearest minority neighbours — literally a point somewhere on the line segment between the two.</div>
+<div class="term"><b>class_weight="balanced"</b> instead multiplies each class's contribution to the loss by the inverse of its frequency — the model is penalised more for getting rare-class errors wrong, without inventing any new data points.</div>
+<div class="term">Neither creates real information — both are ways of telling the optimiser "care more about the minority class" than the raw counts would otherwise imply.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 7: KMEANS ============ -->
@@ -404,6 +459,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Finding customer groups with no target label to guide you.</p>
   </div>
 
+  <div class="lens-tabs" id="kmeans-tabs"><div class="lens-tab active" onclick="switchLens('kmeans','overview')">Overview</div><div class="lens-tab" onclick="switchLens('kmeans','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="kmeans-overview">
   <div class="subhead">What it is</div>
   <p>K-Means partitions data into <em>K</em> groups by repeatedly assigning each point to its nearest centroid, then moving each centroid to the average of its assigned points, until the assignments stop changing. It is <strong>unsupervised</strong> — there is no "correct answer" column to learn from.</p>
 
@@ -434,6 +492,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank wants to design different relationship-management outreach for different customer segments, but has no pre-existing "segment" label in its data — K-Means discovers behavioural groupings (e.g. high-income/low-debt vs. high-debt/short-history) directly from the numbers.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="kmeans-math">
+    <div class="math-box">
+<div class="math-expr">Objective: minimise Σₖ Σ_{x∈Cₖ} ‖x − μₖ‖²<br>
+Silhouette(x) = (b−a) / max(a,b)</div>
+<div class="term"><b>‖x − μₖ‖²</b> — squared Euclidean distance from a point to its cluster's centroid μₖ. K-Means alternates: (1) assign each point to its nearest centroid, (2) recompute each centroid as the mean of its assigned points — repeat until stable.</div>
+<div class="term"><b>K-Means++ initialisation</b> picks starting centroids that are far apart from each other (probability of picking a point ∝ its squared distance to the nearest already-chosen centroid), which avoids the classic bad-luck failure mode of random initialisation.</div>
+<div class="term"><b>a</b> = avg. distance to points in the same cluster; <b>b</b> = avg. distance to the nearest other cluster. Silhouette near +1 means well-clustered, near 0 means on a boundary, negative means likely mis-clustered.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 8: DBSCAN ============ -->
@@ -444,6 +513,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Clustering that admits some points just don't belong anywhere.</p>
   </div>
 
+  <div class="lens-tabs" id="dbscan-tabs"><div class="lens-tab active" onclick="switchLens('dbscan','overview')">Overview</div><div class="lens-tab" onclick="switchLens('dbscan','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="dbscan-overview">
   <div class="subhead">What it is</div>
   <p><strong>DBSCAN</strong> ("Density-Based Spatial Clustering of Applications with Noise") groups points that are packed closely together (dense regions), and explicitly labels points in sparse regions as <strong>noise</strong> rather than forcing them into a cluster.</p>
 
@@ -472,6 +544,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Most customers in a transaction dataset behave similarly (one dense cluster); a small number have genuinely unusual patterns that don't resemble any group — DBSCAN's "noise" label is a natural first-pass triage signal for that second group, distinct from forcing them into an arbitrary segment.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="dbscan-math">
+    <div class="math-box">
+<div class="math-expr">Core point: |N_ε(x)| ≥ min_samples<br>
+N_ε(x) = {points within distance ε of x}</div>
+<div class="term"><b>ε (eps)</b> — the neighbourhood radius. <b>min_samples</b> — how many points must fall inside that radius for x to count as a "core point" (dense region).</div>
+<div class="term">Clusters grow by chaining: a core point pulls in every point in its ε-neighbourhood; if any of those are themselves core points, their neighbourhoods get pulled in too — density-connected regions merge into one cluster.</div>
+<div class="term">Points reachable from no core point are labelled <b>noise (−1)</b> — unlike K-Means, DBSCAN doesn't force every point into a cluster, which is exactly why it's suited to anomaly-flavoured tasks.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 9: PCA ============ -->
@@ -482,6 +565,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Compressing many correlated numbers into a view a human can actually look at.</p>
   </div>
 
+  <div class="lens-tabs" id="pca-tabs"><div class="lens-tab active" onclick="switchLens('pca','overview')">Overview</div><div class="lens-tab" onclick="switchLens('pca','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="pca-overview">
   <div class="subhead">What it is</div>
   <p>PCA finds new axes — linear combinations of the original features — ordered by how much of the data's variance they capture, so the first two or three "principal components" often summarise most of the interesting structure in a much smaller space.</p>
 
@@ -508,6 +594,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An analyst staring at a dozen correlated financial ratios per customer cannot visually inspect a 12-dimensional space — PCA's first two components often let them plot the whole customer base on one 2D chart and immediately see where high-risk and low-risk customers roughly separate.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="pca-math">
+    <div class="math-box">
+<div class="math-expr">Cov(X) = (1/n) XᵀX  (X mean-centred)<br>
+Cov(X) v = λv &nbsp; (eigen-decomposition)</div>
+<div class="term"><b>Covariance matrix</b> captures how every feature varies together with every other feature — its eigenvectors point along the directions of maximum spread in the data.</div>
+<div class="term"><b>Eigenvectors v</b> are the new axes (principal components); their <b>eigenvalues λ</b> tell you how much variance each axis explains. Sorting by λ and keeping the top few gives the smallest set of new axes that still explain most of the original variance.</div>
+<div class="term">PCA is a rotation, not a selection — every original feature contributes (with some weight) to every principal component; nothing is literally "dropped," just re-expressed in fewer, uncorrelated dimensions.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 10: UMAP ============ -->
@@ -518,6 +615,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Seeing the non-linear structure PCA is mathematically incapable of showing you.</p>
   </div>
 
+  <div class="lens-tabs" id="umap-tabs"><div class="lens-tab active" onclick="switchLens('umap','overview')">Overview</div><div class="lens-tab" onclick="switchLens('umap','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="umap-overview">
   <div class="subhead">What it is</div>
   <p>UMAP ("Uniform Manifold Approximation and Projection") builds a graph of which points are close to which of their neighbours in the original high-dimensional space, then optimises a low-dimensional layout that tries to preserve those neighbour relationships — capturing non-linear structure PCA's straight-line projections cannot.</p>
 
@@ -547,6 +647,18 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="callout"><strong>Install note</strong><div><code>umap-learn</code> depends on <code>numba</code>, which is sensitive to your NumPy version — a very common classroom install snag. If it fails, try installing in a clean virtual environment before troubleshooting further.</div></div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="umap-math">
+    <div class="math-box">
+<div class="math-expr">High-dim similarity: pᵢⱼ from a fuzzy k-NN graph<br>
+Low-dim similarity: qᵢⱼ = 1/(1+a‖yᵢ−yⱼ‖^{2b})<br>
+Minimise: cross-entropy(p, q)</div>
+<div class="term">UMAP first builds a weighted graph in the original high-dimensional space, connecting each point to its nearest neighbours with edge weights that decay with distance.</div>
+<div class="term">It then optimises a low-dimensional layout (2D/3D) so that the low-dim graph's edge weights (qᵢⱼ) match the high-dim graph's weights (pᵢⱼ) as closely as possible — points that were close/connected up above should end up close together below, via gradient descent on the cross-entropy between the two graphs.</div>
+<div class="term">Unlike PCA (a single linear rotation), this is a non-linear, iterative optimisation — it can unfold curved structure PCA's straight axes cannot capture, at the cost of axes that no longer have a direct "variance explained" meaning.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 11: POISONING ============ -->
@@ -592,6 +704,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Finding the unusual without needing to know what "normal" looks like in advance.</p>
   </div>
 
+  <div class="lens-tabs" id="isolation-forest-tabs"><div class="lens-tab active" onclick="switchLens('isolation-forest','overview')">Overview</div><div class="lens-tab" onclick="switchLens('isolation-forest','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="isolation-forest-overview">
   <div class="subhead">What it is</div>
   <p>Isolation Forest detects anomalies with a genuinely different idea from most other methods: instead of modelling what "normal" looks like and measuring distance from it, it repeatedly makes random splits of the feature space and observes that <strong>anomalies get isolated in fewer splits</strong> than normal points, simply because they're rare and different.</p>
 
@@ -618,6 +733,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank with millions of legitimate records and only a handful of confirmed fraud cases cannot train a normal supervised classifier on "fraud" — there's barely any positive-class data. Isolation Forest needs no fraud labels at all; it just flags what doesn't resemble the bulk of normal activity, for a human analyst to review.</div>
 
   <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="isolation-forest-math">
+    <div class="math-box">
+<div class="math-expr">Anomaly score: s(x,n) = 2^(−E[h(x)] / c(n))<br>
+c(n) ≈ 2·H(n−1) − 2(n−1)/n</div>
+<div class="term"><b>h(x)</b> — the path length to isolate point x: how many random splits (on random features, at random thresholds) it takes before x sits alone in its own partition.</div>
+<div class="term">Anomalies isolate <b>fast</b> — they sit in sparse regions, so a few random splits separate them quickly (short h(x)); normal points need many splits (long h(x)) because they're surrounded by similar points.</div>
+<div class="term"><b>c(n)</b> is the expected path length for normal data of size n, used to normalise; s→1 means "clearly anomalous," s→0.5 means "no clear signal either way," s well below 0.5 means "clearly normal."</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 13: DEFENCE ============ -->
@@ -658,5 +784,15 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
 </footer>
 </main>
 </div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
 </body>
 </html>
