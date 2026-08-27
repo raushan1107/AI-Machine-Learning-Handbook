@@ -89,6 +89,15 @@ td{color:#b9c9d9}
 footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
 @media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
 </style>
 </head>
 <body>
@@ -170,6 +179,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>The simplest possible way to turn text into numbers — and still a strong baseline today.</p>
   </div>
 
+  <div class="lens-tabs" id="bow-tfidf-tabs"><div class="lens-tab active" onclick="switchLens('bow-tfidf','overview')">Overview</div><div class="lens-tab" onclick="switchLens('bow-tfidf','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="bow-tfidf-overview">
   <div class="subhead">What it is</div>
   <p><strong>Bag-of-Words</strong> represents a document as raw word counts, ignoring order entirely. <strong>TF-IDF</strong> (Term Frequency–Inverse Document Frequency) refines this by down-weighting words that appear in almost every document and up-weighting words distinctive to a specific one.</p>
 
@@ -195,6 +207,16 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's Module 3 notebook builds its news-sentiment baseline on exactly this — a fast, fully local model that reaches production-viable accuracy before anyone reaches for a heavier transformer model.</div>
 
   <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="bow-tfidf-math">
+    <div class="math-box">
+<div class="math-expr">TF-IDF(t,d) = tf(t,d) × log(N / dfₜ)</div>
+<div class="term"><b>tf(t,d)</b> — how many times term t appears in document d (raw or normalised count).</div>
+<div class="term"><b>N / dfₜ</b> — total documents divided by the number of documents containing t; the log dampens this ratio. A term in every document (dfₜ=N) gets log(1)=0 weight — driven out entirely. A rare term gets a large multiplier.</div>
+<div class="term">Net effect: common connective words ("the," "and") score near zero everywhere; words distinctive to one document score highest in that document — the "distinctiveness" signal Bag-of-Words alone can't produce.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 2: WORD2VEC ============ -->
@@ -205,6 +227,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Giving words meaning by teaching a model to guess them from their neighbours.</p>
   </div>
 
+  <div class="lens-tabs" id="word2vec-tabs"><div class="lens-tab active" onclick="switchLens('word2vec','overview')">Overview</div><div class="lens-tab" onclick="switchLens('word2vec','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="word2vec-overview">
   <div class="subhead">What it is</div>
   <p>Word2Vec learns a dense vector per word by training a shallow neural network to predict a word from its surrounding context (or vice versa) across a large corpus — words used in similar contexts end up with similar vectors, learned entirely without labels.</p>
 
@@ -228,6 +253,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A sentiment or NER model that has learned "profits" and "earnings" occupy nearby regions of vector space generalises to headlines using either word — without needing every synonym labelled by hand.</div>
 
   <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="word2vec-math">
+    <div class="math-box">
+<div class="math-expr">Skip-gram objective: maximise Σ log P(context | centre)<br>
+P(w_O|w_I) = softmax(v'_O · v_I)</div>
+<div class="term">Skip-gram trains a shallow network to predict surrounding context words from a centre word — the actual prediction task is thrown away after training; what's kept is the learned weight matrix, one row per word, which becomes that word's embedding vector.</div>
+<div class="term">Words used in similar contexts get pushed to similar vectors purely as a side-effect of both being good at predicting similar neighbours — no human ever labels "profits" and "earnings" as related; the training objective does it implicitly.</div>
+<div class="term">Cosine similarity (v₁·v₂ / ‖v₁‖‖v₂‖) between two word vectors — 1 means same direction (similar meaning), 0 means unrelated, −1 means opposite — is the standard way to query the learned space.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 3: CONTEXTUAL EMBEDDINGS ============ -->
@@ -238,6 +274,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>The same word, a different vector, depending on what surrounds it.</p>
   </div>
 
+  <div class="lens-tabs" id="contextual-tabs"><div class="lens-tab active" onclick="switchLens('contextual','overview')">Overview</div><div class="lens-tab" onclick="switchLens('contextual','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="contextual-overview">
   <div class="subhead">What it is</div>
   <p>A Transformer's <strong>self-attention</strong> mechanism computes each word's representation while looking at every other word in the sentence — so "bank" in "loan from the bank" and "bank" in "river bank" produce genuinely different output vectors, something Word2Vec structurally cannot do.</p>
 
@@ -257,6 +296,16 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Financial text is full of context-dependent words — "credit" (a positive balance, or a risk category), "position" (a job, or a trading exposure), "return" (giving something back, or a financial gain). A model that only sees one fixed vector per word cannot tell these apart; a contextual model can.</div>
 
   <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="contextual-math">
+    <div class="math-box">
+<div class="math-expr">Attention(Q,K,V) = softmax(QKᵀ/√d) V</div>
+<div class="term"><b>Q, K, V</b> (query, key, value) are three learned linear projections of every token's embedding. QKᵀ computes, for every pair of tokens, how relevant one is to the other.</div>
+<div class="term">Dividing by <b>√d</b> keeps the dot products from growing too large as dimensionality d increases (which would push softmax into a near-one-hot, hard-to-train regime).</div>
+<div class="term">Softmax turns those relevance scores into weights summing to 1; multiplying by V produces, for each token, a weighted blend of every other token's value vector — literally "how much should this word's output depend on that word," computed fresh for every sentence, which is why the same token "bank" gets a different vector depending on its neighbours.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 4: NER ============ -->
@@ -351,6 +400,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Testing whether a signal has real predictive value before trusting it.</p>
   </div>
 
+  <div class="lens-tabs" id="event-study-tabs"><div class="lens-tab active" onclick="switchLens('event-study','overview')">Overview</div><div class="lens-tab" onclick="switchLens('event-study','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="event-study-overview">
   <div class="subhead">What it is</div>
   <p>An event study compares outcomes (like next-day stock returns) around a defined event (like a strongly positive or negative news day) to test whether the event actually relates to what happens next — rather than assuming it does because a story sounds plausible.</p>
 
@@ -365,6 +417,16 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Before any trading or risk system uses news sentiment as an input, this is the standard first check: does sentiment actually correlate with subsequent price movement in this specific market, or is that just an appealing story?</div>
 
   <a class="notebook-link" href="reference-notebooks/module3.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="event-study-math">
+    <div class="math-box">
+<div class="math-expr">r = Σ(xᵢ−x̄)(yᵢ−ȳ) / √[Σ(xᵢ−x̄)² Σ(yᵢ−ȳ)²]</div>
+<div class="term"><b>Pearson correlation r</b> — measures the strength and direction of a <em>linear</em> relationship between sentiment score and next-day return; ranges from −1 (perfectly inverse) to +1 (perfectly aligned), 0 meaning no linear relationship.</div>
+<div class="term">The numerator is the co-movement of the two series around their means; the denominator normalises by each series' own spread, so r is unitless and comparable across any two variables.</div>
+<div class="term">Correlation says nothing about <b>causation</b> — a real event study also needs to control for confounds (market-wide moves, sector trends) before treating this number as a tradeable signal, exactly the caveat flagged in this lesson.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 8: ABSA ============ -->
@@ -469,5 +531,15 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
 </footer>
 </main>
 </div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
 </body>
 </html>
