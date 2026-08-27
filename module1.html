@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RR Skillverse — Module 1 Handbook | Data Science + Financial Data Analysis</title>
-<meta name="description" content="Module 1 theory handbook: what each algorithm is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<title>RR Skillverse — Module 2 Handbook | Deep Neural Networks</title>
+<meta name="description" content="Module 2 theory handbook: what each deep learning technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
 <meta name="theme-color" content="#07111f">
 <style>
 :root{
@@ -102,8 +102,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
   <nav class="topnav">
     <a href="index.html">← All modules</a>
-    <a class="dl" href="reference-notebooks/module1.ipynb" download>⬇ Notebook</a>
-    <a class="dl" href="data/rr_finance_module1_dataset.csv" download>⬇ Dataset</a>
+    <a href="module1.html">← Module 1</a>
+    <a href="module3.html">Module 3 →</a>
+    <a class="dl" href="reference-notebooks/module2.ipynb" download>⬇ Notebook</a>
   </nav>
 </header>
 
@@ -111,24 +112,21 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
 <aside class="sidebar">
   <div class="nav">
     <h3>Start here</h3>
-    <a href="#foundation">Why Module 1 starts here</a>
-    <a href="#dataset">The RR Finance dataset</a>
+    <a href="#foundation">Why neural networks, now</a>
     <h3>Concepts</h3>
-    <a href="#numpy">1 · NumPy</a>
-    <a href="#pandas">2 · Pandas + EDA</a>
-    <a href="#feature-engineering">3 · Feature engineering</a>
-    <a href="#regression">4 · Ridge &amp; Lasso regression</a>
-    <a href="#classification">5 · Logistic regression</a>
-    <a href="#imbalance">6 · Imbalance + SMOTE</a>
-    <a href="#kmeans">7 · K-Means++</a>
-    <a href="#dbscan">8 · DBSCAN</a>
-    <a href="#pca">9 · PCA</a>
-    <a href="#umap">10 · UMAP</a>
-    <a href="#poisoning">11 · Data poisoning</a>
-    <a href="#isolation-forest">12 · Isolation Forest</a>
-    <a href="#defence">13 · Layered defence</a>
+    <a href="#perceptron">1 · Perceptron</a>
+    <a href="#ann">2 · ANN architecture</a>
+    <a href="#activations">3 · Activation functions</a>
+    <a href="#backprop">4 · Backpropagation</a>
+    <a href="#optimizers">5 · Optimizers</a>
+    <a href="#regularisation">6 · BatchNorm &amp; Dropout</a>
+    <a href="#cnn-foundations">7 · CNN foundations</a>
+    <a href="#cnn-lab">8 · Training a CNN</a>
+    <a href="#transfer-learning">9 · Transfer learning</a>
+    <a href="#adversarial">10 · Adversarial examples</a>
+    <a href="#adversarial-training">11 · Adversarial training</a>
     <h3>Wrap-up</h3>
-    <a href="#handoff">Hand-off to Module 2</a>
+    <a href="#handoff">Hand-off to Module 3</a>
   </div>
 </aside>
 
@@ -136,645 +134,480 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
 <section class="hero">
   <div class="badges">
     <span class="badge">RR Skillverse</span>
-    <span class="badge">Module 1 of 12</span>
+    <span class="badge">Module 2 of 12</span>
     <span class="badge">Theory Handbook</span>
     <span class="badge">Finance + AI + Security</span>
   </div>
-  <h1>Module 1 — <span>Data Science + Financial Data Analysis</span></h1>
-  <p>This page is the <strong>theory layer</strong> for Module 1. For every technique below you get four things before a single line of code matters: <strong>what it is</strong>, <strong>why it exists</strong> (the problem it was invented to solve, and what came before it), <strong>what else you could use instead</strong> and why we picked this one, and <strong>a real financial example</strong> of where it actually gets used. The runnable notebook — where you build, train and attack the RR Finance system yourself — is the companion to this page, not a replacement for it.</p>
+  <h1>Module 2 — <span>Deep Neural Networks</span></h1>
+  <p>Same theory-first structure as Module 1: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific limitation of what came before it — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Module 1 built a logistic-regression baseline; every concept here exists because that baseline has a specific, nameable limit, and this module builds the tool that addresses it.</p>
   <div class="hero-actions">
-    <a class="btn primary" href="reference-notebooks/module1.ipynb" download>⬇ Download the Module 1 notebook</a>
-    <a class="btn" href="data/rr_finance_module1_dataset.csv" download>⬇ Download the dataset</a>
-    <a class="btn" href="module2.html">Continue to Module 2 →</a>
+    <a class="btn primary" href="reference-notebooks/module2.ipynb" download>⬇ Download the Module 2 notebook</a>
+    <a class="btn" href="module1.html">← Back to Module 1</a>
+    <a class="btn" href="index.html">All modules →</a>
   </div>
 </section>
 
 <div class="section" id="foundation">
-  <h2>Why Module 1 starts here</h2>
-  <p class="lead">Before any algorithm, we need to understand the problem: a financial organisation wants better risk decisions from data, and needs the resulting system to be trustworthy. Module 1 answers "what do we build first?"</p>
+  <h2>Why neural networks, and why now</h2>
+  <p class="lead">Module 1's logistic regression is one linear decision boundary. It cannot represent an interaction like "risk is high when debt-to-income is high <em>and</em> credit history is short, but only above a combined threshold" without someone manually engineering that exact interaction term first. That specific gap — not fashion, not hype — is why Module 2 exists.</p>
   <div class="card-grid">
-    <div class="card"><h3>1. Ask the question</h3><p>Are we predicting a number, a class, a group, or an unusual record? Each question points to a different family of techniques — this is the decision tree every concept below fits into.</p></div>
-    <div class="card"><h3>2. Find the evidence</h3><p>Income, debt, credit history are observations, not automatically "risk." Interpreting them is the whole job.</p></div>
-    <div class="card"><h3>3. Choose the tool, not the trend</h3><p>An algorithm is a tool for a specific question, not a trophy. This handbook always asks "why this, not something else?" before touching code.</p></div>
+    <div class="card"><h3>The panel, not the interviewer</h3><p>Logistic regression is one interviewer with a fixed checklist. A neural network is a panel of specialists (hidden neurons), each attuned to a different combination of signals, with a final layer combining their opinions.</p></div>
+    <div class="card"><h3>Pixels aren't ratios</h3><p>A cheque image is not "16 financial ratios" — meaning lives in local spatial patterns. This is the specific reason Module 2 also introduces CNNs, not just deeper tabular networks.</p></div>
+    <div class="card"><h3>A second kind of attack</h3><p>Module 1 showed training data can be poisoned. Module 2 shows a <em>cleanly trained</em> model can still be fooled at prediction time — a different attack surface entirely.</p></div>
   </div>
-  <div class="callout why"><strong>Why this is the foundation for all 12 modules</strong><div>Neural networks (Module 2) still need data. LLMs (Module 4) still need data and evaluation. Agents (Module 5) still depend on retrieval and permissions. Deployment (Module 10) still depends on a model whose training process is understood. Every later module inherits whatever quality — and whatever risk — Module 1 establishes here.</div></div>
 </div>
 
-<div class="section" id="dataset">
-  <h2>The RR Finance dataset</h2>
-  <p class="lead">Every concept below is taught against one real, validated table: 800 customer records with income, debt, loan and credit-history fields, and a binary <code>default</code> outcome. Module 1's notebook spends its first four lessons doing nothing but interrogating this file for problems before declaring it trustworthy — that process, not the specific numbers, is the reusable skill.</p>
-  <table>
-    <tr><th>Column</th><th>Meaning</th></tr>
-    <tr><td><code>annual_income</code>, <code>monthly_debt</code>, <code>loan_amount</code></td><td>Raw financial fields</td></tr>
-    <tr><td><code>credit_score</code>, <code>employment_years</code>, <code>account_age_months</code></td><td>Creditworthiness and history signals</td></tr>
-    <tr><td><code>debt_to_income</code>, <code>loan_to_income</code></td><td>Engineered ratios (see Lesson 3)</td></tr>
-    <tr><td><code>age</code></td><td>Present for exploration, deliberately excluded from every model — see Lesson 5</td></tr>
-    <tr><td><code>default</code></td><td>Target: 1 = defaulted, 0 = did not</td></tr>
-  </table>
-</div>
-
-<!-- ============ CONCEPT 1: NUMPY ============ -->
-<section class="concept" id="numpy">
+<!-- ============ CONCEPT 1: PERCEPTRON ============ -->
+<section class="concept" id="perceptron">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 1</span>
-    <h2>NumPy</h2>
-    <p>The numerical foundation almost everything else in this course sits on top of.</p>
+    <h2>The Perceptron</h2>
+    <p>The smallest possible neural unit — and the historical dead end that explains why depth matters.</p>
   </div>
 
+  <div class="lens-tabs" id="perceptron-tabs"><div class="lens-tab active" onclick="switchLens('perceptron','overview')">Overview</div><div class="lens-tab" onclick="switchLens('perceptron','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="perceptron-overview">
   <div class="subhead">What it is</div>
-  <p>NumPy ("Numerical Python") is a library built around one core object — the <code>ndarray</code> — an n-dimensional grid of numbers of a single type, stored contiguously in memory and operated on by fast, compiled C code instead of the Python interpreter.</p>
+  <p>A perceptron computes a weighted sum of its inputs plus a bias, then applies a threshold: fire (1) if the sum crosses zero, stay silent (0) otherwise. Every neuron in every network in this entire course — up to and including transformers in Module 4 — is a descendant of this one idea.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">1995 → 2005</div>
-    Python's built-in <code>list</code> is flexible but slow for numeric work — every element is a full Python object with its own overhead, and looping over millions of them in pure Python is orders of magnitude slower than compiled code. Two competing array libraries emerged in the 1990s — <strong>Numeric</strong> and the more feature-rich but slower <strong>Numarray</strong> — splitting the scientific Python community. In 2005, <strong>Travis Oliphant</strong> merged their best ideas into <strong>NumPy</strong>, which has been the single standard ever since and now underlies pandas, scikit-learn, PyTorch and almost the entire Python data-science stack.
+    <div class="yr">1958</div>
+    <strong>Frank Rosenblatt</strong>, at the Cornell Aeronautical Laboratory, built the perceptron as a physical machine (the "Mark I Perceptron") intended to learn visual pattern recognition — and it came with real learning rule: adjust weights toward the correct answer after every mistake.
+    <div class="yr" style="margin-top:10px">1969</div>
+    <strong>Marvin Minsky and Seymour Papert</strong> published <em>Perceptrons</em>, mathematically proving a single perceptron <strong>cannot learn XOR</strong> — or any pattern that isn't linearly separable. This result is widely credited with triggering the first "AI winter": funding and interest in neural networks collapsed for over a decade, because the community initially over-generalised the result to mean neural networks in general were a dead end — not just single-layer ones.
+    <div class="yr" style="margin-top:10px">1986</div>
+    The <strong>backpropagation</strong> algorithm (Lesson 4) showed how to train networks with <em>multiple stacked layers</em>, which sidesteps the XOR limitation entirely — the field's real answer to Minsky and Papert's critique, decades later.
   </div>
-
-  <div class="subhead">Alternatives — and why NumPy</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>Plain Python lists + loops</td><td>No installation needed, but 10–100× slower for numeric work at scale</td></tr>
-    <tr><td>Python's built-in <code>array</code> module</td><td>Faster than lists but lacks vectorised math, broadcasting, and linear algebra</td></tr>
-    <tr><td>Write C/Fortran directly</td><td>Fastest possible, but throws away Python's readability and ecosystem</td></tr>
-    <tr><td class="picked">NumPy</td><td class="picked">C-speed vectorised math with Python's syntax — the practical middle ground the whole ecosystem standardised on</td></tr>
-  </table>
 
   <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Data is numeric and homogeneous (all one type)</li><li>You need the same operation applied across thousands/millions of values</li><li>You're about to hand data to pandas, scikit-learn, or PyTorch — they all expect NumPy arrays underneath</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Data is labelled/tabular with mixed types — that's pandas (next lesson), built on top of NumPy</li><li>You need automatic differentiation for training a neural network — that's PyTorch's tensor, a NumPy-like object with gradients attached (Module 2)</li></ul></div>
+    <div class="use-box yes"><h4>✓ What it teaches</h4><ul><li>The exact atomic computation (weighted sum + threshold) every later layer reuses</li><li>Why depth, not just width, was historically necessary</li></ul></div>
+    <div class="use-box no"><h4>✗ What it cannot do alone</h4><ul><li>Represent any pattern that isn't linearly separable — including XOR, and by extension most interesting financial risk interactions</li></ul></div>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Computing debt-to-income for one customer is a single division. Computing it for 500,000 customers overnight, every night, as part of a batch risk report, is a NumPy vectorisation problem — the same formula, applied at scale, without writing a loop.</div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A single perceptron behaves exactly like Module 1's logistic regression at its core — one straight decision boundary. The XOR failure is a toy example, but it stands in for real cases like "flag as risky only when DTI is high <em>and</em> credit history is short, not when only one is true" — a pattern one straight line cannot separate.</div>
 
-  <div class="code-teaser"><code>dti = monthly_debt / (annual_income / 12)</code> — one line, works whether <code>monthly_debt</code> is a single number or an array of 500,000. Full walkthrough: <strong>Notebook, Lesson 1</strong>.</div>
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="perceptron-math">
+    <div class="math-box">
+<div class="math-expr">z = w·x + b;  ŷ = 1 if z≥0 else 0<br>
+Update: w ← w + η(y−ŷ)x</div>
+<div class="term"><b>z = w·x + b</b> — same linear combination as logistic regression, but thresholded hard at 0 instead of passed through a sigmoid.</div>
+<div class="term"><b>Perceptron update rule</b>: only fires when the prediction is wrong (y−ŷ ≠ 0); nudges weights toward the input that was misclassified, scaled by learning rate η.</div>
+<div class="term">Provably converges <b>only if</b> the data is linearly separable (Perceptron Convergence Theorem, 1962) — XOR is not, which is exactly why it loops forever without settling, the historical trigger for multi-layer networks.</div>
+</div>
+  </div>
 </section>
 
-<!-- ============ CONCEPT 2: PANDAS + EDA ============ -->
-<section class="concept" id="pandas">
+<!-- ============ CONCEPT 2: ANN ============ -->
+<section class="concept" id="ann">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 2</span>
-    <h2>Pandas + Exploratory Data Analysis</h2>
-    <p>The table-manipulation layer, and the discipline of distrusting your data until it earns your trust.</p>
+    <h2>ANN Architecture (Feedforward Networks)</h2>
+    <p>Stacking neurons to fix what one perceptron structurally cannot do.</p>
   </div>
 
+  <div class="lens-tabs" id="ann-tabs"><div class="lens-tab active" onclick="switchLens('ann','overview')">Overview</div><div class="lens-tab" onclick="switchLens('ann','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="ann-overview">
   <div class="subhead">What it is</div>
-  <p><strong>Pandas</strong> gives Python a <code>DataFrame</code> — a labelled table, like a spreadsheet or a SQL result set, with named columns of mixed types. <strong>EDA</strong> is not a library at all — it's a process: summarise, visualise, question, and validate a dataset before trusting any model built on it.</p>
+  <p>An Artificial Neural Network (ANN) stacks layers of neurons: an input layer, one or more <strong>hidden</strong> layers, and an output layer. Each layer's output feeds the next layer's input — literally the perceptron equation, repeated and composed.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">2008</div>
-    Pandas was created by <strong>Wes McKinney</strong> while working at <strong>AQR Capital Management</strong>, a quantitative hedge fund — the motivating problem was literally financial time-series and panel data analysis in Python, because the alternative at the time was juggling R, Excel and hand-rolled NumPy code. Pandas' name itself comes from "panel data," an econometrics term. It is worth knowing that a financial institution's specific data-wrangling pain is the direct reason this tool exists.
+    <div class="yr">1986</div>
+    <strong>Rumelhart, Hinton and Williams</strong> published the paper that popularised <strong>backpropagation</strong> (building on earlier, less-noticed work by others through the 1960s–70s), finally giving the field a practical way to train networks with hidden layers. This is the direct technical answer to the 1969 XOR critique — depth solves what a single perceptron cannot.
+    <div class="yr" style="margin-top:10px">1989</div>
+    The <strong>Universal Approximation Theorem</strong> (Cybenko, and later Hornik) proved that even a single hidden layer, given enough neurons, can approximate essentially any continuous function — a mathematical answer to "why does adding layers/width actually help?"
   </div>
 
-  <div class="subhead">Alternatives — and why pandas</div>
+  <div class="subhead">Alternatives — and why an ANN here</div>
   <table class="alt-table">
     <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>SQL directly</td><td>Excellent for querying, weaker for iterative, code-driven exploration and modelling hand-off</td></tr>
-    <tr><td>Excel</td><td>Fast for small, manual exploration; does not scale, is not reproducible, is not version-controllable</td></tr>
-    <tr><td>R's <code>data.frame</code> / <code>dplyr</code></td><td>Mature and elegant, but a separate language/ecosystem from the ML libraries you'll use next</td></tr>
-    <tr><td>Polars (newer)</td><td>Often faster on large data via multi-threading and a Rust core; smaller ecosystem/community than pandas as of today</td></tr>
-    <tr><td class="picked">pandas</td><td class="picked">The default hand-off format to every ML library in this course</td></tr>
+    <tr><td>Logistic regression (Module 1)</td><td>Fast, interpretable, but one linear boundary only</td></tr>
+    <tr><td>Tree-based models (Random Forest, XGBoost)</td><td>Capture non-linear interactions well and often win on small-to-medium tabular data with far less tuning than a neural net</td></tr>
+    <tr><td class="picked">ANN</td><td class="picked">Can represent arbitrary non-linear interactions given enough capacity and data — the trade-off is needing more data, more tuning, and losing easy interpretability</td></tr>
   </table>
 
   <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Data has named, mixed-type columns (numbers, categories, dates)</li><li>You need to filter, group, join or reshape before modelling</li><li>You need to inspect data quality before trusting it</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Data genuinely exceeds memory — that's a distributed-computing problem (Spark, Dask), out of scope for this course</li><li>You only need pure numeric array math — plain NumPy is lighter weight</li></ul></div>
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You suspect genuine feature interactions a linear model can't capture</li><li>You have enough data to support the extra capacity without overfitting</li></ul></div>
+    <div class="use-box no"><h4>✗ Don't reach for it when</h4><ul><li>The dataset is small and the relationship is plausibly linear — Module 2's own notebook shows the ANN <em>losing</em> to logistic regression on RR Finance's real 800-row dataset. That is the honest lesson, not a bug: check the simple model first.</li></ul></div>
   </div>
 
-  <div class="callout warn"><strong>The EDA discipline, not just the syntax</strong><div>Before showing any model, ask: "if I were the data owner, what would I want to know about this table before letting an automated credit decision depend on it?" The notebook's Lessons 1–4 build this habit directly on the real RR Finance file: checking for missing values, duplicates, cross-field consistency (does <code>employment_years</code> fit inside this person's <code>age</code>?), and whether the target label itself behaves the way domain knowledge says it should.</div></div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A large bank with millions of loan records and genuinely complex, interacting risk factors may see a real ANN advantage. A small credit union with a few hundred well-understood cases very often does not — capacity without enough data to fill it just overfits.</div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank's risk team receiving a new data feed from a partner institution runs exactly this kind of check before any model is allowed near it: row counts, null rates, duplicate customer IDs, and whether fields that should logically agree (like age and years employed) actually do.</div>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
 
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  <div class="lens-pane lens-math" id="ann-math">
+    <div class="math-box">
+<div class="math-expr">Layer: a⁽ˡ⁾ = f(W⁽ˡ⁾a⁽ˡ⁻¹⁾ + b⁽ˡ⁾)</div>
+<div class="term">Each layer is a linear step (W·a + b) followed by a non-linear activation f — stack enough of these and the network can approximate arbitrarily complex decision boundaries (Universal Approximation Theorem), which a single perceptron cannot.</div>
+<div class="term">Without the non-linear f between layers, stacking linear layers would collapse mathematically into one single linear layer — depth would buy nothing. The non-linearity is what makes depth meaningful.</div>
+<div class="term">Loss for RR Finance's binary task is the same log-loss / binary cross-entropy as Module 1's logistic regression — the ANN is a more flexible function producing the probability that log-loss then scores.</div>
+</div>
+  </div>
 </section>
 
-<!-- ============ CONCEPT 3: FEATURE ENGINEERING ============ -->
-<section class="concept" id="feature-engineering">
+<!-- ============ CONCEPT 3: ACTIVATIONS ============ -->
+<section class="concept" id="activations">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 3</span>
-    <h2>Feature Engineering</h2>
-    <p>Translating financial reasoning into numbers a model can actually use.</p>
+    <h2>Activation Functions</h2>
+    <p>Without them, depth is mathematically pointless.</p>
   </div>
 
+  <div class="lens-tabs" id="activations-tabs"><div class="lens-tab active" onclick="switchLens('activations','overview')">Overview</div><div class="lens-tab" onclick="switchLens('activations','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="activations-overview">
   <div class="subhead">What it is</div>
-  <p>Feature engineering is the practice of transforming raw fields into new inputs that better expose the pattern a model needs to learn — ratios, rates, counts, time differences — informed by domain knowledge, not by what's easiest to compute.</p>
+  <p>An activation function is a non-linear transformation applied after each layer's weighted sum. <strong>ReLU</strong> (rectified linear unit) is the modern default for hidden layers; <strong>Sigmoid</strong> and <strong>Softmax</strong> are used on output layers for binary and multi-class probabilities respectively.</p>
 
-  <div class="subhead">Why it exists — the history</div>
+  <div class="subhead">Why it exists — the critical fact</div>
   <div class="history-card">
-    <div class="yr">Long before "machine learning" existed</div>
-    This is not a 21st-century idea. Actuaries and economists have engineered ratios like debt-to-income and loan-to-value for over a century, because raw absolute numbers (₹30,000 of debt) are meaningless without context (relative to what income?). Classical statistics and econometrics were doing feature engineering long before it had that name — ML just inherited and formalised the practice.
+    <div class="yr">The mathematical reason, not a historical one</div>
+    Stacking any number of purely <em>linear</em> layers collapses mathematically into a <strong>single</strong> linear layer — matrix multiplication composed with matrix multiplication is still just a matrix multiplication. Depth buys you nothing at all without a non-linearity between layers. This is why activation functions aren't an optional add-on; they're the entire reason stacking layers works.
+    <div class="yr" style="margin-top:10px">2010s</div>
+    Early networks mostly used <strong>Sigmoid</strong> or <strong>Tanh</strong> for hidden layers, but both suffer from <strong>vanishing gradients</strong> in deep networks — their derivative is near zero for large inputs, so gradient signal shrinks toward nothing as it propagates backward through many layers. <strong>ReLU</strong> (popularised heavily after Nair &amp; Hinton, 2010, and its central role in AlexNet, 2012) doesn't saturate for positive inputs, which was a major practical unlock for training genuinely deep networks.
   </div>
-
-  <div class="subhead">Alternatives — and why we still hand-engineer here</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>Manual, domain-informed features (this lesson)</td><td>Interpretable, auditable, works well with small-to-medium tabular data and simple models</td></tr>
-    <tr><td>Automated feature engineering tools (e.g. Featuretools)</td><td>Faster to generate many candidates, but can produce features nobody can explain to a regulator</td></tr>
-    <tr><td class="picked">Let a deep network learn its own features (Module 2)</td><td class="picked">Neural networks can learn useful internal representations directly from raw inputs — this is exactly why Module 2 exists, and why hand engineering matters less (but doesn't disappear) once you add depth</td></tr>
-  </table>
 
   <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Do it when</h4><ul><li>Using classical models (regression, logistic regression, trees)</li><li>A domain expert can name the relationship that matters (e.g. "debt relative to income," not just "debt")</li></ul></div>
-    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li><strong>Leakage:</strong> never build a feature from information that would only exist <em>after</em> the event you're predicting</li><li>Over-engineering redundant ratios that just re-encode the same signal multiple times</li></ul></div>
+    <div class="use-box yes"><h4>✓ Where each belongs</h4><ul><li><strong>ReLU</strong>: hidden layers, by default</li><li><strong>Sigmoid</strong>: output layer, binary classification (e.g. default probability)</li><li><strong>Softmax</strong>: output layer, multi-class classification (e.g. 10 cheque digits)</li></ul></div>
+    <div class="use-box no"><h4>✗ Common mistakes</h4><ul><li>Using Sigmoid in deep hidden layers — invites vanishing gradients</li><li>Forgetting Softmax must operate on a <em>vector</em> of scores, not a single number</li></ul></div>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Two customers both owe ₹30,000/month. One earns ₹40,000/month, the other ₹4,00,000/month. Raw debt tells you almost nothing about risk; <code>debt_to_income</code> tells you everything the raw number was hiding.</div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The output activation determines what the network's number even <em>means</em>: Sigmoid on RR Finance's default classifier gives a genuine probability of default; Softmax on the cheque-digit reader gives a probability distribution across all 10 possible digits, which must sum to exactly 1.</div>
 
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="activations-math">
+    <div class="math-box">
+<div class="math-expr">Sigmoid: σ(z)=1/(1+e⁻ᶻ)&nbsp; ReLU: max(0,z)&nbsp; Softmax: eᶻⁱ/Σeᶻʲ</div>
+<div class="term"><b>Sigmoid</b> squashes to (0,1) but saturates (near-zero gradient) for large |z| — this is what causes vanishing gradients in deep sigmoid networks.</div>
+<div class="term"><b>ReLU = max(0,z)</b> has gradient exactly 1 for z&gt;0 and 0 for z≤0 — cheap to compute, doesn't saturate on the positive side, which is why it became the default for hidden layers.</div>
+<div class="term"><b>Softmax</b> turns a vector of raw scores into a probability distribution that sums to 1 — eᶻⁱ amplifies the largest score relative to the others, dividing by the sum normalises it.</div>
+</div>
+  </div>
 </section>
 
-<!-- ============ CONCEPT 4: REGRESSION ============ -->
-<section class="concept" id="regression">
+<!-- ============ CONCEPT 4: BACKPROP ============ -->
+<section class="concept" id="backprop">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 4</span>
-    <h2>Ridge &amp; Lasso Regression</h2>
-    <p>Predicting a continuous number, and taming an old problem: overconfident coefficients.</p>
+    <h2>Backpropagation</h2>
+    <p>How a network figures out which direction to move millions of weights from one number.</p>
   </div>
 
-  <div class="lens-tabs" id="regression-tabs"><div class="lens-tab active" onclick="switchLens('regression','overview')">Overview</div><div class="lens-tab" onclick="switchLens('regression','math')">🧮 Math &amp; Algorithm</div></div>
+  <div class="lens-tabs" id="backprop-tabs"><div class="lens-tab active" onclick="switchLens('backprop','overview')">Overview</div><div class="lens-tab" onclick="switchLens('backprop','math')">🧮 Math &amp; Algorithm</div></div>
 
-  <div class="lens-pane lens-overview active" id="regression-overview">
+  <div class="lens-pane lens-overview active" id="backprop-overview">
   <div class="subhead">What it is</div>
-  <p>Regression predicts a continuous quantity (e.g. expected loan amount) rather than a class. Ridge and Lasso are linear regression with a <em>penalty</em> added that discourages coefficients from growing too large.</p>
+  <p>Backpropagation is the chain-rule-based algorithm that computes how much each weight in the network contributed to the final error, working backward from the output layer to the input layer, so gradient descent (next lesson) knows which direction to nudge every weight.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">~1805</div>
-    Ordinary Least Squares (OLS) — fitting a straight line by minimising squared error — dates back to <strong>Legendre</strong> and <strong>Gauss</strong>, originally for astronomical orbit calculations. It works beautifully until predictors are correlated with each other (multicollinearity) or you have more predictors than data points — then OLS coefficients become wildly unstable, swinging based on tiny data changes.
-    <div class="yr" style="margin-top:10px">1970</div>
-    <strong>Hoerl and Kennard</strong> introduced <strong>Ridge regression</strong>: add a penalty on the <em>squared size</em> of coefficients, trading a little bias for a lot less variance.
-    <div class="yr" style="margin-top:10px">1996</div>
-    <strong>Robert Tibshirani</strong> introduced <strong>Lasso</strong> ("Least Absolute Shrinkage and Selection Operator"): penalise the <em>absolute size</em> of coefficients instead, which has the extra property of driving unimportant coefficients exactly to zero — automatic feature selection baked into the fitting process.
+    <div class="yr">1970 → 1986</div>
+    The mathematical technique (reverse-mode automatic differentiation) existed earlier — <strong>Seppo Linnainmaa</strong>'s 1970 thesis is often cited as the first clear general formulation — but it took <strong>Rumelhart, Hinton and Williams</strong>' 1986 paper to demonstrate its power specifically for training multi-layer neural networks and popularise it across the field. Before this, there was no practical, general way to train a network with hidden layers at all — which is a large part of why the field stalled through the 1970s after the perceptron's XOR limitation was exposed.
   </div>
 
-  <div class="subhead">Alternatives — and why Ridge/Lasso here</div>
+  <div class="subhead">Alternatives — and why backprop won</div>
   <table class="alt-table">
     <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>Plain OLS</td><td>Unstable with correlated features or limited data — exactly RR Finance's situation</td></tr>
-    <tr><td class="picked">Ridge</td><td class="picked">Stabilises coefficients when predictors are correlated; keeps all features, just shrinks them</td></tr>
-    <tr><td class="picked">Lasso</td><td class="picked">Same stabilisation, plus automatic feature selection via exact zeros</td></tr>
-    <tr><td>Elastic Net</td><td>Blends Ridge + Lasso penalties — a reasonable default when unsure which one fits better</td></tr>
-    <tr><td>Tree-based regressors (Random Forest, XGBoost)</td><td>Capture non-linear interactions Ridge/Lasso cannot, at the cost of interpretability</td></tr>
-    <tr><td>Neural network regression (Module 2)</td><td>Most flexible, needs the most data, least interpretable</td></tr>
+    <tr><td>Numerical differentiation (perturb each weight, remeasure loss)</td><td>Conceptually simple, but requires a full forward pass <em>per weight</em> — computationally impossible at the scale of millions of parameters</td></tr>
+    <tr><td class="picked">Backpropagation (reverse-mode autodiff)</td><td class="picked">Computes gradients for <em>every</em> weight in roughly the cost of one extra forward pass, regardless of how many parameters there are — the only reason training large networks is computationally feasible at all</td></tr>
   </table>
 
-  <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Relationship between inputs and target is roughly linear</li><li>Predictors are correlated with each other (common in finance: income, loan size, and debt all move together)</li><li>Interpretability and auditability matter</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The true relationship has strong non-linear interactions — check with a tree-based model or Module 2's ANN first</li></ul></div>
+  <div class="callout ok"><strong>The gradient check, made concrete</strong><div>The notebook derives backprop by hand on a tiny network, then verifies the result against numerical differentiation — the same debugging technique real deep-learning engineers use when a training run behaves unexpectedly. Trusting a mechanism you've verified once, by hand, is different from trusting a black box you've never opened.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Every <code>.backward()</code> call in every model trained across this entire 12-module course — the cheque-digit CNN here, the fine-tuned LLM in Module 4 — runs on exactly this mechanism. Understanding it once means every later "training is unstable" or "loss exploded" problem has a mechanism you can actually reason about, not just a button you press and hope.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Predicting expected loan amount from income, debt and credit history — all three tend to move together, so plain OLS coefficients would be unstable and hard to trust in a report. Ridge keeps the estimate stable; Lasso would additionally tell you which of those correlated fields is actually pulling its weight.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="regression-math">
+  <div class="lens-pane lens-math" id="backprop-math">
     <div class="math-box">
-<div class="math-expr">OLS: L(w) = Σ(yᵢ − ŷᵢ)²<br>
-Ridge: L(w) = Σ(yᵢ − ŷᵢ)² + λ Σ wⱼ²<br>
-Lasso: L(w) = Σ(yᵢ − ŷᵢ)² + λ Σ |wⱼ|</div>
-<div class="term"><b>Σ(yᵢ − ŷᵢ)²</b> — residual sum of squares: how far predictions are from real values, squared so + and − errors don't cancel and big misses are punished more.</div>
-<div class="term"><b>λ (lambda)</b> — the penalty strength. λ=0 is plain OLS; larger λ shrinks coefficients harder toward zero, trading a little bias for much lower variance.</div>
-<div class="term"><b>Ridge's squared penalty</b> shrinks all weights smoothly toward zero but rarely to exactly zero — it's a smooth bowl-shaped penalty, differentiable everywhere.</div>
-<div class="term"><b>Lasso's absolute-value penalty</b> has a sharp corner at zero — geometrically, the optimum often lands exactly on that corner, zeroing out a coefficient entirely. That's why Lasso does feature selection and Ridge doesn't.</div>
-<div class="term">Both are solved by gradient descent (or closed-form for Ridge: w = (XᵀX + λI)⁻¹Xᵀy) — the +λI term is literally what stabilises the matrix inversion when features are correlated.</div>
+<div class="math-expr">∂L/∂w⁽ˡ⁾ = ∂L/∂a⁽ᴸ⁾ · ∂a⁽ᴸ⁾/∂a⁽ᴸ⁻¹⁾ ··· ∂a⁽ˡ⁾/∂w⁽ˡ⁾</div>
+<div class="term">This is just the <b>chain rule</b> from calculus, applied layer by layer, back-to-front: to know how much a weight deep inside the network affects the final loss, multiply together how much each layer's output affects the next layer's output, all the way to the loss.</div>
+<div class="term">Computed once forward (get the prediction) and once backward (get every gradient) — vastly cheaper than perturbing each weight individually and re-running the forward pass (numerical gradient checking), which is why backprop made deep networks practical.</div>
+<div class="term">A numerical gradient check (∂L/∂w ≈ [L(w+ε)−L(w−ε)]/2ε) is the way you verify backprop's analytical gradient is actually correct — small ε, compare the two, they should nearly match.</div>
 </div>
   </div>
 </section>
 
-<!-- ============ CONCEPT 5: CLASSIFICATION ============ -->
-<section class="concept" id="classification">
+<!-- ============ CONCEPT 5: OPTIMIZERS ============ -->
+<section class="concept" id="optimizers">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 5</span>
-    <h2>Logistic Regression (Classification)</h2>
-    <p>The baseline every later module in this course gets benchmarked against.</p>
+    <h2>Gradient Descent &amp; Optimizers</h2>
+    <p>Backprop tells you the direction. Optimizers decide how far, and whether to remember the last step.</p>
   </div>
 
-  <div class="lens-tabs" id="classification-tabs"><div class="lens-tab active" onclick="switchLens('classification','overview')">Overview</div><div class="lens-tab" onclick="switchLens('classification','math')">🧮 Math &amp; Algorithm</div></div>
+  <div class="lens-tabs" id="optimizers-tabs"><div class="lens-tab active" onclick="switchLens('optimizers','overview')">Overview</div><div class="lens-tab" onclick="switchLens('optimizers','math')">🧮 Math &amp; Algorithm</div></div>
 
-  <div class="lens-pane lens-overview active" id="classification-overview">
+  <div class="lens-pane lens-overview active" id="optimizers-overview">
   <div class="subhead">What it is</div>
-  <p>Logistic regression predicts the <em>probability</em> of a binary outcome (default vs. no default) by passing a linear combination of inputs through the sigmoid function, which squashes any real number into the range (0, 1).</p>
+  <p>Given a gradient, an optimizer decides the actual weight update. <strong>SGD</strong> takes a fixed-size step in the gradient's direction; <strong>Momentum</strong> adds memory of previous steps to smooth noisy updates; <strong>RMSprop</strong> and <strong>Adam</strong> adapt the step size per parameter based on recent gradient behaviour.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">1830s</div>
-    The logistic (sigmoid) function itself comes from <strong>Pierre François Verhulst</strong>, modelling population growth that slows as it approaches a carrying capacity — nothing to do with classification originally.
-    <div class="yr" style="margin-top:10px">1944 → 1958</div>
-    <strong>Joseph Berkson</strong> coined "logit" and championed the logistic function for bioassay in the 1940s; <strong>David Cox</strong>'s 1958 work formalised logistic regression as we use it today. The core motivating problem: plain linear regression can predict probabilities below 0 or above 1, which is nonsensical — logistic regression fixes that by construction.
+    <div class="yr">1951</div>
+    <strong>Robbins and Monro</strong>'s stochastic approximation method is the mathematical ancestor of SGD — using noisy, sampled gradients instead of the full dataset at every step, which is what makes training on huge datasets tractable at all.
+    <div class="yr" style="margin-top:10px">1999 → 2012</div>
+    <strong>Momentum</strong> (Polyak, 1964; popularised for deep learning by Sutskever et al., 2013) smooths the noisy path SGD takes. <strong>RMSprop</strong> (introduced informally by Geoffrey Hinton in a 2012 lecture, never formally published as a standalone paper) adapts the learning rate per parameter using a running average of recent squared gradients.
+    <div class="yr" style="margin-top:10px">2014</div>
+    <strong>Kingma and Ba</strong> published <strong>Adam</strong> ("Adaptive Moment Estimation"), combining Momentum's smoothing with RMSprop's per-parameter adaptation — it became, and largely remains, the default first choice across the field.
   </div>
 
-  <div class="subhead">Alternatives — and why logistic regression as the baseline</div>
+  <div class="subhead">Alternatives — how to choose</div>
   <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>Linear regression on a 0/1 target</td><td>Predicts impossible probabilities outside [0,1] — a real, avoidable modelling error</td></tr>
-    <tr><td>Linear Discriminant Analysis</td><td>Assumes features are normally distributed within each class — often violated in financial data</td></tr>
-    <tr><td>Decision Trees / Random Forest / XGBoost</td><td>Capture non-linear interactions automatically; very common in real production credit scoring, but harder to explain to a regulator than a logistic-regression coefficient table</td></tr>
-    <tr><td>Support Vector Machines</td><td>Strong for smaller, high-dimensional datasets; probability outputs are less natural</td></tr>
-    <tr><td>Neural network (Module 2)</td><td>Most flexible, needs the most data and compute, hardest to fully explain</td></tr>
-    <tr><td class="picked">Logistic regression</td><td class="picked">Fast, gives real probabilities, coefficients are directly explainable to a risk committee — the right first thing to try, and the fair baseline every later module in this course is measured against</td></tr>
+    <tr><th>Optimizer</th><th>When it's the right call</th></tr>
+    <tr><td>SGD (plain)</td><td>Simple, sometimes generalises better with careful tuning — common in some published vision benchmarks</td></tr>
+    <tr><td>SGD + Momentum</td><td>A strong, well-understood default when you have time to tune the learning rate</td></tr>
+    <tr><td>RMSprop</td><td>Good on noisy or non-stationary problems (originally motivated by RNN training)</td></tr>
+    <tr><td class="picked">Adam</td><td class="picked">The reasonable first choice with minimal tuning — used throughout this course's default training loops</td></tr>
   </table>
 
-  <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need an interpretable, auditable baseline before anything fancier</li><li>The relationship between features and the log-odds of the outcome is roughly linear</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Strong feature interactions exist that a single linear boundary cannot represent (Module 2 tests this directly against this exact baseline)</li></ul></div>
+  <div class="callout warn"><strong>Free lunches don't exist here</strong><div>"Just increase the learning rate to train faster" is not free — push it too high with plain SGD and training visibly oscillates or diverges. The notebook demonstrates this directly by comparing all four optimizers on identical starting weights.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A poorly chosen optimizer or learning rate on a production model-retraining job doesn't just train slower — it can converge to a measurably worse model or fail to converge at all, wasting real compute budget on a nightly or weekly retraining pipeline.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
   </div>
 
-  <div class="callout warn"><strong>A governance finding, not just a modelling choice</strong><div><code>age</code> exists in this dataset and correlates with several fields — but age is a <strong>protected attribute</strong> under fair-lending regulation (e.g. the U.S. Equal Credit Opportunity Act) in most jurisdictions. The notebook deliberately excludes it from every model's feature list, while keeping it available for a fairness audit in Module 6. This is exactly the kind of decision "explore first, trust second" is meant to surface.</div></div>
-
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank's underwriting team needs a probability of default they can explain in one sentence to a risk committee: "for every one-unit increase in debt-to-income, the odds of default increase by X%." That sentence is only easy to say about a logistic regression coefficient — it gets much harder for a random forest or neural network.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="classification-math">
+  <div class="lens-pane lens-math" id="optimizers-math">
     <div class="math-box">
-<div class="math-expr">p(default) = 1 / (1 + e^−(w·x + b))<br>
-Loss: L = −Σ [yᵢ log(pᵢ) + (1−yᵢ) log(1−pᵢ)]</div>
-<div class="term"><b>w·x + b</b> — the same linear combination as regression, but the raw number can be any real value (−∞ to +∞).</div>
-<div class="term"><b>The sigmoid 1/(1+e⁻ᶻ)</b> squashes that raw number into (0, 1) — a valid probability. As z→+∞, p→1; as z→−∞, p→0.</div>
-<div class="term"><b>Log-loss (cross-entropy)</b> — heavily penalises confident wrong predictions: if the true label is 1 but the model said p=0.01, −log(0.01)≈4.6 is a large penalty; a well-calibrated model minimises this on average.</div>
-<div class="term">Threshold tuning (e.g. moving the decision cutoff from 0.5) trades recall for precision — the sigmoid output is a probability, the 0.5 cutoff is just a convention you can move.</div>
+<div class="math-expr">SGD: w ← w − η∇L<br>
+Momentum: v←βv+∇L; w←w−ηv<br>
+Adam: combines momentum + per-parameter adaptive step size</div>
+<div class="term"><b>η (learning rate)</b> — step size in the direction that reduces loss fastest (−∇L, the negative gradient). Too large overshoots; too small crawls.</div>
+<div class="term"><b>Momentum</b> keeps a running average (v) of past gradients, so the optimiser keeps moving in a consistent direction rather than zig-zagging across a narrow valley in the loss surface.</div>
+<div class="term"><b>Adam</b> additionally tracks a per-parameter estimate of gradient variance, shrinking the step size for parameters whose gradients are noisy/large and enlarging it for stable/small ones — usually the fastest, most robust default of the three.</div>
 </div>
   </div>
 </section>
 
-<!-- ============ CONCEPT 6: IMBALANCE + SMOTE ============ -->
-<section class="concept" id="imbalance">
+<!-- ============ CONCEPT 6: BATCHNORM/DROPOUT ============ -->
+<section class="concept" id="regularisation">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 6</span>
-    <h2>Imbalanced Classification + SMOTE</h2>
-    <p>Why a 90%-accurate model can be catching zero of the cases you actually care about.</p>
+    <h2>Batch Normalisation &amp; Dropout</h2>
+    <p>Two different problems, both fixed by deliberately adding a bit of controlled disruption.</p>
   </div>
 
-  <div class="lens-tabs" id="imbalance-tabs"><div class="lens-tab active" onclick="switchLens('imbalance','overview')">Overview</div><div class="lens-tab" onclick="switchLens('imbalance','math')">🧮 Math &amp; Algorithm</div></div>
+  <div class="lens-tabs" id="regularisation-tabs"><div class="lens-tab active" onclick="switchLens('regularisation','overview')">Overview</div><div class="lens-tab" onclick="switchLens('regularisation','math')">🧮 Math &amp; Algorithm</div></div>
 
-  <div class="lens-pane lens-overview active" id="imbalance-overview">
+  <div class="lens-pane lens-overview active" id="regularisation-overview">
   <div class="subhead">What it is</div>
-  <p>When one class (default) is much rarer than the other, a classifier trained naively can achieve high <em>accuracy</em> purely by always predicting the majority class — while being useless at its actual job. SMOTE ("Synthetic Minority Over-sampling Technique") creates synthetic minority-class training examples to counteract this.</p>
+  <p><strong>BatchNorm</strong> normalises each layer's activations to zero mean/unit variance per mini-batch (then lets the network re-learn an optimal scale), stabilising training. <strong>Dropout</strong> randomly zeroes a fraction of activations during training only, preventing the network from over-relying on any single neuron.</p>
 
-  <div class="subhead">Why it exists — the history</div>
+  <div class="subhead">Why they exist — the history</div>
   <div class="history-card">
-    <div class="yr">2002</div>
-    <strong>Nitesh Chawla and colleagues</strong> published the SMOTE paper, motivated directly by domains like fraud and rare-disease detection where the interesting class is naturally scarce. Instead of just duplicating existing minority rows (which teaches a model nothing new and encourages overfitting to those exact points), SMOTE generates <em>new, synthetic</em> points along the line between real minority-class neighbours in feature space.
+    <div class="yr">2012</div>
+    <strong>Dropout</strong> was introduced by <strong>Hinton and colleagues</strong> (including Srivastava, in the fuller 2014 paper), directly motivated by overfitting in networks with many parameters relative to available data — a random subset of neurons is disabled each step, forcing redundancy rather than reliance on any one path.
+    <div class="yr" style="margin-top:10px">2015</div>
+    <strong>Batch Normalisation</strong> (Ioffe and Szegedy) addressed a different problem: as training progresses, the distribution of each layer's inputs keeps shifting ("internal covariate shift" was the original explanation, though later research debated the precise mechanism), making deep networks slow and unstable to train. Normalising activations within each mini-batch measurably sped up and stabilised training of much deeper networks than were previously practical.
   </div>
 
-  <div class="subhead">Alternatives — and why we compare, not just apply SMOTE</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td class="picked">SMOTE</td><td class="picked">Adds genuinely new synthetic examples; can occasionally create unrealistic points if classes overlap heavily</td></tr>
-    <tr><td class="picked"><code>class_weight="balanced"</code></td><td class="picked">Costs one keyword argument, no synthetic data, tells the loss function to penalise minority-class mistakes more — often the better first thing to try</td></tr>
-    <tr><td>Random undersampling</td><td>Simple, but throws away real majority-class data and information</td></tr>
-    <tr><td>Ensemble methods (Balanced Random Forest, EasyEnsemble)</td><td>Handle imbalance structurally, at the cost of a more complex model</td></tr>
-    <tr><td>Reframe as anomaly detection (Lesson 12)</td><td>When the positive class is extremely rare (well under 1%), "detect the unusual" often outperforms "classify the rare class"</td></tr>
-  </table>
+  <div class="callout warn"><strong>The bug this lesson exists to prevent</strong><div>Both layers behave <em>differently</em> in training vs. evaluation mode. Forgetting <code>model.eval()</code> before inference leaves Dropout randomly zeroing activations and BatchNorm using batch statistics instead of learned running statistics — silently corrupting predictions in a way that produces no error message, just quietly wrong numbers. This is one of the most common real-world PyTorch bugs, and the notebook demonstrates it directly rather than just warning about it.</div></div>
 
-  <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use SMOTE when</h4><ul><li>Minority class has a reasonable number of examples to interpolate between (not just a handful)</li><li><code>class_weight</code> alone hasn't closed the gap</li></ul></div>
-    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Never apply SMOTE before the train/test split — the test set must stay naturally distributed, or your evaluation lies to you</li><li>Extremely rare classes (fraud at 0.1%) often need a different framing entirely, not just more oversampling</li></ul></div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A cheque-digit reader that memorises training-set quirks (a specific scanner's artefacts, a particular pen's ink) instead of learning generalisable digit shapes will fail unpredictably in production on a different scanner or a different branch's equipment — exactly the overfitting failure Dropout exists to reduce.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A model that predicts "no fraud" for every single transaction can be 99.9% accurate in a dataset where 0.1% of transactions are fraudulent — and catch not one real case. This is exactly why fraud, default, and rare-event financial modelling never reports accuracy alone.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="imbalance-math">
+  <div class="lens-pane lens-math" id="regularisation-math">
     <div class="math-box">
-<div class="math-expr">SMOTE: x_new = x_i + λ(x_neighbor − x_i), λ ∈ [0,1]<br>
-class_weight: loss weighted by 1/(class frequency)</div>
-<div class="term"><b>SMOTE</b> synthesises new minority-class points by linear interpolation between a real minority point x_i and one of its k-nearest minority neighbours — literally a point somewhere on the line segment between the two.</div>
-<div class="term"><b>class_weight="balanced"</b> instead multiplies each class's contribution to the loss by the inverse of its frequency — the model is penalised more for getting rare-class errors wrong, without inventing any new data points.</div>
-<div class="term">Neither creates real information — both are ways of telling the optimiser "care more about the minority class" than the raw counts would otherwise imply.</div>
+<div class="math-expr">BatchNorm: x̂=(x−μ_B)/√(σ²_B+ε);&nbsp; y=γx̂+β<br>
+Dropout: zero each unit with probability p (train only)</div>
+<div class="term"><b>BatchNorm</b> re-centres and re-scales each layer's activations to mean 0, variance 1 using the current mini-batch's statistics (μ_B, σ²_B), then lets the network learn its own preferred scale/shift back (γ, β) — stabilises training against shifting input distributions layer to layer.</div>
+<div class="term"><b>Dropout</b> randomly zeroes a fraction p of units on each training step, forcing the network to not rely on any single unit — a form of implicit ensembling. It's switched OFF at evaluation time (all units active, outputs scaled to compensate) — the exact train/eval-mode bug this module demonstrated.</div>
 </div>
   </div>
 </section>
 
-<!-- ============ CONCEPT 7: KMEANS ============ -->
-<section class="concept" id="kmeans">
+<!-- ============ CONCEPT 7: CNN FOUNDATIONS ============ -->
+<section class="concept" id="cnn-foundations">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 7</span>
-    <h2>K-Means++</h2>
-    <p>Finding customer groups with no target label to guide you.</p>
+    <h2>CNN Foundations: Convolution, Padding, Stride, Pooling</h2>
+    <p>Why images need a fundamentally different architecture than tables do.</p>
   </div>
 
-  <div class="lens-tabs" id="kmeans-tabs"><div class="lens-tab active" onclick="switchLens('kmeans','overview')">Overview</div><div class="lens-tab" onclick="switchLens('kmeans','math')">🧮 Math &amp; Algorithm</div></div>
+  <div class="lens-tabs" id="cnn-foundations-tabs"><div class="lens-tab active" onclick="switchLens('cnn-foundations','overview')">Overview</div><div class="lens-tab" onclick="switchLens('cnn-foundations','math')">🧮 Math &amp; Algorithm</div></div>
 
-  <div class="lens-pane lens-overview active" id="kmeans-overview">
+  <div class="lens-pane lens-overview active" id="cnn-foundations-overview">
   <div class="subhead">What it is</div>
-  <p>K-Means partitions data into <em>K</em> groups by repeatedly assigning each point to its nearest centroid, then moving each centroid to the average of its assigned points, until the assignments stop changing. It is <strong>unsupervised</strong> — there is no "correct answer" column to learn from.</p>
+  <p>A convolution slides a small, learnable filter across an image, computing a local dot product at every position — the same pattern-detector is reused everywhere in the image, rather than learning a completely separate weight for every pixel. Pooling then downsamples, keeping the strongest signal in each small region.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">1957 → 1982</div>
-    The core algorithm was developed by <strong>Stuart Lloyd</strong> at Bell Labs in 1957 for pulse-code modulation (signal processing, not data science at all) — it wasn't formally published until 1982, by which point others had independently rediscovered the same idea for general clustering.
-    <div class="yr" style="margin-top:10px">2007</div>
-    Lloyd's original algorithm picks starting centroids <em>randomly</em>, which can converge to poor, inconsistent groupings depending on luck. <strong>David Arthur and Sergei Vassilvitskii</strong> introduced <strong>K-Means++</strong>: a smarter initialisation that spreads out the starting centroids, giving both better and more consistent results — the "++" is what nearly every modern K-Means implementation (including scikit-learn's default) actually uses.
+    <div class="yr">1980</div>
+    <strong>Kunihiko Fukushima</strong>'s Neocognitron introduced the core idea of local receptive fields and shared weights, inspired by biological studies of the visual cortex (Hubel and Wiesel's 1960s work on cat vision).
+    <div class="yr" style="margin-top:10px">1989 → 1998</div>
+    <strong>Yann LeCun</strong> and colleagues built <strong>LeNet</strong>, applying backpropagation to convolutional networks for handwritten digit recognition — used commercially to read handwritten cheque amounts at scale for U.S. banks in the 1990s. This is not a coincidental example: it's the literal historical origin of the CNN, applied to the exact same problem this module's lab recreates.
+    <div class="yr" style="margin-top:10px">2012</div>
+    <strong>AlexNet</strong> (Krizhevsky, Sutskever, Hinton) combined CNNs with GPU training and ReLU at a much larger scale, decisively winning the ImageNet competition and triggering the modern deep-learning boom in computer vision.
   </div>
 
-  <div class="subhead">Alternatives — and why K-Means++</div>
+  <div class="subhead">Why not just a fully-connected (ANN) layer on the image?</div>
   <table class="alt-table">
     <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td class="picked">K-Means++</td><td class="picked">Fast, scales well, easy to explain to a business audience — but assumes roughly spherical, similar-sized clusters and forces every point into some group</td></tr>
-    <tr><td>Hierarchical clustering</td><td>No need to pre-specify K, gives a full dendrogram of structure; slower on large data</td></tr>
-    <tr><td>Gaussian Mixture Models</td><td>Soft/probabilistic cluster membership, handles elliptical clusters; more parameters to estimate</td></tr>
-    <tr><td>DBSCAN (next lesson)</td><td>Handles arbitrary shapes and explicit noise — the direct answer to K-Means' biggest weakness</td></tr>
+    <tr><td>Flatten the image, feed a plain ANN</td><td>A 28×28 image needs 784 separate weights <em>per neuron</em>, with zero spatial reuse — pixel (0,0) is treated as no more related to pixel (0,1) than to pixel (27,27), throwing away the one thing that makes an image an image</td></tr>
+    <tr><td class="picked">Convolution</td><td class="picked">A 3×3 filter (9 weights) is reused at every position — far fewer parameters, and pattern detection becomes position-independent by construction</td></tr>
   </table>
 
-  <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You expect roughly round, similar-sized groups</li><li>You have a rough sense of how many groups (K) should exist, or can validate K with a metric like silhouette score</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Cluster shapes are irregular or very different in size/density — try DBSCAN</li><li>You need every point to belong "softly" to multiple groups — try a Gaussian Mixture Model</li></ul></div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's cheque-digit reader in this module's lab is the exact same problem LeNet solved commercially for U.S. banks in the 1990s — reading a handwritten amount off a scanned cheque, at scale, automatically.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
   </div>
 
-  <div class="callout ok"><strong>Validate K — don't assume it</strong><div>"Why did we choose this K?" should never be answered with "because a tutorial used 3." The notebook sweeps K=2..7 and picks the value with the best silhouette score — statistical evidence, then combined with business usefulness, before any segmentation gets used operationally.</div></div>
-
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank wants to design different relationship-management outreach for different customer segments, but has no pre-existing "segment" label in its data — K-Means discovers behavioural groupings (e.g. high-income/low-debt vs. high-debt/short-history) directly from the numbers.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="kmeans-math">
+  <div class="lens-pane lens-math" id="cnn-foundations-math">
     <div class="math-box">
-<div class="math-expr">Objective: minimise Σₖ Σ_{x∈Cₖ} ‖x − μₖ‖²<br>
-Silhouette(x) = (b−a) / max(a,b)</div>
-<div class="term"><b>‖x − μₖ‖²</b> — squared Euclidean distance from a point to its cluster's centroid μₖ. K-Means alternates: (1) assign each point to its nearest centroid, (2) recompute each centroid as the mean of its assigned points — repeat until stable.</div>
-<div class="term"><b>K-Means++ initialisation</b> picks starting centroids that are far apart from each other (probability of picking a point ∝ its squared distance to the nearest already-chosen centroid), which avoids the classic bad-luck failure mode of random initialisation.</div>
-<div class="term"><b>a</b> = avg. distance to points in the same cluster; <b>b</b> = avg. distance to the nearest other cluster. Silhouette near +1 means well-clustered, near 0 means on a boundary, negative means likely mis-clustered.</div>
+<div class="math-expr">Conv output size = ⌊(W − F + 2P)/S⌋ + 1<br>
+(conv[i,j] = Σ kernel · input patch)</div>
+<div class="term"><b>Convolution</b> slides a small learned kernel/filter across the image, computing a dot product between the kernel and each local patch — the same kernel is reused everywhere, which is why CNNs need far fewer parameters than a fully-connected layer over raw pixels.</div>
+<div class="term"><b>W, F, P, S</b> — input width, kernel size, padding, stride. Padding preserves spatial size at the edges; stride controls how far the kernel jumps each step (larger stride = smaller, coarser output).</div>
+<div class="term"><b>Pooling</b> (e.g. max-pool) downsamples by taking the max (or average) over small windows — reduces spatial size and gives a small amount of translation invariance (a digit shifted by 1 pixel still pools to a similar value).</div>
 </div>
   </div>
 </section>
 
-<!-- ============ CONCEPT 8: DBSCAN ============ -->
-<section class="concept" id="dbscan">
+<!-- ============ CONCEPT 8: CNN LAB ============ -->
+<section class="concept" id="cnn-lab">
   <div class="concept-head">
-    <span class="eyebrow">CONCEPT 8</span>
-    <h2>DBSCAN</h2>
-    <p>Clustering that admits some points just don't belong anywhere.</p>
+    <span class="eyebrow">CONCEPT 8 · LAB</span>
+    <h2>Building and Training a CNN</h2>
+    <p>RR Finance's cheque-digit reader, built from the pieces above.</p>
   </div>
 
-  <div class="lens-tabs" id="dbscan-tabs"><div class="lens-tab active" onclick="switchLens('dbscan','overview')">Overview</div><div class="lens-tab" onclick="switchLens('dbscan','math')">🧮 Math &amp; Algorithm</div></div>
-
-  <div class="lens-pane lens-overview active" id="dbscan-overview">
   <div class="subhead">What it is</div>
-  <p><strong>DBSCAN</strong> ("Density-Based Spatial Clustering of Applications with Noise") groups points that are packed closely together (dense regions), and explicitly labels points in sparse regions as <strong>noise</strong> rather than forcing them into a cluster.</p>
+  <p>The lab combines everything so far — convolution, pooling, BatchNorm, Dropout, ReLU, Softmax, backprop, Adam — into one trained model that classifies a 28×28 handwritten digit image into one of 10 classes, using the standard MNIST dataset as a stand-in for real cheque-digit crops.</p>
 
-  <div class="subhead">Why it exists — the history</div>
+  <div class="subhead">Why MNIST specifically</div>
   <div class="history-card">
-    <div class="yr">1996</div>
-    Introduced by <strong>Martin Ester, Hans-Peter Kriegel, Jörg Sander and Xiaowei Xu</strong> at KDD 1996 — it later won the conference's "test of time" award for lasting influence. The motivating gap: K-Means forces <em>every</em> point into a cluster and assumes roughly spherical shapes, but real-world data is often irregularly shaped and contains genuine outliers that don't belong to any group at all.
+    <div class="yr">1998</div>
+    MNIST was assembled by <strong>Yann LeCun, Corinna Cortes and Christopher Burges</strong> from NIST handwriting samples, explicitly as a benchmark for exactly this task — it has been the field's standard "hello world" for image classification for over two decades, precisely because it's clean, well-labelled, and directly tied to the historical cheque-reading use case.
   </div>
-
-  <div class="subhead">Alternatives — and why DBSCAN here</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>K-Means</td><td>Forces every point into a cluster; struggles with non-spherical shapes and varying density</td></tr>
-    <tr><td class="picked">DBSCAN</td><td class="picked">Handles arbitrary shapes and gives you an explicit "this doesn't fit anywhere" signal — at the cost of being sensitive to its two parameters (<code>eps</code>, <code>min_samples</code>) and to feature scaling</td></tr>
-    <tr><td>OPTICS</td><td>A DBSCAN variant that handles varying density across the dataset better, at higher computational cost</td></tr>
-    <tr><td>HDBSCAN</td><td>Hierarchical density clustering — often the more robust modern default, less parameter-sensitive than plain DBSCAN</td></tr>
-  </table>
 
   <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You don't know the number of clusters in advance</li><li>You explicitly want an "unclassified/noise" bucket</li><li>Clusters might not be round</li></ul></div>
-    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Density varies a lot across the dataset — a single <code>eps</code> won't fit all regions well</li><li>You haven't scaled features first — DBSCAN is purely distance-based</li></ul></div>
+    <div class="use-box yes"><h4>✓ What this lab teaches</h4><ul><li>How the architectural pieces (Lessons 3–7) compose into one trainable system</li><li>Why the flattened size before the final layer follows directly from the pooling arithmetic (28→14→7)</li></ul></div>
+    <div class="use-box no"><h4>✗ What it doesn't cover yet</h4><ul><li>Real cheque images have scan noise, skew, and varied handwriting the clean MNIST set doesn't — Module 8 (Multimodal AI) extends this exact pattern to messier real-world document data</li></ul></div>
   </div>
 
-  <div class="callout warn"><strong>The parameter-validation lesson, made concrete</strong><div>The notebook deliberately shows what happens when you copy <code>eps</code>/<code>min_samples</code> values from a tutorial without checking them against your own data's distance distribution, then walks through validating them properly instead. On RR Finance's real 800-row dataset, DBSCAN mostly finds <strong>one dense population plus a handful of true outliers</strong> — itself an honest, useful finding: this data does not have several naturally separated behavioural clusters the way a textbook example might.</div></div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Automated, auditable digit recognition reduces manual keying error and cost in cheque processing — this lab's architecture, training loop and evaluation approach transfer directly once real, labelled cheque-digit crops are available.</div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Most customers in a transaction dataset behave similarly (one dense cluster); a small number have genuinely unusual patterns that don't resemble any group — DBSCAN's "noise" label is a natural first-pass triage signal for that second group, distinct from forcing them into an arbitrary segment.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="dbscan-math">
-    <div class="math-box">
-<div class="math-expr">Core point: |N_ε(x)| ≥ min_samples<br>
-N_ε(x) = {points within distance ε of x}</div>
-<div class="term"><b>ε (eps)</b> — the neighbourhood radius. <b>min_samples</b> — how many points must fall inside that radius for x to count as a "core point" (dense region).</div>
-<div class="term">Clusters grow by chaining: a core point pulls in every point in its ε-neighbourhood; if any of those are themselves core points, their neighbourhoods get pulled in too — density-connected regions merge into one cluster.</div>
-<div class="term">Points reachable from no core point are labelled <b>noise (−1)</b> — unlike K-Means, DBSCAN doesn't force every point into a cluster, which is exactly why it's suited to anomaly-flavoured tasks.</div>
-</div>
-  </div>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
 </section>
 
-<!-- ============ CONCEPT 9: PCA ============ -->
-<section class="concept" id="pca">
+<!-- ============ CONCEPT 9: TRANSFER LEARNING ============ -->
+<section class="concept" id="transfer-learning">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 9</span>
-    <h2>PCA (Principal Component Analysis)</h2>
-    <p>Compressing many correlated numbers into a view a human can actually look at.</p>
+    <h2>Transfer Learning</h2>
+    <p>Reusing what a network already learned, when you don't have millions of your own labelled images.</p>
   </div>
 
-  <div class="lens-tabs" id="pca-tabs"><div class="lens-tab active" onclick="switchLens('pca','overview')">Overview</div><div class="lens-tab" onclick="switchLens('pca','math')">🧮 Math &amp; Algorithm</div></div>
-
-  <div class="lens-pane lens-overview active" id="pca-overview">
   <div class="subhead">What it is</div>
-  <p>PCA finds new axes — linear combinations of the original features — ordered by how much of the data's variance they capture, so the first two or three "principal components" often summarise most of the interesting structure in a much smaller space.</p>
+  <p>Instead of training a CNN from scratch, load a network already trained on a large general dataset (e.g. ImageNet), <strong>freeze</strong> its early layers (which tend to have learned general-purpose features like edges and textures), and only retrain the final layer(s) for your specific task.</p>
 
-  <div class="subhead">Why it exists — the history</div>
+  <div class="subhead">Why it exists — the motivating problem</div>
   <div class="history-card">
-    <div class="yr">1901 → 1933</div>
-    First described by <strong>Karl Pearson</strong> in 1901 as a way to fit the "best line" through multi-dimensional data, then independently formalised into its modern form by <strong>Harold Hotelling</strong> in 1933. Long before "dimensionality reduction" was a machine-learning phrase, statisticians needed a principled way to compress many correlated measurements into fewer, uncorrelated ones.
+    <div class="yr">2014 onward</div>
+    As CNNs like <strong>VGGNet</strong> and later <strong>ResNet</strong> (He et al., 2015) were trained on ImageNet's 1.2 million labelled images, researchers noticed their early layers learned remarkably general features — edges, textures, simple shapes — reusable across almost any image task. Fine-tuning only the later layers on a much smaller, task-specific dataset became standard practice, because most organisations will never have anywhere close to ImageNet-scale labelled data for their specific problem.
   </div>
-
-  <div class="subhead">Alternatives — and why PCA</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td class="picked">PCA</td><td class="picked">Fast, deterministic, mathematically interpretable (each component is a variance-maximising direction) — but strictly linear</td></tr>
-    <tr><td>Factor Analysis</td><td>Similar goal, but models measurement noise explicitly — more common in psychometrics/econometrics</td></tr>
-    <tr><td>t-SNE / UMAP (next lesson)</td><td>Capture non-linear structure PCA misses, at the cost of speed, determinism, and easy interpretation</td></tr>
-    <tr><td>Autoencoders (deep learning)</td><td>Learn non-linear compressions directly from data; need much more data and compute than PCA</td></tr>
-  </table>
 
   <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Many features are correlated and you want to see the dominant linear structure</li><li>You need fast, reproducible, interpretable compression before other analysis</li></ul></div>
-    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The interesting structure in your data is genuinely non-linear — PCA will miss it entirely</li></ul></div>
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You have a new image task but limited labelled data — exactly RR Finance's real-world cheque-digit situation, where labelled crops are expensive and slow to collect under confidentiality constraints</li></ul></div>
+    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>Freezing too much prevents adaptation to real quirks (paper texture, ink variation, scan skew)</li><li>Freezing too little re-introduces the "not enough data" problem transfer learning was meant to solve — how much to freeze is itself a hyperparameter to validate</li></ul></div>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An analyst staring at a dozen correlated financial ratios per customer cannot visually inspect a 12-dimensional space — PCA's first two components often let them plot the whole customer base on one 2D chart and immediately see where high-risk and low-risk customers roughly separate.</div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance may only have a few thousand real, labelled cheque-digit crops — nowhere near enough to train a deep CNN from zero reliably. Starting from a network that already understands "edges and shapes in general" and only teaching it the last mile to "these specific ten digit classes" is the practical answer.</div>
 
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="pca-math">
-    <div class="math-box">
-<div class="math-expr">Cov(X) = (1/n) XᵀX  (X mean-centred)<br>
-Cov(X) v = λv &nbsp; (eigen-decomposition)</div>
-<div class="term"><b>Covariance matrix</b> captures how every feature varies together with every other feature — its eigenvectors point along the directions of maximum spread in the data.</div>
-<div class="term"><b>Eigenvectors v</b> are the new axes (principal components); their <b>eigenvalues λ</b> tell you how much variance each axis explains. Sorting by λ and keeping the top few gives the smallest set of new axes that still explain most of the original variance.</div>
-<div class="term">PCA is a rotation, not a selection — every original feature contributes (with some weight) to every principal component; nothing is literally "dropped," just re-expressed in fewer, uncorrelated dimensions.</div>
-</div>
-  </div>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
 </section>
 
-<!-- ============ CONCEPT 10: UMAP ============ -->
-<section class="concept" id="umap">
+<!-- ============ CONCEPT 10: ADVERSARIAL EXAMPLES ============ -->
+<section class="concept" id="adversarial">
   <div class="concept-head">
-    <span class="eyebrow">CONCEPT 10</span>
-    <h2>UMAP</h2>
-    <p>Seeing the non-linear structure PCA is mathematically incapable of showing you.</p>
+    <span class="eyebrow">CONCEPT 10 · CYBERSECURITY</span>
+    <h2>Adversarial Examples: FGSM &amp; PGD</h2>
+    <p>Fooling a correctly trained model, without ever touching its training data.</p>
   </div>
 
-  <div class="lens-tabs" id="umap-tabs"><div class="lens-tab active" onclick="switchLens('umap','overview')">Overview</div><div class="lens-tab" onclick="switchLens('umap','math')">🧮 Math &amp; Algorithm</div></div>
+  <div class="lens-tabs" id="adversarial-tabs"><div class="lens-tab active" onclick="switchLens('adversarial','overview')">Overview</div><div class="lens-tab" onclick="switchLens('adversarial','math')">🧮 Math &amp; Algorithm</div></div>
 
-  <div class="lens-pane lens-overview active" id="umap-overview">
+  <div class="lens-pane lens-overview active" id="adversarial-overview">
   <div class="subhead">What it is</div>
-  <p>UMAP ("Uniform Manifold Approximation and Projection") builds a graph of which points are close to which of their neighbours in the original high-dimensional space, then optimises a low-dimensional layout that tries to preserve those neighbour relationships — capturing non-linear structure PCA's straight-line projections cannot.</p>
+  <p>An adversarial example is an input deliberately perturbed by a tiny, often visually imperceptible amount, crafted specifically to cause a correctly-trained model to misclassify it with high confidence — using the model's own gradients against it.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">2008</div>
-    <strong>t-SNE</strong>, by <strong>Laurens van der Maaten and Geoffrey Hinton</strong>, was the first widely adopted non-linear visualisation technique to gain real traction — but it is slow on large datasets, has no natural way to place new points without recomputing everything, and can distort global distances between clusters.
-    <div class="yr" style="margin-top:10px">2018</div>
-    <strong>Leland McInnes and John Healy</strong> introduced <strong>UMAP</strong>, grounded in Riemannian geometry and algebraic topology, as a faster, more scalable successor that better preserves both local and some global structure, and — unlike t-SNE — can transform new points onto an existing embedding.
+    <div class="yr">2013</div>
+    <strong>Szegedy and colleagues</strong> ("Intriguing properties of neural networks") first demonstrated that state-of-the-art image classifiers could be fooled by perturbations invisible to the human eye — a genuinely surprising result at the time, since the networks were otherwise performing extremely well.
+    <div class="yr" style="margin-top:10px">2015</div>
+    <strong>Goodfellow, Shlens and Szegedy</strong> introduced <strong>FGSM</strong> (Fast Gradient Sign Method) — a single gradient step in the direction that increases the model's loss the fastest, moving every pixel by exactly ±ε.
+    <div class="yr" style="margin-top:10px">2017</div>
+    <strong>Madry and colleagues</strong> introduced <strong>PGD</strong> (Projected Gradient Descent) — FGSM applied iteratively with a smaller step size, projecting the perturbation back within the ε budget after each step. PGD became the standard <em>benchmark</em> attack for evaluating model robustness, precisely because it is generally stronger than a single FGSM step.
   </div>
 
-  <div class="subhead">Alternatives — and why UMAP</div>
+  <div class="subhead">This is a different attack surface than Module 1's poisoning</div>
   <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>PCA</td><td>Fast and interpretable but purely linear</td></tr>
-    <tr><td>t-SNE</td><td>Good local structure, but slow at scale and cannot easily embed new points</td></tr>
-    <tr><td class="picked">UMAP</td><td class="picked">Faster than t-SNE, preserves more global structure, supports new-point transforms — the modern default for exploratory non-linear visualisation</td></tr>
+    <tr><th>Attack</th><th>When it happens</th><th>What the attacker needs</th></tr>
+    <tr><td>Data poisoning (Module 1)</td><td>Training time</td><td>Ability to influence training data — never touches the deployed model</td></tr>
+    <tr><td class="picked">Adversarial examples (this lesson)</td><td class="picked">Inference time</td><td class="picked">Access to (or the ability to estimate) the trained model's gradients, plus a small perturbation budget</td></tr>
   </table>
 
-  <div class="use-grid">
-    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You suspect non-linear structure PCA is flattening away</li><li>You want an exploratory visual, not a final business conclusion</li></ul></div>
-    <div class="use-box no"><h4>✗ Be careful when</h4><ul><li>A visually striking UMAP plot is not proof a real business segment exists — treat it as a hypothesis to validate, never a conclusion on its own</li></ul></div>
+  <div class="callout danger"><strong>The security lesson</strong><div>The attacker here needs no access to training data and no ability to retrain the model — only the ability to query gradients and a small perturbation budget. This is exactly why adversarial robustness is treated as a distinct concern from data provenance, with its own dedicated attention in Module 11's black-box (query-only) attack scenarios, where the attacker can't even see gradients directly.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If RR Finance's cheque-digit reader — or any production image classifier used for document fraud detection or ID verification — can be fooled by adversarial pixel noise, an attacker could manipulate an amount or bypass a check without an obvious visual red flag for a human reviewer.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
   </div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Complex customer behaviour (spending patterns that shift non-linearly with income bracket, or risk that spikes only above a combined threshold of two features) is exactly the kind of structure a straight-line PCA projection can flatten into invisibility, but a non-linear UMAP embedding can surface for further investigation.</div>
-
-  <div class="callout"><strong>Install note</strong><div><code>umap-learn</code> depends on <code>numba</code>, which is sensitive to your NumPy version — a very common classroom install snag. If it fails, try installing in a clean virtual environment before troubleshooting further.</div></div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="umap-math">
+  <div class="lens-pane lens-math" id="adversarial-math">
     <div class="math-box">
-<div class="math-expr">High-dim similarity: pᵢⱼ from a fuzzy k-NN graph<br>
-Low-dim similarity: qᵢⱼ = 1/(1+a‖yᵢ−yⱼ‖^{2b})<br>
-Minimise: cross-entropy(p, q)</div>
-<div class="term">UMAP first builds a weighted graph in the original high-dimensional space, connecting each point to its nearest neighbours with edge weights that decay with distance.</div>
-<div class="term">It then optimises a low-dimensional layout (2D/3D) so that the low-dim graph's edge weights (qᵢⱼ) match the high-dim graph's weights (pᵢⱼ) as closely as possible — points that were close/connected up above should end up close together below, via gradient descent on the cross-entropy between the two graphs.</div>
-<div class="term">Unlike PCA (a single linear rotation), this is a non-linear, iterative optimisation — it can unfold curved structure PCA's straight axes cannot capture, at the cost of axes that no longer have a direct "variance explained" meaning.</div>
+<div class="math-expr">FGSM: x' = x + ε·sign(∇ₓL(x,y))<br>
+PGD: iterate FGSM step, clip to ε-ball, repeat</div>
+<div class="term">FGSM takes <b>one step</b> in the direction that most increases the loss (∇ₓL — gradient with respect to the <em>input pixels</em>, not the weights), scaled by a small ε so the perturbation is imperceptible but the prediction flips.</div>
+<div class="term"><b>sign(·)</b> takes only the direction of each pixel's gradient (+1/−1), not its magnitude — a deliberate simplification that makes the attack a single fast step rather than a full gradient descent.</div>
+<div class="term"><b>PGD</b> repeats a small version of this step many times, projecting (clipping) back into the allowed ε-ball each iteration — a much stronger, iterative version of the same idea, which is why adversarial training beat FGSM but only partially beat PGD in this module's results.</div>
 </div>
   </div>
 </section>
 
-<!-- ============ CONCEPT 11: POISONING ============ -->
-<section class="concept" id="poisoning">
+<!-- ============ CONCEPT 11: ADVERSARIAL TRAINING ============ -->
+<section class="concept" id="adversarial-training">
   <div class="concept-head">
     <span class="eyebrow">CONCEPT 11 · CYBERSECURITY</span>
-    <h2>Data Poisoning</h2>
-    <p>Attacking the model before it's even trained.</p>
+    <h2>Adversarial Training</h2>
+    <p>The first defence — and an honest look at its limits.</p>
   </div>
 
   <div class="subhead">What it is</div>
-  <p>Data poisoning is an attack on the <strong>training process itself</strong>: an adversary manipulates some fraction of the training data — here, by flipping labels — so the model learns an incorrect pattern, without ever needing to touch the deployed model or its API.</p>
+  <p>Adversarial training generates adversarial examples <em>during</em> training and includes them in the training loss, alongside clean examples — explicitly teaching the model to classify attacked inputs correctly too, not just clean ones.</p>
 
   <div class="subhead">Why it exists — the history</div>
   <div class="history-card">
-    <div class="yr">2004 → 2006</div>
-    Adversarial machine learning as a formal research area traces to work like <strong>"Adversarial Classification"</strong> (Dalvi et al., 2004) and <strong>"Can Machine Learning Be Secure?"</strong> (Barreno et al., 2006), which first systematically asked what happens when a learning system has an active adversary, not just noisy data.
-    <div class="yr" style="margin-top:10px">2012</div>
-    <strong>Battista Biggio and colleagues</strong> demonstrated a concrete, effective poisoning attack against SVM classifiers, showing the threat was practical, not just theoretical — a foundational result that shaped how the field thinks about training-time security today.
+    <div class="yr">2015 → 2017</div>
+    Proposed alongside FGSM itself (Goodfellow et al., 2015) as the natural direct defence, then substantially strengthened by <strong>Madry et al.'s</strong> 2017 formulation using PGD-generated adversarial examples during training — often still referred to as "Madry-style" adversarial training, and broadly considered one of the most reliable (though computationally expensive) defences available today.
   </div>
 
-  <div class="subhead">Related attack families — and why we start with label flipping</div>
-  <table class="alt-table">
-    <tr><th>Attack type</th><th>What it does</th></tr>
-    <tr><td class="picked">Label flipping (this lesson)</td><td class="picked">Simplest to understand and reproduce — flips <code>y</code>, leaves <code>X</code> untouched — the right starting point before more advanced variants</td></tr>
-    <tr><td>Clean-label poisoning</td><td>Corrupts inputs subtly while keeping labels correct, making detection much harder</td></tr>
-    <tr><td>Backdoor / trojan attacks</td><td>Plants a hidden trigger pattern the model learns to associate with an attacker-chosen output</td></tr>
-    <tr><td>Evasion / adversarial examples</td><td>Attacks a <em>trained, clean</em> model at inference time instead of during training — this is Module 2's Lesson 10, the direct sequel to this one</td></tr>
-  </table>
+  <div class="callout warn"><strong>Read the robustness numbers honestly</strong><div>A model adversarially trained against FGSM is <strong>not</strong> automatically robust against PGD — a different, stronger attack. The notebook measures this directly rather than assuming it: expect a real, visible improvement under the attack the model was trained against, and a smaller, more modest improvement against a different or stronger one. This gap is not a flaw in the exercise — it is the genuine, well-documented state of adversarial robustness research, and exactly why "the model was adversarially trained" is treated as one layer of defence, not a solved problem, mirroring Module 1's layered poisoning defence.</div></div>
 
-  <div class="callout danger"><strong>The security lesson</strong><div>The attacker in this lesson never needed access to the model or its API — only the ability to influence training data. That is exactly why dataset access control, provenance, and versioning are security controls, not just data-engineering hygiene.</div></div>
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A more robust cheque-digit reader degrades more gracefully under real-world noisy conditions (poor scans, compression artefacts) as well as deliberate manipulation — reducing both fraud risk and false-alarm operational cost, though never eliminating either.</div>
 
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If an internal or third-party data pipeline that feeds a credit model is compromised — deliberately or through a careless bulk-edit script — the model can be quietly retrained on corrupted history without anyone touching the production API at all. The next model refresh silently inherits the damage.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-</section>
-
-<!-- ============ CONCEPT 12: ISOLATION FOREST ============ -->
-<section class="concept" id="isolation-forest">
-  <div class="concept-head">
-    <span class="eyebrow">CONCEPT 12</span>
-    <h2>Isolation Forest</h2>
-    <p>Finding the unusual without needing to know what "normal" looks like in advance.</p>
-  </div>
-
-  <div class="lens-tabs" id="isolation-forest-tabs"><div class="lens-tab active" onclick="switchLens('isolation-forest','overview')">Overview</div><div class="lens-tab" onclick="switchLens('isolation-forest','math')">🧮 Math &amp; Algorithm</div></div>
-
-  <div class="lens-pane lens-overview active" id="isolation-forest-overview">
-  <div class="subhead">What it is</div>
-  <p>Isolation Forest detects anomalies with a genuinely different idea from most other methods: instead of modelling what "normal" looks like and measuring distance from it, it repeatedly makes random splits of the feature space and observes that <strong>anomalies get isolated in fewer splits</strong> than normal points, simply because they're rare and different.</p>
-
-  <div class="subhead">Why it exists — the history</div>
-  <div class="history-card">
-    <div class="yr">2000</div>
-    Before Isolation Forest, the dominant approach was density- or distance-based — e.g. <strong>Local Outlier Factor (LOF)</strong>, introduced by Breunig et al. in 2000, which compares a point's local density to its neighbours'. These methods scale poorly (roughly O(n²) distance comparisons) and degrade in high-dimensional spaces.
-    <div class="yr" style="margin-top:10px">2008</div>
-    <strong>Fei Tony Liu, Kai Ming Ting and Zhi-Hua Zhou</strong> flipped the framing entirely: don't model normal, just try to isolate each point via random partitioning and count how many splits it takes. Anomalies isolate fast; normal points buried in dense regions take many more splits. The result runs in roughly O(n log n), scaling far better to large, high-dimensional financial datasets.
-  </div>
-
-  <div class="subhead">Alternatives — and why Isolation Forest</div>
-  <table class="alt-table">
-    <tr><th>Option</th><th>Trade-off</th></tr>
-    <tr><td>Local Outlier Factor (LOF)</td><td>Density-based, intuitive, but slow at scale and weaker in high dimensions</td></tr>
-    <tr><td>One-Class SVM</td><td>Strong theoretical grounding, but computationally heavier and sensitive to kernel/parameter choice</td></tr>
-    <tr><td>Elliptic Envelope</td><td>Assumes data is roughly Gaussian — often violated in real financial data</td></tr>
-    <tr><td class="picked">Isolation Forest</td><td class="picked">Fast, scales well, doesn't assume a particular data distribution, and needs no labelled "fraud" examples to train on</td></tr>
-    <tr><td>Autoencoder reconstruction error (deep learning)</td><td>Can capture more complex anomaly patterns, needs far more data and compute — an option once the system reaches Module 2/8's territory</td></tr>
-  </table>
-
-  <div class="callout danger"><strong>Never equate anomaly with fraud</strong><div>A ₹250,000 transaction may be unusual because the customer bought a car. Isolation Forest gives you a <strong>triage signal</strong> — where to look first — not a fraud verdict. Fraud determination needs additional evidence, rules, investigation and human judgement.</div></div>
-
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank with millions of legitimate records and only a handful of confirmed fraud cases cannot train a normal supervised classifier on "fraud" — there's barely any positive-class data. Isolation Forest needs no fraud labels at all; it just flags what doesn't resemble the bulk of normal activity, for a human analyst to review.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
-  </div>
-
-  <div class="lens-pane lens-math" id="isolation-forest-math">
-    <div class="math-box">
-<div class="math-expr">Anomaly score: s(x,n) = 2^(−E[h(x)] / c(n))<br>
-c(n) ≈ 2·H(n−1) − 2(n−1)/n</div>
-<div class="term"><b>h(x)</b> — the path length to isolate point x: how many random splits (on random features, at random thresholds) it takes before x sits alone in its own partition.</div>
-<div class="term">Anomalies isolate <b>fast</b> — they sit in sparse regions, so a few random splits separate them quickly (short h(x)); normal points need many splits (long h(x)) because they're surrounded by similar points.</div>
-<div class="term"><b>c(n)</b> is the expected path length for normal data of size n, used to normalise; s→1 means "clearly anomalous," s→0.5 means "no clear signal either way," s well below 0.5 means "clearly normal."</div>
-</div>
-  </div>
-</section>
-
-<!-- ============ CONCEPT 13: DEFENCE ============ -->
-<section class="concept" id="defence">
-  <div class="concept-head">
-    <span class="eyebrow">CONCEPT 13</span>
-    <h2>From Individual Checks to a Layered Defence</h2>
-    <p>No single control is enough — and that's the point.</p>
-  </div>
-
-  <div class="subhead">What it is</div>
-  <p>A layered (or "defence in depth") architecture combines several imperfect controls — schema validation, provenance tracking, anomaly screening, human review, access control — so that no single failure silently compromises the whole system.</p>
-
-  <div class="subhead">Why it exists</div>
-  <div class="history-card">
-    <div class="yr">Borrowed from classical security engineering</div>
-    "Defence in depth" predates machine learning entirely — it's a core principle from military and information-security engineering: assume any one layer can fail, and design so that failure doesn't cascade. The modern MLOps/DataOps movement, and artifacts like <strong>Datasheets for Datasets</strong> (Gebru et al., 2018) and <strong>Model Cards</strong> (Mitchell et al., 2019), are the ML field's version of the same discipline — treating data and model provenance as first-class, documented, auditable artifacts.
-  </div>
-
-  <div class="callout ok"><strong>Why layering matters here specifically</strong><div>Isolation Forest (Lesson 12) is not a complete poisoning defence on its own — a sufficiently subtle, clean-label attack could evade it. Combining anomaly screening with provenance tracking, schema checks, and human review on flagged records is what actually reduces residual risk, because each layer covers a different class of failure.</div></div>
-
-  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A bank doesn't rely on a single fraud-detection model — it layers real-time rules, ML anomaly scores, human investigator review, and after-the-fact audit trails, precisely because no one layer is trusted to be sufficient by itself.</div>
-
-  <a class="notebook-link" href="reference-notebooks/module1.ipynb" download>⬇ Run this lesson in the notebook</a>
+  <a class="notebook-link" href="reference-notebooks/module2.ipynb" download>⬇ Run this lesson in the notebook</a>
 </section>
 
 <div class="section" id="handoff">
-  <h2>Module 1 hand-off</h2>
-  <p class="lead">The notebook saves everything built here — the validated dataset, the trained baseline classifier, the Isolation Forest anomaly screen, and a metrics summary — so Module 2 loads and extends this exact system instead of starting over.</p>
+  <h2>Module 2 hand-off</h2>
+  <p class="lead">The notebook benchmarks its ANN against Module 1's exact saved baseline, trains and saves a cheque-digit CNN, and produces a measured (not assumed) adversarial-robustness comparison. Module 3 reuses the same skeleton one more time — business problem → representation → model → cybersecurity angle → lab — this time for text instead of tables or pixels.</p>
   <div class="toc-index">
-    <a href="module2.html"><span class="n">→</span>Continue to Module 2: Deep Neural Networks</a>
+    <a href="module3.html"><span class="n">→</span>Continue to Module 3: NLP + Financial Text AI</a>
     <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
   </div>
 </div>
