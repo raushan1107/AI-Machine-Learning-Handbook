@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 4 Handbook | Generative AI, LLMs & RLHF</title>
+<meta name="description" content="Module 4 theory handbook: what each LLM/RLHF technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module3.html">← Module 3</a>
+    <a class="dl" href="reference-notebooks/module4.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–3</a>
+    <a href="#foundation">From next-word to assistant</a>
+    <h3>Concepts</h3>
+    <a href="#gpt-decoder">1 · The GPT decoder</a>
+    <a href="#tokenization">2 · Sub-word tokenization</a>
+    <a href="#sft">3 · Supervised fine-tuning</a>
+    <a href="#reward-model">4 · Reward modelling</a>
+    <a href="#rl-step">5 · The RL step (PPO)</a>
+    <a href="#dpo">6 · DPO</a>
+    <a href="#peft">7 · LoRA &amp; QLoRA</a>
+    <a href="#jailbreaks">8 · Jailbreaks</a>
+    <a href="#garak">9 · Red-teaming with Garak</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 5</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 4 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 4 — <span>Generative AI, LLMs &amp; RLHF</span></h1>
+  <p>Same theory-first structure as Modules 1–3: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Module 3 gave you the Transformer's self-attention mechanism. Module 4 points that mechanism at generation, then walks the exact pipeline that turns a raw text-completion engine into something that behaves like a helpful assistant.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module4.ipynb" download>⬇ Download the Module 4 notebook</a>
+    <a class="btn" href="module3.html">← Back to Module 3</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 4 is not a fresh start. Here's exactly what it inherits before adding language generation and alignment.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>A validated tabular dataset, a logistic-regression baseline, and a documented data-poisoning defence.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 2</div><p>Deep learning fundamentals — an ANN, a CNN, and the first inference-time attack (adversarial examples) with a measured defence.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 3</div><p>Text representations, contextual embeddings (a small hand-built Transformer encoder), and two security lessons — prompt injection and PII redaction, including a toy mock of what LLM instruction-hijacking might look like.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 4</strong><div>Module 3's encoder read text and produced representations. Module 4 builds a decoder that <em>generates</em> text, then spends most of the module on the harder problem: making that generator actually helpful and safe, not just fluent — the alignment problem, and the real security risks that come with an instruction-following system.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>From "predict the next word" to "a helpful assistant"</h2>
+  <p class="lead">A model trained on nothing but next-word prediction, at scale, implicitly learns grammar, facts, and reasoning patterns — but it does NOT automatically learn to be a helpful, instruction-following assistant. That gap is what most of this module's lessons close.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The surprising part</h3><p>A raw next-token predictor is just as likely to continue a question with another question as with an answer — that's a statistically plausible continuation of internet text too.</p></div>
+    <div class="card"><h3>The pipeline this module walks</h3><p>Raw model → SFT (teach instruction-following) → Reward Model (learn what "good" means) → RL step (optimise toward it) → DPO (a simpler alternative).</p></div>
+    <div class="card"><h3>Why the security lessons follow naturally</h3><p>An LLM that follows instructions in its input is exactly the property that can be hijacked — closing the loop Module 3's toy prompt-injection demo opened.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: GPT DECODER ============ -->
+<section class="concept" id="gpt-decoder">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>The GPT Decoder: Causal Self-Attention</h2>
+    <p>The one architectural change that turns a representation-learner into a text generator.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A GPT-style decoder is a Transformer that predicts the next token from everything before it, using a <strong>causal mask</strong> that prevents any position from attending to future tokens — the key difference from Module 3's bidirectional BERT-style encoder.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    Vaswani et al.'s Transformer (Module 3) included both an encoder and a decoder half, originally for machine translation.
+    <div class="yr" style="margin-top:10px">2018</div>
+    <strong>Radford et al., OpenAI, "Improving Language Understanding by Generative Pre-Training"</strong> kept only the decoder half, added the causal mask, and showed that pretraining this architecture on raw text, then fine-tuning, beat task-specific models across many benchmarks — the paper that started the "GPT" lineage.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why the causal mask matters</h4><ul><li>Without it, the model could "see the answer" during training by copying its own future input — trivial training loss, useless at real generation where future tokens don't exist yet</li></ul></div>
+    <div class="use-box no"><h4>✗ What this doesn't give you yet</h4><ul><li>A model that completes text plausibly is not the same as a model that follows instructions helpfully — that gap is what Lessons 3–6 close</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Every LLM-based financial tool — report drafting, chat-based analysis, document summarisation — sits on top of exactly this next-token-prediction mechanism, whether the underlying model has millions or hundreds of billions of parameters.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 2: TOKENIZATION ============ -->
+<section class="concept" id="tokenization">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Sub-word Tokenization (BPE)</h2>
+    <p>How a model represents words it has never seen before.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>Byte-Pair Encoding (BPE)</strong> builds a vocabulary of frequently-occurring sub-word chunks from a training corpus — common words become single tokens, rare or unseen words fall back to smaller pieces, so the model never hits a hard "unknown word" wall.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1994</div>
+    BPE started as a data-<em>compression</em> algorithm (Gage) with nothing to do with language models.
+    <div class="yr" style="margin-top:10px">2016</div>
+    <strong>Sennrich et al.</strong> repurposed it for NLP tokenization in machine translation, and it was adopted as the standard tokenization approach from GPT-2 onward.
+  </div>
+
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Character-level (Module 4's Lesson 1 tokenizer)</td><td>Simple, no "unknown word" problem, but produces long sequences for long words</td></tr>
+    <tr><td>Whole-word</td><td>Short sequences, but any unseen word becomes an unknown token entirely</td></tr>
+    <tr><td class="picked">Sub-word BPE</td><td class="picked">The practical middle ground — common words stay whole, rare/novel words decompose gracefully</td></tr>
+  </table>
+
+  <div class="callout warn"><strong>Domain vocabulary matters</strong><div>A tokenizer trained on general English can split financial terms like "amortization" or "collateralized" into several awkward sub-word pieces — worth inspecting before trusting a model's behaviour on financial text.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's own vocabulary (loan product names, internal terms) may tokenize inefficiently under a generic tokenizer — a genuine, checkable property before deploying any LLM-based financial tool.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 3: SFT ============ -->
+<section class="concept" id="sft">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Supervised Fine-Tuning (SFT)</h2>
+    <p>The first step that teaches a raw model to follow instructions at all.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>SFT is continued training on a curated dataset of high-quality example interactions — architecturally identical to pretraining (same cross-entropy next-token loss), just on a smaller, higher-quality, task-shaped dataset.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2022</div>
+    <strong>Ouyang et al., OpenAI, "Training language models to follow instructions with human feedback"</strong> formalised the full SFT → Reward Model → RL pipeline — this is the InstructGPT paper, the direct ancestor of ChatGPT's alignment approach.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What SFT gives you</h4><ul><li>A model that has seen many examples of "instruction → helpful response" and mimics that pattern</li></ul></div>
+    <div class="use-box no"><h4>✗ What SFT alone doesn't give you</h4><ul><li>A general sense of which of several plausible responses is <em>better</em> — that requires the reward model (next lesson)</li><li>Too many SFT steps on a narrow dataset risks "catastrophic forgetting" of general capability</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An SFT'd model that has seen many examples of "financial question → helpful, factual answer" behaves completely differently from a raw base model when asked a customer-service question — the difference between a text-completion engine and something that resembles an assistant.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 4: REWARD MODEL ============ -->
+<section class="concept" id="reward-model">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Reward Modelling</h2>
+    <p>Turning "humans prefer this response" into a trainable scoring function.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A reward model is a classifier that outputs one scalar score for a piece of text, trained so `score(preferred) > score(rejected)` on human-labelled preference pairs — the same sequence-classification architecture as Module 3's sentiment model, repurposed.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    <strong>Christiano et al.</strong> formalised learning a reward function from pairwise human preferences for deep RL — because humans are notoriously inconsistent at assigning absolute scores, but reliably good at saying "A is better than B."
+  </div>
+
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td>Absolute scoring by humans</td><td>Inconsistent across raters and over time</td></tr>
+    <tr><td class="picked">Pairwise preference (Bradley-Terry loss)</td><td class="picked">More consistent human judgments; only needs relative ranking, not an absolute scale</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>A real, honestly-measured limitation</strong><div>A reward model trained on only a handful of examples per class can correctly rank its exact training examples, yet fail to generalise to paraphrased, unseen text — demonstrated directly in the notebook, not hidden. Whatever the reward model has <em>actually</em> learned — not what was intended — is what the next lesson's RL step will optimise toward.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance wants its assistant to prefer accurate, policy-grounded answers over vague, evasive ones — a reward model is the mechanism that turns that preference into a trainable signal instead of a vague aspiration.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 5: RL STEP ============ -->
+<section class="concept" id="rl-step">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>The RL Step: PPO</h2>
+    <p>How a reward score actually updates the model's weights.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>Given a trained reward model, the RL step adjusts the language model to produce higher-reward outputs more often. At its core: <strong>policy gradient / REINFORCE</strong> — `loss = -advantage × log π(action)`. <strong>PPO</strong> adds clipping and a KL penalty on top, purely for training stability at scale.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    <strong>Schulman et al., OpenAI</strong> introduced PPO as a simpler, more stable alternative to earlier policy-gradient methods like TRPO — it became RLHF's RL algorithm of choice not because it's conceptually different from REINFORCE, but because its clipping mechanism tolerates larger, more efficient updates without training collapsing.
+  </div>
+
+  <table class="alt-table">
+    <tr><th>Option</th><th>Trade-off</th></tr>
+    <tr><td class="picked">REINFORCE / policy gradient (the core mechanism)</td><td class="picked">Simple, directly demonstrable — but noisy and less stable at scale</td></tr>
+    <tr><td>PPO</td><td>REINFORCE plus clipping and a KL penalty — the stability engineering that makes it viable at production scale</td></tr>
+  </table>
+
+  <div class="callout danger"><strong>Reward hacking is real</strong><div>The RL step optimises toward whatever the reward model actually learned — not necessarily the intended concept. If the reward model has a blind spot, RL will confidently exploit it. This is a well-known, still-open problem in production RLHF, called reward hacking or reward over-optimisation.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>This is the mechanism that turns "we have a scoring function for good answers" into "the model now actually gives better answers more often" — the step that makes the reward model's judgment actionable rather than just observational.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 6: DPO ============ -->
+<section class="concept" id="dpo">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>DPO: Direct Preference Optimisation</h2>
+    <p>Collapsing three training stages into one.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>DPO shows that the reward model and the RL step (Lessons 4–5) can be mathematically collapsed into <strong>one direct loss function</strong>, computed straight from (prompt, chosen, rejected) triples against a frozen reference copy of the model — no separate reward model, no RL loop.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2023</div>
+    <strong>Rafailov et al., Stanford</strong> proved the RLHF objective and a direct classification-style loss on preference pairs share the same optimum — a genuinely influential simplification, now used alongside (and sometimes instead of) full RLHF in many recent open-model releases.
+  </div>
+
+  <table class="alt-table">
+    <tr><th></th><th>RL pipeline (SFT → Reward Model → PPO)</th><th>DPO</th></tr>
+    <tr><td>Moving parts</td><td>Three separate stages</td><td class="picked">One stage, on top of SFT</td></tr>
+    <tr><td>Compute cost</td><td>Higher</td><td class="picked">Lower</td></tr>
+    <tr><td>When still preferred</td><td class="picked">Need the reward model as a reusable, inspectable artifact</td><td>Just need the fine-tuned model, fewer infrastructure pieces</td></tr>
+  </table>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A team without a large ML infrastructure investment can realistically run a DPO fine-tuning pass on its own preference data, where a full RL pipeline might be out of reach.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 7: PEFT/LORA ============ -->
+<section class="concept" id="peft">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>Parameter-Efficient Fine-Tuning: LoRA &amp; QLoRA</h2>
+    <p>Adapting a huge model by training a tiny fraction of it.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>LoRA</strong> freezes an entire pretrained model and injects small, trainable low-rank matrices alongside its existing weights — often training under 1% of the original parameter count. <strong>QLoRA</strong> adds 4-bit quantisation of the frozen weights on top, cutting GPU memory needs further.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2021</div>
+    <strong>Hu et al., Microsoft</strong> introduced LoRA.
+    <div class="yr" style="margin-top:10px">2023</div>
+    <strong>Dettmers et al.</strong> introduced QLoRA — the combination made fine-tuning a 65-billion-parameter model feasible on a single consumer GPU, a dramatic accessibility shift.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why this matters practically</h4><ul><li>Maintaining several lightweight fine-tuned variants of one base model (e.g. retail lending, commercial lending, customer support) becomes practical instead of storing several full copies</li></ul></div>
+    <div class="use-box no"><h4>✗ The capacity trade-off</h4><ul><li>Higher rank (`r`) gives the adapter more expressive capacity at the cost of more trainable parameters — the same trade-off as choosing hidden-layer width in Module 2's ANN lesson</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance could realistically fine-tune a real 7-billion-parameter open model with LoRA on a single consumer GPU, where full fine-tuning would need many high-end GPUs just to hold the optimiser state — and could serve it fully locally via Ollama, keeping sensitive data in-house.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 8: JAILBREAKS ============ -->
+<section class="concept" id="jailbreaks">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8 · CYBERSECURITY</span>
+    <h2>LLM Jailbreaks</h2>
+    <p>Same harmful intent, different words — and a naive filter can't tell.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p>A jailbreak is a prompt crafted to make an instruction-following model ignore its safety training — typically by reframing a harmful request as roleplay, fiction, or a claimed "developer mode," rather than asking directly.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Late 2022 onward</div>
+    Jailbreak prompts (character roleplay like "DAN — Do Anything Now," fictional framing, authority-override claims) emerged rapidly alongside ChatGPT's public release, as users discovered safety training could often be circumvented by reframing rather than defeating the underlying check.
+  </div>
+
+  <div class="callout danger"><strong>A real, undisguised demonstration</strong><div>The notebook builds a simple keyword-based guardrail, then shows three jailbreak-style prompts — roleplay framing, fictional framing, and "developer mode" framing — all genuinely bypassing it, on purpose. A keyword filter can only catch phrasings it has literally seen; natural language has effectively unlimited ways to express the same intent.</div></div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An LLM-based financial assistant that can be jailbroken into providing fraud instructions or bypassing compliance guardrails is a direct, serious business and regulatory risk — not a hypothetical one.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<!-- ============ CONCEPT 9: GARAK ============ -->
+<section class="concept" id="garak">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9 · CYBERSECURITY · LAB</span>
+    <h2>Red-Teaming With Garak</h2>
+    <p>Moving from manually inventing jailbreaks to a systematic scanning tool.</p>
+  </div>
+
+  <div class="subhead">What it is</div>
+  <p><strong>Garak</strong> ("Generative AI Red-teaming & Assessment Kit") is a real, open-source, actively maintained LLM vulnerability scanner with dozens of probe categories — jailbreaks, prompt injection, data leakage, toxic generation, and more — each paired with automated detectors that judge whether an attack succeeded.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2023 onward</div>
+    Released by <strong>Leon Derczynski and contributors</strong>, with significant NVIDIA involvement, as the field recognised that ad hoc manual jailbreak-hunting (Lesson 8's approach) doesn't scale to the breadth of known attack techniques — the same progression from manual checks to a systematic tool that Module 1 made when Isolation Forest replaced ad hoc anomaly spotting.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real garak scan, run fully offline against a null test target — genuine plumbing: a real probe, a real detector, a real pass/fail report</li></ul></div>
+    <div class="use-box no"><h4>✗ What it doesn't prove on its own</h4><ul><li>A clean scan against one probe category (or an offline test target) says nothing about the others — a real security review runs many probe categories against the actual deployed system</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Before RR Finance deploys any LLM-based system into production, a real security review would run garak's jailbreak, prompt-injection, and data-leakage probe categories against the actual deployed endpoint — exactly the evidence a compliance or security team would expect to see.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 4 hand-off</h2>
+  <p class="lead">The notebook trains a from-scratch GPT, a real SFT model, a real reward model, a real DPO model, a real LoRA adapter, and produces both a manual jailbreak demonstration and a real garak scan — saved as artifacts and a metrics summary for the next module.</p>
+  <div class="callout why"><strong>What Module 5 builds on this</strong><div>Module 5 (RAG, LangChain &amp; AI Agents) gives the instruction-following model this module built toward <strong>tools and retrieval</strong> — the ability to look things up and take actions, not just generate text. The jailbreak and red-teaming lessons here become the foundation for Module 5's agentic threat surface: an LLM that can call tools is an LLM whose tool calls can potentially be hijacked too.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module3.html"><span class="n">←</span>Back to Module 3</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+</body>
+</html>
