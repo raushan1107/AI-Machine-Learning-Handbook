@@ -89,6 +89,15 @@ td{color:#b9c9d9}
 footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
 @media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
 </style>
 </head>
 <body>
@@ -169,6 +178,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>The one architectural change that turns a representation-learner into a text generator.</p>
   </div>
 
+  <div class="lens-tabs" id="gpt-decoder-tabs"><div class="lens-tab active" onclick="switchLens('gpt-decoder','overview')">Overview</div><div class="lens-tab" onclick="switchLens('gpt-decoder','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="gpt-decoder-overview">
   <div class="subhead">What it is</div>
   <p>A GPT-style decoder is a Transformer that predicts the next token from everything before it, using a <strong>causal mask</strong> that prevents any position from attending to future tokens — the key difference from Module 3's bidirectional BERT-style encoder.</p>
 
@@ -188,6 +200,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Every LLM-based financial tool — report drafting, chat-based analysis, document summarisation — sits on top of exactly this next-token-prediction mechanism, whether the underlying model has millions or hundreds of billions of parameters.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="gpt-decoder-math">
+    <div class="math-box">
+<div class="math-expr">Causal mask: attention(i,j)=0 for j&gt;i<br>
+P(x₁..x_T) = Π P(xₜ | x&lt;ₜ)</div>
+<div class="term">Same self-attention as Module 3's Lesson 3, but with a <b>causal mask</b>: token i is only allowed to attend to tokens at position ≤ i, never future tokens — otherwise the model could "peek ahead" and next-token prediction would be trivial and useless.</div>
+<div class="term">The model is trained to maximise the product (equivalently, sum of logs) of the probability of every next token given everything before it — the entire pretraining objective is this one factorisation of the joint sentence probability.</div>
+<div class="term">Stacking many of these masked-attention blocks, plus feed-forward layers between them, is the entire GPT architecture — depth and width scale up, the core mechanism does not change.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 2: TOKENIZATION ============ -->
@@ -231,6 +254,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>The first step that teaches a raw model to follow instructions at all.</p>
   </div>
 
+  <div class="lens-tabs" id="sft-tabs"><div class="lens-tab active" onclick="switchLens('sft','overview')">Overview</div><div class="lens-tab" onclick="switchLens('sft','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="sft-overview">
   <div class="subhead">What it is</div>
   <p>SFT is continued training on a curated dataset of high-quality example interactions — architecturally identical to pretraining (same cross-entropy next-token loss), just on a smaller, higher-quality, task-shaped dataset.</p>
 
@@ -248,6 +274,15 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An SFT'd model that has seen many examples of "financial question → helpful, factual answer" behaves completely differently from a raw base model when asked a customer-service question — the difference between a text-completion engine and something that resembles an assistant.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="sft-math">
+    <div class="math-box">
+<div class="math-expr">L_SFT = −(1/T) Σₜ log P(yₜ | y&lt;ₜ, prompt)</div>
+<div class="term">Standard cross-entropy loss (same shape as Module 1's log-loss), but now token-by-token: for every token in a curated, human-written response, penalise the model for assigning it low probability.</div>
+<div class="term">This is exactly the pretraining objective (predict the next token) applied to a much smaller, higher-quality dataset of instruction→response pairs — SFT doesn't teach new knowledge so much as teach the <em>format</em> of being a helpful assistant rather than a raw text-continuer.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 4: REWARD MODEL ============ -->
@@ -258,6 +293,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Turning "humans prefer this response" into a trainable scoring function.</p>
   </div>
 
+  <div class="lens-tabs" id="reward-model-tabs"><div class="lens-tab active" onclick="switchLens('reward-model','overview')">Overview</div><div class="lens-tab" onclick="switchLens('reward-model','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="reward-model-overview">
   <div class="subhead">What it is</div>
   <p>A reward model is a classifier that outputs one scalar score for a piece of text, trained so `score(preferred) > score(rejected)` on human-labelled preference pairs — the same sequence-classification architecture as Module 3's sentiment model, repurposed.</p>
 
@@ -278,6 +316,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance wants its assistant to prefer accurate, policy-grounded answers over vague, evasive ones — a reward model is the mechanism that turns that preference into a trainable signal instead of a vague aspiration.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="reward-model-math">
+    <div class="math-box">
+<div class="math-expr">Bradley-Terry: P(A≻B) = e^{r(A)} / (e^{r(A)}+e^{r(B)})<br>
+L = −log σ(r(chosen) − r(rejected))</div>
+<div class="term">Given a pair of responses where a human preferred A over B, the reward model r is trained so that r(A) &gt; r(B) — the Bradley-Terry formula converts a reward-score <em>gap</em> into a preference <em>probability</em>.</div>
+<div class="term">The loss is exactly logistic regression's log-loss again (Module 1), but on the <em>difference</em> between two scores instead of one — push σ(r(chosen)−r(rejected)) toward 1, i.e. make the gap large and positive.</div>
+<div class="term">Once trained, r(response) becomes a learned, automatic proxy for "how much would a human like this," reusable at scale where a human can't review every generation.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 5: RL STEP ============ -->
@@ -288,6 +337,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>How a reward score actually updates the model's weights.</p>
   </div>
 
+  <div class="lens-tabs" id="rl-step-tabs"><div class="lens-tab active" onclick="switchLens('rl-step','overview')">Overview</div><div class="lens-tab" onclick="switchLens('rl-step','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="rl-step-overview">
   <div class="subhead">What it is</div>
   <p>Given a trained reward model, the RL step adjusts the language model to produce higher-reward outputs more often. At its core: <strong>policy gradient / REINFORCE</strong> — `loss = -advantage × log π(action)`. <strong>PPO</strong> adds clipping and a KL penalty on top, purely for training stability at scale.</p>
 
@@ -308,6 +360,17 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>This is the mechanism that turns "we have a scoring function for good answers" into "the model now actually gives better answers more often" — the step that makes the reward model's judgment actionable rather than just observational.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="rl-step-math">
+    <div class="math-box">
+<div class="math-expr">PPO objective: E[min(ρₜAₜ, clip(ρₜ,1−ε,1+ε)Aₜ)]<br>
+ρₜ = π_new(a|s)/π_old(a|s)</div>
+<div class="term"><b>ρₜ</b> — the probability ratio between the updated policy and the policy that generated the data; Aₜ (advantage) — how much better this action was than average, using the reward model's score.</div>
+<div class="term">Plain policy gradient (ρₜAₜ alone) can take a catastrophically large step if ρₜ swings far from 1. <b>clip(ρₜ, 1−ε, 1+ε)</b> caps how far the update is allowed to trust a single batch of data, and taking the <b>min</b> of the two terms means the objective never rewards moving further than that clip allows.</div>
+<div class="term">Net effect: nudge the language model toward generations the reward model scores highly, without ever changing the policy so drastically in one step that training destabilises — the entire reason PPO replaced simpler policy-gradient methods for this use case.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 6: DPO ============ -->
@@ -318,6 +381,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Collapsing three training stages into one.</p>
   </div>
 
+  <div class="lens-tabs" id="dpo-tabs"><div class="lens-tab active" onclick="switchLens('dpo','overview')">Overview</div><div class="lens-tab" onclick="switchLens('dpo','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="dpo-overview">
   <div class="subhead">What it is</div>
   <p>DPO shows that the reward model and the RL step (Lessons 4–5) can be mathematically collapsed into <strong>one direct loss function</strong>, computed straight from (prompt, chosen, rejected) triples against a frozen reference copy of the model — no separate reward model, no RL loop.</p>
 
@@ -337,6 +403,16 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A team without a large ML infrastructure investment can realistically run a DPO fine-tuning pass on its own preference data, where a full RL pipeline might be out of reach.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="dpo-math">
+    <div class="math-box">
+<div class="math-expr">L_DPO = −log σ( β log[π(y_w|x)/π_ref(y_w|x)] − β log[π(y_l|x)/π_ref(y_l|x)] )</div>
+<div class="term">DPO skips training a separate reward model and skips the RL loop entirely — it shows mathematically that the same preference-alignment objective can be rewritten as a direct classification loss on the policy model itself, using a frozen copy of the pre-SFT model (π_ref) as a reference point.</div>
+<div class="term"><b>y_w, y_l</b> — the preferred ("winning") and dispreferred ("losing") response from a human comparison. The loss pushes the policy's log-probability-ratio-vs-reference higher for y_w than for y_l.</div>
+<div class="term"><b>β</b> controls how far the new policy is allowed to drift from the reference model — conceptually doing the same "don't move too far, too fast" job that PPO's clipping does, but built directly into a single differentiable loss instead of a separate RL algorithm.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 7: PEFT/LORA ============ -->
@@ -347,6 +423,9 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
     <p>Adapting a huge model by training a tiny fraction of it.</p>
   </div>
 
+  <div class="lens-tabs" id="peft-tabs"><div class="lens-tab active" onclick="switchLens('peft','overview')">Overview</div><div class="lens-tab" onclick="switchLens('peft','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="peft-overview">
   <div class="subhead">What it is</div>
   <p><strong>LoRA</strong> freezes an entire pretrained model and injects small, trainable low-rank matrices alongside its existing weights — often training under 1% of the original parameter count. <strong>QLoRA</strong> adds 4-bit quantisation of the frozen weights on top, cutting GPU memory needs further.</p>
 
@@ -366,6 +445,16 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
   <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance could realistically fine-tune a real 7-billion-parameter open model with LoRA on a single consumer GPU, where full fine-tuning would need many high-end GPUs just to hold the optimiser state — and could serve it fully locally via Ollama, keeping sensitive data in-house.</div>
 
   <a class="notebook-link" href="reference-notebooks/module4.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="peft-math">
+    <div class="math-box">
+<div class="math-expr">LoRA: W' = W₀ + BA,  B∈ℝ^{d×r}, A∈ℝ^{r×k}, r≪d,k</div>
+<div class="term">Instead of updating the full pretrained weight matrix W₀ (potentially billions of parameters), LoRA freezes W₀ entirely and learns a small correction BA — the product of two much smaller "low-rank" matrices.</div>
+<div class="term"><b>r (rank)</b> is a small number (e.g. 8–64) far smaller than the original dimensions d, k — this is the key compression: a d×k update normally needs d×k parameters, but BA only needs r×(d+k), a huge reduction when r is small.</div>
+<div class="term"><b>QLoRA</b> adds one more trick on top: it quantises the frozen W₀ down to 4-bit precision (far less GPU memory) while keeping the small LoRA matrices A, B in higher precision for stable training — memory saved on the part that isn't being trained anyway.</div>
+</div>
+  </div>
 </section>
 
 <!-- ============ CONCEPT 8: JAILBREAKS ============ -->
@@ -434,5 +523,15 @@ footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color
 </footer>
 </main>
 </div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
 </body>
 </html>
