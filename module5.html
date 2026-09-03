@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 5 Handbook | RAG, LangChain &amp; AI Agents</title>
+<meta name="description" content="Module 5 theory handbook: what each RAG/agent technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module4.html">← Module 4</a>
+    <a class="dl" href="reference-notebooks/module5.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–4</a>
+    <a href="#foundation">Why retrieval, why agents</a>
+    <h3>Concepts</h3>
+    <a href="#rag-motivation">1 · Why RAG</a>
+    <a href="#chunking">2 · Chunking documents</a>
+    <a href="#embeddings">3 · Embeddings for retrieval</a>
+    <a href="#vector-search">4 · Vector search (FAISS)</a>
+    <a href="#bm25">5 · Lexical search (BM25)</a>
+    <a href="#langchain-rag">6 · A RAG pipeline (LangChain)</a>
+    <a href="#agents">7 · AI agents &amp; tool-use</a>
+    <a href="#langgraph">8 · LangGraph</a>
+    <a href="#retrieval-poisoning">9 · Retrieval poisoning</a>
+    <a href="#tool-hijacking">10 · Tool-call hijacking</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 6</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 5 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 5 — <span>RAG, LangChain &amp; AI Agents</span></h1>
+  <p>Same theory-first structure as Modules 1–4: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Module 4 built an aligned language model with a hard limit: it only knows what was baked into its weights. Module 5 gives it the ability to look things up and take real actions.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module5.ipynb" download>⬇ Download the Module 5 notebook</a>
+    <a class="btn" href="module4.html">← Back to Module 4</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 5 is not a fresh start. Here's exactly what it inherits before adding retrieval and agentic tool-use.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1–2</div><p>A validated tabular baseline and deep-learning fundamentals, including the first inference-time attack (adversarial examples).</p></div>
+    <div class="recap-card"><div class="tag">MODULE 3</div><p>Text representations and contextual embeddings — the same similarity math this module's retrieval lessons build directly on.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 4</div><p>A real, aligned, instruction-following model built from scratch (SFT → Reward Model → RL/DPO → LoRA), plus real LLM red-teaming.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 5</strong><div>Module 4's model is powerful but "closed-book" — frozen knowledge, no access to current data, no ability to act. Module 5 opens the book (retrieval) and gives the model hands (tools) — then closes with the new attack surface that comes with both.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why retrieval, why agents</h2>
+  <p class="lead">A model that only recalls what it memorised during training will confidently make things up when asked about anything that changed since — the problem this whole module solves in two connected halves.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The core problem</h3><p>Parametric knowledge is frozen at training time — a policy that changed yesterday isn't in the weights, no matter how large the model is.</p></div>
+    <div class="card"><h3>The pipeline this module walks</h3><p>Chunk documents → embed them → retrieve by similarity → augment a prompt with what's retrieved → generalise into a tool-using, multi-step agent.</p></div>
+    <div class="card"><h3>Why the security lessons follow naturally</h3><p>A system that trusts retrieved content, and can act on it, is a system whose retrieved content can manipulate its actions — the natural next step after Module 3/4's prompt injection and jailbreaks.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: WHY RAG: PARAMETRIC KNOWLEDGE HAS A HARD LIMIT ============ -->
+<section class="concept" id="rag-motivation">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Why RAG: Parametric Knowledge Has a Hard Limit</h2>
+    <p>A frozen model plus a live document store beats retraining every time a policy changes.</p>
+  </div>
+
+  <div class="lens-tabs" id="rag-motivation-tabs"><div class="lens-tab active" onclick="switchLens('rag-motivation','overview')">Overview</div><div class="lens-tab" onclick="switchLens('rag-motivation','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="rag-motivation-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Retrieval-Augmented Generation (RAG)</strong> keeps a model's weights frozen and instead retrieves relevant real documents at query time, handing them to the model as context — "open-book" answering instead of "closed-book" recall from memorised weights.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2020</div>
+    <strong>Lewis et al., Facebook AI, "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"</strong> combined a pretrained retriever with a pretrained generator, trained jointly. Most production RAG systems today use a simpler, decoupled version of the same idea — a separate retriever feeding context into an off-the-shelf LLM — which is what this module builds.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Knowledge changes faster than you can retrain (RR Finance's policies, rate sheets)</li><li>Answers must cite specific, current, or private documents a model shouldn't have memorised into its weights</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The knowledge is genuinely stable and general (Module 4's fine-tuning is still the right tool for teaching a model a new skill or style, not new facts)</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's loan policies change constantly. Retraining Module 4's model every time a rate sheet updates would be slow and expensive — RAG instead retrieves the current policy document at answer time, so the model is always working from today's real numbers.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="rag-motivation-math">
+    <div class="math-box">
+<div class="term">Lesson 1 is conceptual — the retrieval math (embeddings, cosine similarity, BM25 scoring) is built in Lessons 3–5.</div>
+<div class="term"><b>top_k</b> is the one parameter introduced here: how many retrieved chunks get included in the prompt. Too few and relevant context is missed; too many dilutes the prompt with irrelevant text and wastes context budget — the same precision/recall trade-off that shows up throughout this handbook.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: CHUNKING A DOCUMENT CORPUS ============ -->
+<section class="concept" id="chunking">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Chunking a Document Corpus</h2>
+    <p>Splitting long documents into retrievable, self-contained pieces.</p>
+  </div>
+
+  <div class="lens-tabs" id="chunking-tabs"><div class="lens-tab active" onclick="switchLens('chunking','overview')">Overview</div><div class="lens-tab" onclick="switchLens('chunking','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="chunking-overview">
+  <div class="subhead">What it is</div>
+  <p>Whole documents are usually too long to retrieve and hand to a model wholesale. <strong>Chunking</strong> splits documents into smaller, retrievable pieces — small enough to be precise, large enough to retain context.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Standard practice</div>
+    Fixed-size chunking with overlap is the simplest, most widely used approach in production RAG systems: split on a target size, keep a small overlap between consecutive chunks so a fact sitting near a boundary doesn't get cut in half and lost.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Documents are longer than a retrievable unit should be (most real policy documents, manuals, filings)</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li>Too small a chunk_size fragments a single fact across multiple chunks; too large re-introduces the "too much irrelevant text" problem chunking was meant to solve</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's Personal Loan policy document gets split into self-contained chunks — one about maximum amount and rates, another about credit score requirements — so a query about credit scores retrieves precisely that chunk, not the entire policy document.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="chunking-math">
+    <div class="math-box">
+<div class="math-expr">chunk_size, chunk_overlap (characters or tokens)</div>
+<div class="term">Purely an information-design choice, not a learned model — <code>RecursiveCharacterTextSplitter</code> tries to split on natural boundaries (paragraph, then sentence, then word) before falling back to a hard character cut, to avoid severing a sentence mid-word wherever possible.</div>
+<div class="term"><b>chunk_overlap</b> is a safety margin: consecutive chunks share a few dozen characters, so a fact sitting exactly on a chunk boundary still appears whole in at least one of the two adjacent chunks.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: EMBEDDINGS FOR RETRIEVAL ============ -->
+<section class="concept" id="embeddings">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Embeddings for Retrieval</h2>
+    <p>Turning a chunk of text into a vector that captures its meaning.</p>
+  </div>
+
+  <div class="lens-tabs" id="embeddings-tabs"><div class="lens-tab active" onclick="switchLens('embeddings','overview')">Overview</div><div class="lens-tab" onclick="switchLens('embeddings','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="embeddings-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>sentence embedding model</strong> maps a whole chunk of text to one dense vector, trained so semantically similar text ends up with similar vectors — a direct evolution of Module 3's Word2Vec (per-word) and contextual embeddings (per-token) to the chunk/document level.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2019</div>
+    <strong>Reimers &amp; Gurevych, "Sentence-BERT"</strong> fine-tuned BERT-style models specifically to produce comparable sentence-level vectors — dramatically faster than comparing every pair of sentences with a full attention pass every time.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need to catch paraphrases — a query about "loan limit" should find a chunk saying "maximum amount," with no words in common</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Real internet access isn't available — this notebook falls back to Module 3's TF-IDF vectors, which are sparse and keyword-based rather than dense and semantic, and honestly weaker at catching paraphrases</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Customers and staff phrase questions differently than policy documents are written. Embedding-based retrieval catches "how much can I borrow" matching a chunk that says "maximum amount" — pure keyword search would miss it entirely.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="embeddings-math">
+    <div class="math-box">
+<div class="math-expr">cosine_similarity(q, c) = (q·c) / (‖q‖‖c‖)</div>
+<div class="term">Same cosine similarity formula as Module 3's Word2Vec lesson, applied to whole-chunk vectors instead of single-word vectors: 1 means same direction (highly relevant), 0 means unrelated.</div>
+<div class="term">Embedding dimensionality (e.g. 384 for <code>all-MiniLM-L6-v2</code>) is fixed by the chosen model — higher dimensionality can capture more nuance at the cost of more storage and compute per comparison.</div>
+<div class="term">The TF-IDF fallback is technically also an "embedding" in the loose sense (a vector representation of text) — just sparse (mostly zeros, one dimension per vocabulary word) and keyword-based rather than dense and semantic.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: VECTOR SEARCH WITH FAISS ============ -->
+<section class="concept" id="vector-search">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Vector Search With FAISS</h2>
+    <p>Finding the most similar chunk out of potentially millions, fast.</p>
+  </div>
+
+  <div class="lens-tabs" id="vector-search-tabs"><div class="lens-tab active" onclick="switchLens('vector-search','overview')">Overview</div><div class="lens-tab" onclick="switchLens('vector-search','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="vector-search-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>FAISS</strong> (Facebook AI Similarity Search) is a real, widely used library for fast vector similarity search — exact search for smaller corpora, and approximate-but-much-faster indexes for very large ones.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    Released by Facebook AI Research to make nearest-neighbour search over large embedding collections practical at scale — comparing a query against every single vector (brute force) stops scaling long before a real document base gets anywhere near production size.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Retrieval needs to stay fast as the document corpus grows well beyond a handful of documents</li></ul></div>
+    <div class="use-box no"><h4>✗ Trade-off to know</h4><ul><li>At real scale (millions of vectors), an approximate index (e.g. HNSW) trades a small amount of accuracy for a large speed gain — the same accuracy/speed pattern as K-Means++ initialisation (Module 1) or PPO's clipping (Module 4)</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's real document base — policies, case notes, compliance filings — would be far larger than a handful of files. FAISS keeps retrieval fast as that corpus grows toward production scale.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="vector-search-math">
+    <div class="math-box">
+<div class="math-expr">IndexFlatIP: score(q,c) = q·c &nbsp; (on L2-normalised vectors, equals cosine similarity)</div>
+<div class="term"><b>IndexFlatL2</b> vs <b>IndexFlatIP</b>: flat means exact (brute-force but optimised) search; L2 = Euclidean distance, IP = inner product. On normalised vectors, inner-product ranking and cosine-similarity ranking return identical results.</div>
+<div class="term">FAISS is doing the same nearest-neighbour math Concept 3 introduced — the library's contribution is doing it fast and at scale, not a new similarity formula.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: LEXICAL RETRIEVAL WITH BM25, AND HYBRID SEARCH ============ -->
+<section class="concept" id="bm25">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Lexical Retrieval With BM25, and Hybrid Search</h2>
+    <p>Why exact keyword match still matters alongside semantic search.</p>
+  </div>
+
+  <div class="lens-tabs" id="bm25-tabs"><div class="lens-tab active" onclick="switchLens('bm25','overview')">Overview</div><div class="lens-tab" onclick="switchLens('bm25','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="bm25-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>BM25</strong> (Best Matching 25) is a classic, still widely used lexical ranking function — an evolution of Module 3's TF-IDF that additionally accounts for document length and saturates term-frequency's contribution.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1994</div>
+    Developed by <strong>Robertson, Walker et al.</strong> as part of the Okapi information-retrieval system — still the standard lexical baseline decades later, and often run alongside vector search in production ("hybrid" retrieval), since neither approach dominates the other across all query types.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Exact, rare terms matter — a specific policy code, an exact numeric threshold, a compliance clause number</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The query is a paraphrase with no shared vocabulary with the target chunk — that's exactly where dense embeddings (Concept 3) win instead</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A compliance officer searching for an exact clause number or a specific rate value cares about exact-match precision more than semantic similarity — this notebook demonstrates BM25 and vector search returning genuinely different top results for the same query.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="bm25-math">
+    <div class="math-box">
+<div class="math-expr">score(q,D) = Σ IDF(t) × [tf(t,D)×(k1+1)] / [tf(t,D) + k1×(1−b+b×|D|/avgdl)]</div>
+<div class="term"><b>IDF(t)</b> — the same distinctiveness idea as TF-IDF (Module 3): common terms contribute little, rare terms contribute more.</div>
+<div class="term"><b>k1</b> controls how quickly term-frequency saturates — a term appearing 10 times isn't 10× as relevant as it appearing once; the denominator's <code>tf + k1</code> term flattens that curve.</div>
+<div class="term"><b>b</b> controls how much document length is penalised — a term match in a short chunk counts for more than the same match in a long one, via the <code>|D|/avgdl</code> length-normalisation term.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: A FULL RAG PIPELINE WITH LANGCHAIN ============ -->
+<section class="concept" id="langchain-rag">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>A Full RAG Pipeline With LangChain</h2>
+    <p>Composing retrieval, prompting, and generation with the industry-standard framework.</p>
+  </div>
+
+  <div class="lens-tabs" id="langchain-rag-tabs"><div class="lens-tab active" onclick="switchLens('langchain-rag','overview')">Overview</div><div class="lens-tab" onclick="switchLens('langchain-rag','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="langchain-rag-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>LangChain's</strong> <code>Runnable</code> interface lets you compose a retriever and an LLM into a single callable pipeline (<code>retriever | prompt | llm</code>) — the same retrieval mechanism as Concept 4, now wrapped in a real, industry-standard orchestration layer instead of hand-wired glue code.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2022</div>
+    <strong>LangChain (Harrison Chase)</strong> emerged as the LLM ecosystem exploded, standardising the "retriever + prompt + LLM" pattern so teams stop rebuilding the same plumbing (retries, prompt templating, swappable components) repeatedly.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why the framework matters</h4><ul><li>Swap the local template-based responder this notebook uses for Module 4's fine-tuned model, or a hosted LLM API, and the SAME pipeline code works unchanged</li></ul></div>
+    <div class="use-box no"><h4>✗ What's simplified here, on purpose</h4><ul><li>The generation step uses a lightweight local template responder, not a full LLM — clearly marked as the one piece you'd swap for production</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A production RAG system needs retries, prompt templating, and observability so RR Finance's engineering team doesn't rebuild all of it from scratch — LangChain provides that layer on top of the retrieval math already built in Concepts 3–5.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="langchain-rag-math">
+    <div class="math-box">
+<div class="term">No new math in this lesson — it's about real software architecture for the retrieval math already built. The <code>PromptTemplate</code> controls exactly how retrieved chunks are formatted into the model's context, and real RAG answer quality is highly sensitive to that template's exact wording.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 7: AI AGENTS: GIVING THE MODEL TOOLS ============ -->
+<section class="concept" id="agents">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>AI Agents: Giving the Model Tools</h2>
+    <p>From reading documents to taking real actions.</p>
+  </div>
+
+  <div class="lens-tabs" id="agents-tabs"><div class="lens-tab active" onclick="switchLens('agents','overview')">Overview</div><div class="lens-tab" onclick="switchLens('agents','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="agents-overview">
+  <div class="subhead">What it is</div>
+  <p>An <strong>agent</strong> is a model that can call functions ("tools") and use their results. RAG lets a model read; tool-use lets it check live data and perform real actions — calculate an EMI, look up a balance, flag a case.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">June 2023</div>
+    Function-calling/tool-use for LLMs became mainstream with <strong>OpenAI's function-calling API</strong>, quickly adopted industry-wide (including by Anthropic and Google) as the standard way to connect a language model to real actions and live data.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>The task needs current, live data (not just retrievable documents) or a real action (a calculation, a lookup, a state change)</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li>Giving a model access to a dangerous tool (fund transfers) with the same casual trust as a safe one (a calculator) creates exactly the risk Concept 9's poisoning demo exploits</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A useful RR Finance assistant needs to calculate a real EMI or look up a current policy, not just recite retrieved text — this notebook's agent chooses between a <code>calculate_emi</code> tool and a <code>lookup_policy</code> tool based on the request.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="agents-math">
+    <div class="math-box">
+<div class="term">Tool selection is a classification decision — which tool, if any, fits this request — made by the same kind of model Module 4 built, just prompted (or, in this notebook's simplified router, rule-matched) to output a structured tool call instead of free text.</div>
+<div class="term">Each tool's description is what a real LLM-based router uses to decide <em>when</em> to call it — vague descriptions lead to picking the wrong tool, or missing an opportunity to use one at all.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 8: LANGGRAPH: MULTI-STEP, STATEFUL AGENT WORKFLOWS ============ -->
+<section class="concept" id="langgraph">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8</span>
+    <h2>LangGraph: Multi-Step, Stateful Agent Workflows</h2>
+    <p>Explicit, inspectable graphs instead of implicit agent loops.</p>
+  </div>
+
+  <div class="lens-tabs" id="langgraph-tabs"><div class="lens-tab active" onclick="switchLens('langgraph','overview')">Overview</div><div class="lens-tab" onclick="switchLens('langgraph','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="langgraph-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>LangGraph</strong> models an agent as an explicit state graph: nodes are steps (retrieve, decide, calculate, respond), edges — including conditional ones — define what happens next based on the current state.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2024</div>
+    Built by the <strong>LangChain team</strong> specifically because chaining tool calls implicitly (Concept 7's approach, and LangChain's earlier <code>AgentExecutor</code>) becomes hard to control and debug once workflows have conditional branches or loops — an explicit graph is easier to reason about, test, and visualise.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>The task needs multiple conditional steps in sequence — "check eligibility, and if it passes calculate the EMI, and if not explain why" is a workflow a single tool call can't express</li></ul></div>
+    <div class="use-box no"><h4>✗ Overkill when</h4><ul><li>A single tool call answers the request — Concept 7's simpler router is enough, and adding graph machinery just adds complexity</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>This notebook's graph checks loan qualification against a retrieved policy, then routes to either a calculation step or a rejection step — a real, inspectable, multi-step workflow instead of one flat function.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="langgraph-math">
+    <div class="math-box">
+<div class="math-expr">Graph = (Nodes, Edges); conditional_edge(state) → next_node</div>
+<div class="term">The <b>state</b> object is passed between every node and can be read/updated by each one — the shared memory of the whole workflow, closer to classical graph traversal than to any learned model.</div>
+<div class="term">A conditional edge that routes back to an earlier node produces looping/retry behaviour — the graph structure directly controls what workflows are even expressible, which a flat sequential function cannot represent.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 9: CYBERSECURITY: RETRIEVAL POISONING ============ -->
+<section class="concept" id="retrieval-poisoning">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9</span>
+    <h2>Cybersecurity: Retrieval Poisoning</h2>
+    <p>When an attacker gets a malicious document into the document store.</p>
+  </div>
+
+  <div class="lens-tabs" id="retrieval-poisoning-tabs"><div class="lens-tab active" onclick="switchLens('retrieval-poisoning','overview')">Overview</div><div class="lens-tab" onclick="switchLens('retrieval-poisoning','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="retrieval-poisoning-overview">
+  <div class="subhead">What it is</div>
+  <p>A RAG system trusts whatever is in its document store. If an attacker gets a malicious document INTO that store, the retriever will happily surface it as if it were legitimate policy — the retrieval-era evolution of Module 3's prompt injection.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Direct consequence of RAG's design</div>
+    Any system that indexes and retrieves from a document collection inherits this risk the moment that collection accepts content from a less-trusted source — a shared drive, a support ticket, a customer upload — the same "don't trust user-controllable content" lesson Module 3 and 4 taught, now applied to the retrieval layer.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, working attack — a crafted document engineered to rank highly against a predictable query, then shown to actually get retrieved ahead of the genuine policy chunk</li></ul></div>
+    <div class="use-box no"><h4>✗ Real defences</h4><ul><li>Access control on who can add documents, provenance/trust scoring per source, and treating retrieved content as untrusted data to verify — never as an implicit instruction</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If RR Finance's document ingestion pipeline accepts uploads from a less-trusted source, a poisoned "policy update" sitting there could get retrieved into a real customer-facing answer — exactly what this notebook's attack demonstrates working.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="retrieval-poisoning-math">
+    <div class="math-box">
+<div class="term">The attack simply exploits the retrieval math already built (Concepts 3–4): an attacker who knows or guesses likely customer queries can hand-craft text that maximises cosine similarity to those queries — the retrieval-layer version of Module 3's TF-IDF keyword-stuffing evasion attack.</div>
+<div class="term"><b>top_k</b> (Concept 1) directly controls blast radius: a smaller top_k means a poisoned document must rank very highly to get included at all; a larger top_k gives an attacker more room to sneak in.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 10: CYBERSECURITY: TOOL-CALL HIJACKING ============ -->
+<section class="concept" id="tool-hijacking">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 10</span>
+    <h2>Cybersecurity: Tool-Call Hijacking</h2>
+    <p>When retrieved content manipulates what an agent does, not just what it says.</p>
+  </div>
+
+  <div class="lens-tabs" id="tool-hijacking-tabs"><div class="lens-tab active" onclick="switchLens('tool-hijacking','overview')">Overview</div><div class="lens-tab" onclick="switchLens('tool-hijacking','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="tool-hijacking-overview">
+  <div class="subhead">What it is</div>
+  <p>Concept 9 poisoned what the agent <em>reads</em>. This is the higher-stakes version: a malicious retrieved document that manipulates an agent into calling a tool it shouldn't, or with attacker-chosen arguments — an agent with real tool access that trusts retrieved content the same way it trusts direct user input.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2023–2024</div>
+    As agentic LLM systems with real tool access became common, security researchers identified <strong>indirect prompt injection via retrieved content</strong> as a distinct, more dangerous variant of Module 3's direct prompt injection — "indirect" because the attacker never talks to the model directly, only plants content the model will later retrieve and trust.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A working hijack — a routine-looking case note with an embedded instruction gets retrieved for an unrelated query, and its text triggers an unintended, fraudulent tool call</li></ul></div>
+    <div class="use-box no"><h4>✗ The real fix</h4><ul><li>A trust boundary: treat retrieved document content as DATA to reason about, never as INSTRUCTIONS to act on — tool-routing decisions should come ONLY from the actual user's request, demonstrated working in the notebook</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An agent with access to real tools (fund transfers, account changes, approvals) that can be manipulated via retrieved content is a direct fraud vector — the highest-stakes risk in this entire module, and the reason production agent systems need an explicit trust boundary between retrieved data and actionable instructions.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module5.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="tool-hijacking-math">
+    <div class="math-box">
+<div class="term">No new math — like Concept 9, this is a systems/trust-boundary issue, not a modelling one. Any agent that lets <em>retrieved content</em> influence <em>tool-selection logic</em> the same way <em>user input</em> does has this vulnerability, regardless of whether that logic is keyword rules (this notebook, for full inspectability) or an LLM-based router (a real deployment) — the underlying flaw is identical either way.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 5 hand-off</h2>
+  <p class="lead">The notebook chunks and embeds a real RR Finance policy corpus, builds real FAISS and BM25 indexes, composes a real LangChain RAG pipeline, wires a tool-using agent through a real LangGraph workflow, and produces two working security demonstrations — saved as artifacts and a metrics summary for the next module.</p>
+  <div class="callout why"><strong>What Module 6 builds on this</strong><div>Module 6 (Explainable &amp; Responsible AI) turns the lens back on every model built so far — including this module's retrieval and agent decisions — asking not just "does it work?" but "can we explain why it made this specific decision, and is that decision fair?" Module 1's deferred age-fairness question finally gets its full audit here, using SHAP, LIME, and counterfactual explanations.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module4.html"><span class="n">←</span>Back to Module 4</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
