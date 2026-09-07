@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 6 Handbook | Explainable &amp; Responsible AI</title>
+<meta name="description" content="Module 6 theory handbook: SHAP, LIME, counterfactual explanations, and the deferred age-fairness audit -- what each technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module5.html">← Module 5</a>
+    <a class="dl" href="reference-notebooks/module6.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–5</a>
+    <a href="#foundation">Why explainability, why now</a>
+    <h3>Concepts</h3>
+    <a href="#adverse-action">1 · The adverse-action problem</a>
+    <a href="#shap">2 · SHAP (Shapley values)</a>
+    <a href="#lime">3 · LIME</a>
+    <a href="#explaining-ann">4 · Explaining a neural network</a>
+    <a href="#counterfactuals">5 · Counterfactual explanations</a>
+    <a href="#interpretable-vs-posthoc">6 · Interpretable-by-design vs. post-hoc</a>
+    <a href="#fairness-audit">7 · Group fairness &amp; the age audit</a>
+    <a href="#governance">8 · Model governance &amp; model cards</a>
+    <a href="#adverse-notice">9 · Adverse-action notices in practice</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 7</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 6 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Governance</span>
+  </div>
+  <h1>Module 6 — <span>Explainable &amp; Responsible AI</span></h1>
+  <p>Same theory-first structure as Modules 1–5: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Every module so far has answered "does it work?" and "can it be attacked?" Module 6 answers the question RR Finance has deferred since Module 1: "can we explain why it made this decision, and is that decision fair?"</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module6.ipynb" download>⬇ Download the Module 6 notebook</a>
+    <a class="btn" href="module5.html">← Back to Module 5</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 6 is not a fresh start. Here's exactly what it inherits before turning the lens back on all of it.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>A validated logistic-regression baseline (test ROC-AUC ≈ 0.69) — and the <code>age</code> column, deliberately excluded from every model's features, flagged "for Module 6" since Lesson 1.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 2</div><p>A deeper ANN classifier, benchmarked against the Module 1 baseline — and adversarial attacks showing even a "working" model can be manipulated.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 3–5</div><p>Text understanding, an aligned language model built from scratch, and RAG-powered tool-using agents — including a rule-based routing decision this module explicitly returns to.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 6</strong><div>Every prior module optimised for "does it work" and stress-tested "can it be attacked." Module 6 adds the question a real lender is legally required to answer for a real rejected applicant: <em>why</em> — and whether that "why" holds up the same way across every group of applicants.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why explainability, why now</h2>
+  <p class="lead">A model that cannot explain itself is not deployable in lending, no matter how accurate it is.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The legal reality</h3><p>Under fair-lending frameworks like the US Equal Credit Opportunity Act, a rejected applicant is entitled to the <em>specific reasons</em> for that rejection — "the model said no" is not a compliant answer.</p></div>
+    <div class="card"><h3>The technical gap</h3><p>Module 1's logistic regression and Module 2's ANN both predict well enough to be useful and both remain, by default, black boxes about <em>why</em> any single prediction came out the way it did.</p></div>
+    <div class="card"><h3>The deferred debt</h3><p><code>age</code> has sat in the dataframe since Module 1, excluded from every model's inputs but never actually audited for disparate impact — until this module.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: THE ADVERSE-ACTION PROBLEM ============ -->
+<section class="concept" id="adverse-action">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>The Adverse-Action Problem</h2>
+    <p>Why a rejected applicant is owed more than a score.</p>
+  </div>
+
+  <div class="lens-tabs" id="adverse-action-tabs"><div class="lens-tab active" onclick="switchLens('adverse-action','overview')">Overview</div><div class="lens-tab" onclick="switchLens('adverse-action','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="adverse-action-overview">
+  <div class="subhead">What it is</div>
+  <p>An <strong>adverse-action notice</strong> is what fair-lending law requires a lender to give a rejected applicant: the specific, principal reasons their application was declined — not a probability, not "the algorithm decided."</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">US Equal Credit Opportunity Act (ECOA) / Regulation B</div>
+    Requires creditors to state specific reasons for denying credit, or tell the applicant they have a right to request them. This predates modern ML entirely — it was written for human underwriters reading paper files — but it applies with equal force to a model-driven decision. A black-box score alone does not satisfy it.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why this frames the whole module</h4><ul><li>Every technique in Modules 6 — SHAP, LIME, counterfactuals, fairness audits — exists to make this one legal requirement achievable for a model too complex to read directly</li></ul></div>
+    <div class="use-box no"><h4>✗ What does NOT satisfy this requirement</h4><ul><li>"The model's accuracy is 69%" — a global metric, not a reason for THIS applicant's specific decision</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's baseline classifier rejects a real applicant in Module 6's notebook. Lesson 9 turns that single rejection into an actual adverse-action notice — the direct business deliverable this whole module builds toward.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="adverse-action-math">
+    <div class="math-box">
+<div class="term">No new math in this framing lesson — it sets up why Concepts 2, 3, and 5 (SHAP, LIME, counterfactuals) are the technical answer to a legal requirement, not just academic exercises.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: SHAP (SHAPLEY ADDITIVE EXPLANATIONS) ============ -->
+<section class="concept" id="shap">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>SHAP (Shapley Additive Explanations)</h2>
+    <p>Borrowing a 1953 game-theory idea to split credit fairly among features.</p>
+  </div>
+
+  <div class="lens-tabs" id="shap-tabs"><div class="lens-tab active" onclick="switchLens('shap','overview')">Overview</div><div class="lens-tab" onclick="switchLens('shap','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="shap-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>SHAP</strong> assigns each feature a numeric contribution to one specific prediction, such that all contributions sum exactly to the gap between that prediction and the model's average output. It is the most theoretically grounded of the explanation methods in this module.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1953 → 2017</div>
+    <strong>Lloyd Shapley</strong> devised the Shapley value in cooperative game theory to fairly divide a payout among players based on their marginal contribution across every possible coalition. <strong>Lundberg &amp; Lee, 2017, "A Unified Approach to Interpreting Model Predictions"</strong> applied this to ML feature attribution, unifying several earlier, less-principled importance methods under one mathematically consistent framework.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need explanations with a mathematical consistency guarantee — contributions that provably sum to the actual prediction, not just a plausible-looking ranking</li><li>You want BOTH a global view (which features matter overall) and a local view (why THIS prediction) from one framework</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li>Exact Shapley values are combinatorially expensive (every possible feature subset); real implementations use approximations — <code>KernelExplainer</code> (model-agnostic, slower) or model-specific fast explainers (linear, tree)</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook explains RR Finance's highest-risk test applicant: SHAP attributes roughly +0.20 of their default-probability estimate to <code>debt_to_income</code> and +0.19 to <code>previous_defaults</code> — real, individually attributable reasons, not a single opaque score.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="shap-math">
+    <div class="math-box">
+<div class="math-expr">φᵢ = Σ_(S⊆F∖{i})  [|S|!·(|F|−|S|−1)!] / |F|!  ·  [f(S∪{i}) − f(S)]</div>
+<div class="term"><b>φᵢ</b> is feature i's Shapley value — its fair share of credit for this prediction.</div>
+<div class="term"><b>F</b> is the full feature set; <b>S</b> ranges over every subset of the OTHER features.</div>
+<div class="term"><b>f(S∪{i}) − f(S)</b> is feature i's marginal contribution when added to coalition S; the formula averages this over every possible coalition, weighted so every ordering of features is equally likely.</div>
+<div class="term">Guarantee: <b>Σᵢ φᵢ = f(x) − E[f(X)]</b> — the contributions always sum exactly to "this prediction minus the average prediction." No other common feature-importance method makes this guarantee.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: LIME (LOCAL INTERPRETABLE MODEL-AGNOSTIC EXPLANATIONS) ============ -->
+<section class="concept" id="lime">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>LIME (Local Interpretable Model-agnostic Explanations)</h2>
+    <p>A second, independent way to ask the same local question.</p>
+  </div>
+
+  <div class="lens-tabs" id="lime-tabs"><div class="lens-tab active" onclick="switchLens('lime','overview')">Overview</div><div class="lens-tab" onclick="switchLens('lime','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="lime-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>LIME</strong> explains one prediction by perturbing the input locally, seeing how the model's output changes, and fitting a simple, interpretable model (weighted linear regression) to approximate the black box <em>just in that local neighbourhood</em>.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2016</div>
+    <strong>Ribeiro, Singh &amp; Guestrin, "Why Should I Trust You?"</strong> introduced LIME a year before SHAP, with a simpler, more direct pitch: any black-box model looks approximately linear if you zoom in close enough to one prediction — so fit a linear surrogate right there and read the explanation off it.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You want a fast, intuitive, model-agnostic local explanation and don't need SHAP's summation guarantee</li><li>As an independent cross-check against SHAP — genuine agreement between two differently-derived methods is stronger evidence than either alone</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li>LIME's local linear surrogate is an approximation with no guarantee its coefficients sum to anything in particular; results can shift between runs unless the perturbation sampling is seeded</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Run on the exact same RR Finance applicant as the SHAP lesson, LIME independently ranks <code>debt_to_income</code>, <code>previous_defaults</code>, and <code>credit_score</code> at the top too — genuine agreement between two different mathematical approaches, not manufactured.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="lime-math">
+    <div class="math-box">
+<div class="math-expr">ξ(x) = argmin_g  L(f, g, πₓ)  +  Ω(g)</div>
+<div class="term"><b>g</b> is the simple surrogate model (typically linear) being fit; <b>f</b> is the real black-box model.</div>
+<div class="term"><b>πₓ</b> is a proximity kernel that weights perturbed samples by how close they are to x — nearby perturbations count more, so the surrogate is faithful <em>locally</em>, not globally.</div>
+<div class="term"><b>L(f, g, πₓ)</b> is the weighted squared error between the black box's and the surrogate's predictions across the perturbed samples.</div>
+<div class="term"><b>Ω(g)</b> penalises surrogate complexity, keeping the explanation itself human-readable (e.g. capping it to a handful of features via <code>num_features</code>).</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: EXPLAINING A NEURAL NETWORK ============ -->
+<section class="concept" id="explaining-ann">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Explaining a Neural Network</h2>
+    <p>The same SHAP framework, a genuinely different function underneath.</p>
+  </div>
+
+  <div class="lens-tabs" id="explaining-ann-tabs"><div class="lens-tab active" onclick="switchLens('explaining-ann','overview')">Overview</div><div class="lens-tab" onclick="switchLens('explaining-ann','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="explaining-ann-overview">
+  <div class="subhead">What it is</div>
+  <p>Module 2's ANN is a non-linear, multi-layer function — nothing like the logistic regression's single linear decision boundary. SHAP's model-agnostic <code>KernelExplainer</code> treats it exactly the same way, wrapping it as a black-box <code>predict_proba</code> function and applying the identical Shapley-value machinery from Concept 2.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Same 2017 SHAP paper, model-agnostic branch</div>
+    <code>KernelExplainer</code> is the general-purpose SHAP estimator that works on any model — the trade-off is speed: it treats the model as a black box and must query it many times per explanation, unlike faster model-specific explainers (linear, tree, or deep-network-specific).
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>The exact same applicant, explained by both models — a direct, honest comparison of what each model actually leans on</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest finding, not smoothed over</h4><ul><li>The reproduced ANN's test AUC trails the logistic regression's; its SHAP explanation for the same applicant partially diverges too — a weaker model isn't "the same reasoning, less accurate," it can genuinely attend to different signal</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If RR Finance ever ran both models in parallel, this comparison is exactly the check a model-risk-management team would run before trusting either one: do they agree on WHY, not just on WHAT?</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="explaining-ann-math">
+    <div class="math-box">
+<div class="term">Identical Shapley-value formula to Concept 2 — SHAP's entire design point is that the SAME explanation framework applies regardless of what function sits inside the model.</div>
+<div class="term">The only change is computational: <b>KernelExplainer</b> queries the ANN's <code>predict_proba</code> repeatedly on perturbed/masked inputs to estimate each feature's marginal contribution, since it has no access to the ANN's internal gradients the way a deep-learning-specific explainer would.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: COUNTERFACTUAL EXPLANATIONS ============ -->
+<section class="concept" id="counterfactuals">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Counterfactual Explanations</h2>
+    <p>"What would need to change?" — the recourse question SHAP and LIME don't answer.</p>
+  </div>
+
+  <div class="lens-tabs" id="counterfactuals-tabs"><div class="lens-tab active" onclick="switchLens('counterfactuals','overview')">Overview</div><div class="lens-tab" onclick="switchLens('counterfactuals','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="counterfactuals-overview">
+  <div class="subhead">What it is</div>
+  <p>SHAP and LIME explain <em>why</em> a prediction came out the way it did. A <strong>counterfactual explanation</strong> answers a different, more actionable question: what is the smallest realistic change to this applicant's inputs that would have flipped the decision?</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    <strong>Wachter, Mittelstadt &amp; Russell, "Counterfactual Explanations Without Opening the Black Box"</strong> argued explicitly for counterfactuals as a GDPR-compliant alternative to feature-attribution methods: actionable recourse, not just attribution, is what a person affected by an automated decision actually needs.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>The deliverable is recourse — telling a rejected applicant what would change the outcome — not just a ranked list of important features</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, demonstrated directly</h4><ul><li>For a genuinely high-risk applicant, the notebook's search finds NO single-feature change within a realistic range that flips the decision — only a combined two-feature change does. Some applicants simply don't have easy, single-lever recourse, and pretending otherwise would be dishonest</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook finds that this applicant's decision only flips with a COMBINED change — roughly a 68-point credit-score improvement together with a meaningfully lower debt-to-income ratio — real, specific, actionable guidance a loan officer could actually relay.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="counterfactuals-math">
+    <div class="math-box">
+<div class="math-expr">x′ = argmin_(x′)  d(x, x′)   subject to   f(x′) ≠ f(x),  x′ realistic</div>
+<div class="term"><b>x</b> is the applicant's actual feature vector; <b>x′</b> is a hypothetical alternative that flips the model's decision.</div>
+<div class="term"><b>d(x, x′)</b> measures how large the change is — the notebook uses each feature's own scale (its training-set standard deviation) so a change is judged relative to how much that feature naturally varies.</div>
+<div class="term">The notebook's search is a direct, inspectable grid search rather than a continuous optimizer: it tries realistic values (5th–95th percentile of the training data) for each feature, and each pair of features, and reports the smallest change found — an upper bound on the true minimal counterfactual, not a guaranteed global minimum.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: INTERPRETABLE-BY-DESIGN VS. POST-HOC EXPLANATION ============ -->
+<section class="concept" id="interpretable-vs-posthoc">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Interpretable-by-Design vs. Post-Hoc Explanation</h2>
+    <p>The connecting thread back to Module 5's agent.</p>
+  </div>
+
+  <div class="lens-tabs" id="interpretable-vs-posthoc-tabs"><div class="lens-tab active" onclick="switchLens('interpretable-vs-posthoc','overview')">Overview</div><div class="lens-tab" onclick="switchLens('interpretable-vs-posthoc','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="interpretable-vs-posthoc-overview">
+  <div class="subhead">What it is</div>
+  <p>Module 5's loan-qualification agent routes between "calculate" and "reject" using an explicit, two-line boolean rule over retrieved policy text. Module 1's classifier decides "approve" or "reject" using millions of internal weight interactions no human can read directly. Both answer "why," but they need fundamentally different explanation strategies.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">A standing distinction in interpretable-ML research</div>
+    Some models are <strong>interpretable by design</strong> — their decision logic IS the explanation (a rule, a shallow decision tree, a linear model with few features). Others are <strong>opaque</strong> and need <strong>post-hoc</strong> tools like SHAP, LIME, or counterfactual search built AFTER training to approximate an explanation the model itself doesn't expose.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>The SAME counterfactual question — "what would need to change?" — asked of both systems: for the agent, the answer is read directly off the rule (two lines of Python); for the classifier, it takes SHAP, LIME, and a grid search across the decision boundary to get the same category of answer</li></ul></div>
+    <div class="use-box no"><h4>✗ The nuance worth remembering</h4><ul><li>Module 5's router is transparent because THIS implementation chose plain rules for inspectability — a production agent that used an LLM to make the same routing decision would become just as opaque as the classifier, and would need the exact same post-hoc toolkit</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A real RR Finance deployment will likely mix both kinds of components — some genuinely opaque ML models, some genuinely transparent business rules. Knowing which is which, upfront, determines whether you reach for SHAP or just read the code.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="interpretable-vs-posthoc-math">
+    <div class="math-box">
+<div class="term">No shared formula here by design — that is the point of this lesson. The classifier's counterfactual is a numerical optimization/search problem over a continuous, learned decision boundary (Concept 5's formula). The agent's counterfactual is a boolean-logic inversion over an explicit, human-written condition — different mechanics entirely, unified only by the QUESTION being asked, not by any shared mathematics.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 7: GROUP FAIRNESS & THE AGE AUDIT ============ -->
+<section class="concept" id="fairness-audit">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>Group Fairness & the Age Audit</h2>
+    <p>Finally paying off Module 1's single most-repeated forward reference.</p>
+  </div>
+
+  <div class="lens-tabs" id="fairness-audit-tabs"><div class="lens-tab active" onclick="switchLens('fairness-audit','overview')">Overview</div><div class="lens-tab" onclick="switchLens('fairness-audit','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="fairness-audit-overview">
+  <div class="subhead">What it is</div>
+  <p>Excluding <code>age</code> from a model's input features prevents DIRECT age discrimination but says nothing about whether the model's outcomes still differ systematically by age group — because other, included features (like <code>employment_years</code> or <code>account_age_months</code>) can act as a correlated proxy. <strong>Group fairness metrics</strong> measure the actual outcome gap directly.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Fair-lending law, formalised for ML circa 2016–2018</div>
+    <strong>Demographic parity</strong> (equal selection rates across groups) and <strong>equalized odds</strong> (equal true-positive AND false-positive rates across groups) are two of the most widely used formal fairness criteria, popularised for ML audiences by Hardt, Price &amp; Srebro's 2016 "Equality of Opportunity in Supervised Learning" and now implemented in standard toolkits like <code>fairlearn</code>.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>Real, measured demographic-parity and equalized-odds gaps by age group, for BOTH the logistic regression and the ANN — computed with <code>fairlearn.metrics.MetricFrame</code>, not assumed</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>800 rows split three ways by age leaves roughly 40–65 test applicants per group — these numbers are directional, not statistically conclusive, exactly the caveat Module 1 attached to its own metrics</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The audit finds a real, non-zero gap for BOTH models — and the ANN's gap is larger than the logistic regression's on both metrics, on top of its already-lower accuracy. That is exactly the kind of finding a model-governance function exists to catch before a production decision, not after.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="fairness-audit-math">
+    <div class="math-box">
+<div class="math-expr">Demographic Parity Difference = max_a P(ŷ=1 | A=a) − min_a P(ŷ=1 | A=a)</div>
+<div class="math-expr">Equalized Odds Difference = max( |TPR gap across groups| , |FPR gap across groups| )</div>
+<div class="term"><b>A</b> is the sensitive attribute (age group here); <b>ŷ=1</b> means "predicted default" i.e. rejected.</div>
+<div class="term">Demographic parity asks: does the REJECT rate differ by age group, full stop — regardless of whether the rejections are correct.</div>
+<div class="term">Equalized odds is stricter: it asks whether the model is EQUALLY ACCURATE across groups — equal true-positive rates (correctly caught defaulters) AND equal false-positive rates (incorrectly rejected non-defaulters) — a model can satisfy demographic parity while still being systematically less accurate for one group.</div>
+<div class="term">Both differences are 0.0 at perfect parity; fairlearn and most regulatory guidance treat differences above roughly 0.10–0.20 as worth active investigation, though the exact threshold is a legal/policy judgment, not a fixed universal constant.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 8: MODEL GOVERNANCE & MODEL CARDS ============ -->
+<section class="concept" id="governance">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 8</span>
+    <h2>Model Governance & Model Cards</h2>
+    <p>Turning scattered findings into one artifact a governance function can actually use.</p>
+  </div>
+
+  <div class="lens-tabs" id="governance-tabs"><div class="lens-tab active" onclick="switchLens('governance','overview')">Overview</div><div class="lens-tab" onclick="switchLens('governance','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="governance-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>model card</strong> (or governance report) is a structured, versioned record of what a model is, how it was tested, what its known limitations are, and what its fairness/explainability findings show — built for reviewers, auditors, and future maintainers, not just the data scientist who trained it.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2019</div>
+    <strong>Mitchell et al. (Google), "Model Cards for Model Reporting"</strong> proposed a standard template for exactly this: intended use, performance across subgroups, ethical considerations, and known limitations — now a widely adopted pattern across the ML industry for exactly the kind of accountability this module has been building toward.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A governance report generated PROGRAMMATICALLY from the notebook's own real, computed numbers — never hand-typed, so it can never silently drift out of sync with what was actually found</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A marketing document. A real governance report says "here is what we don't know yet" as plainly as "here is what works" — the notebook's report explicitly lists its own sample-size and reproduction-fidelity limitations</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's Module 6 governance report is exactly what a model-risk-management committee would expect to see before approving either the logistic regression or the ANN for any production loan decision.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="governance-math">
+    <div class="math-box">
+<div class="term">No new math — this lesson is a documentation/reporting practice, not a modelling technique. Its value comes entirely from being generated FROM the real numbers computed in Concepts 2–7, not authored separately from them.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 9: ADVERSE-ACTION NOTICES IN PRACTICE (LAB) ============ -->
+<section class="concept" id="adverse-notice">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 9</span>
+    <h2>Adverse-Action Notices in Practice (Lab)</h2>
+    <p>The direct business deliverable of everything in this module.</p>
+  </div>
+
+  <div class="lens-tabs" id="adverse-notice-tabs"><div class="lens-tab active" onclick="switchLens('adverse-notice','overview')">Overview</div><div class="lens-tab" onclick="switchLens('adverse-notice','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="adverse-notice-overview">
+  <div class="subhead">What it is</div>
+  <p>The notebook's final lesson assembles SHAP's top reasons (Concept 2) and the counterfactual recourse path (Concept 5) into one templated document: a real adverse-action notice, in the plain language a rejected applicant is legally entitled to receive.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">This module's own throughline</div>
+    Every technique in Module 6 has been building toward exactly this: turning notebook cells into a document a compliance team could actually send. This is the difference between an explainability TECHNIQUE and an explainability WORKFLOW embedded in a real underwriting system.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A working <code>generate_adverse_action_notice()</code> function that reuses Concept 2 and 5's actual computed values — no new modelling, pure integration of what the module already built</li></ul></div>
+    <div class="use-box no"><h4>✗ What to try yourself</h4><ul><li>Swap in a different applicant index from the test set and re-run — a genuinely different, applicant-specific notice comes out, because the underlying SHAP and counterfactual computation is real, not templated text</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>This is the actual notice format: predicted outcome, principal reasons ranked by contribution, and either a single-factor or combined-factor path to approval — or an honest "no easy recourse found, refer to manual review" when that's what the data supports.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module6.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="adverse-notice-math">
+    <div class="math-box">
+<div class="term">No new math — this lesson is pure integration, reusing Concept 2's SHAP values and Concept 5's counterfactual search results directly to populate a human-readable template.</div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 6 hand-off</h2>
+  <p class="lead">The notebook explains both the logistic-regression baseline and the reproduced ANN with SHAP and LIME, searches for real counterfactual recourse, finally delivers Module 1's deferred age-fairness audit with fairlearn, connects the classifier's post-hoc explanation needs to Module 5's inherently-interpretable agent routing rule, and closes by generating a real, working adverse-action notice — with a governance report and metrics summary saved as artifacts for the next module.</p>
+  <div class="callout why"><strong>What Module 7 builds on this</strong><div>Module 7 (Federated &amp; Privacy-Preserving ML) keeps the same RR Finance classifiers and dataset, but asks what happens when the training data itself must stay private, split across institutions that cannot see each other's records. The explainability and fairness toolkit built here doesn't disappear — a federated or differentially-private model will need the SAME audit before deployment, just computed under a training regime where no single party holds the whole dataset.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module5.html"><span class="n">←</span>Back to Module 5</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
