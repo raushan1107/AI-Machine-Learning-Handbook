@@ -4278,23 +4278,449 @@ Result: Based on the retrieved policy: RR Finance Gold Loan Policy (effective Ma
 <div class="selfcheck"><strong>Self-check:</strong> The vulnerable version triggered <code>calculate_emi</code> just from retrieved text -- but the result it printed still shows the ORIGINAL $75,000/11.5%/36-month numbers, not the injected $500,000/2%/6-month ones. Why didn't the injected numbers actually reach the calculation, and does that make this attack less dangerous, or does it just mean this particular toy tool doesn't parse arguments from free text?</div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 5?</strong><div>You've now built a real chunking + embedding + FAISS + BM25 retrieval stack, composed a genuine LangChain RAG pipeline, wired a tool-using agent through a real LangGraph workflow, and run two working attacks against it -- retrieval poisoning and tool-call hijacking -- plus one honestly-demonstrated fix. Module 6's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module5.html">Read the Module 5 handbook &rarr;</a></div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 5?</strong><div>You've now built a real chunking + embedding + FAISS + BM25 retrieval stack, composed a genuine LangChain RAG pipeline, wired a tool-using agent through a real LangGraph workflow, and run two working attacks against it -- retrieval poisoning and tool-call hijacking -- plus one honestly-demonstrated fix. Ready for the next step? <a href="module6.html">Read the Module 6 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m6" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 6 — Explainable & Responsible AI</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 6 — Explainable &amp; Responsible AI</h2>
+  <p>2.5 hrs · Notebook name: <code>module6_lab.ipynb</code> · This module reads what Module 1 saved (<code>data/rr_finance_module1_dataset_enriched.csv</code> and <code>artifacts/baseline_logreg_pipeline.joblib</code>). Complete the Module 1 lab first, in the SAME project folder. Module 2's artifacts are not required.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's explainability and fairness libraries, then set up the shared project folders exactly as every module before this one has.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q shap lime fairlearn scikit-learn numpy pandas matplotlib joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np, pandas as pd, matplotlib.pyplot as plt
+from pathlib import Path
+import json, joblib
+
+SEED = 42
+np.random.seed(SEED)
+Path("data").mkdir(exist_ok=True); Path("artifacts").mkdir(exist_ok=True)
+print("numpy:", np.__version__, "| pandas:", pd.__version__)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>numpy: 2.4.4 | pandas: 3.0.2</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — SHAP: load Module 1's real model, explain a real applicant</h3>
+<p class="lesson-intro">Load Module 1's actual saved pipeline and the enriched dataset (still carrying <code>age</code>, though it stays out of <code>FEATURES</code>). Then use SHAP to explain one borderline applicant -- the most useful case for the counterfactual lesson coming up.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.model_selection import train_test_split
+
+DATA_PATH = Path("data/rr_finance_module1_dataset_enriched.csv")
+BASELINE_PATH = Path("artifacts/baseline_logreg_pipeline.joblib")
+
+df = pd.read_csv(DATA_PATH)
+
+FEATURES = [
+    "annual_income", "monthly_debt", "loan_amount", "loan_term_months",
+    "credit_score", "employment_years", "account_age_months",
+    "num_previous_loans", "previous_defaults", "debt_to_income", "loan_to_income",
+]
+X = df[FEATURES]
+y = df["default"]
+age = df["age"]
+
+X_train, X_test, y_train, y_test, age_train, age_test = train_test_split(
+    X, y, age, test_size=0.20, stratify=y, random_state=SEED
+)
+
+baseline_pipeline = joblib.load(BASELINE_PATH)
+test_probs = baseline_pipeline.predict_proba(X_test)[:, 1]
+print("Loaded Module 1's saved pipeline.")
+print(f"Test set size: {len(X_test)}")
+print(f"Reject rate at 0.5 threshold: {(test_probs &gt;= 0.5).mean():.2%}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Loaded Module 1's saved pipeline.
+Test set size: 160
+Reject rate at 0.5 threshold: 23.12%</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import shap
+
+background = shap.sample(X_train, 100, random_state=SEED)
+explainer = shap.Explainer(baseline_pipeline.predict_proba, background, seed=SEED)
+
+X_explain = X_test.iloc[:40]
+shap_values = explainer(X_explain)
+shap_default = shap_values[..., 1]
+
+probs_explain = baseline_pipeline.predict_proba(X_explain)[:, 1]
+
+# Pick a BORDERLINE applicant (closest to the 0.5 decision threshold) --
+# the most useful teaching case for the counterfactual lesson below.
+borderline_idx = int(np.argmin(np.abs(probs_explain - 0.5)))
+applicant = X_explain.iloc[borderline_idx]
+print(f"Borderline applicant (test row {borderline_idx}): predicted default probability = {probs_explain[borderline_idx]:.3f}")
+
+top_reasons = sorted(zip(FEATURES, shap_default[borderline_idx].values), key=lambda t: abs(t[1]), reverse=True)
+print("\nTop SHAP reasons for this applicant:")
+for feat, val in top_reasons[:5]:
+    print(f"  {feat:22s} {val:+.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Borderline applicant (test row 18): predicted default probability = 0.500
+
+Top SHAP reasons for this applicant:
+  debt_to_income         +0.1518
+  credit_score           +0.1086
+  loan_to_income         -0.0987
+  monthly_debt           -0.0917
+  num_previous_loans     +0.0528</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> This applicant's predicted default probability is almost exactly 0.500 -- right at the decision threshold. Why might a borderline applicant like this be a MORE useful case to study than the highest-risk applicant in the test set, if your goal is to understand what tips a decision one way or the other?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — LIME: a second, independent explanation for the same applicant</h3>
+<p class="lesson-intro">Run LIME on the exact same applicant as Lesson 1 and compare its top reasons to SHAP's.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from lime.lime_tabular import LimeTabularExplainer
+
+lime_explainer = LimeTabularExplainer(
+    training_data=X_train.values, feature_names=FEATURES,
+    class_names=["no_default", "default"], mode="classification", random_state=SEED,
+)
+lime_exp = lime_explainer.explain_instance(
+    applicant.values, baseline_pipeline.predict_proba, num_features=6, num_samples=2000,
+)
+print("LIME's explanation for the SAME borderline applicant:\n")
+for feature_desc, weight in lime_exp.as_list():
+    direction = "toward DEFAULT" if weight &gt; 0 else "toward NO DEFAULT"
+    print(f"  {feature_desc:32s}  weight={weight:+.4f}  ({direction})")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>LIME's explanation for the SAME borderline applicant:
+
+  debt_to_income &gt; 0.55             weight=+0.1987  (toward DEFAULT)
+  previous_defaults &lt;= 0.00         weight=-0.1476  (toward NO DEFAULT)
+  loan_to_income &lt;= 0.33            weight=-0.1397  (toward NO DEFAULT)
+  credit_score &lt;= 650.00            weight=+0.1245  (toward DEFAULT)
+  monthly_debt &gt; 58318.25           weight=-0.0607  (toward NO DEFAULT)
+  loan_term_months &gt; 60.00          weight=+0.0568  (toward DEFAULT)</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Both methods agree that <code>debt_to_income</code> and <code>credit_score</code> push toward default, and both flag a protective effect from <code>loan_to_income</code> or <code>monthly_debt</code>. Given that SHAP and LIME are mathematically different methods (Shapley values vs. a local linear surrogate), is this agreement expected, or would you have expected them to diverge more?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Counterfactual search: what would flip this decision?</h3>
+<p class="lesson-intro">Search for the smallest realistic single-feature change that flips this borderline applicant's decision. Because this applicant sits right at the threshold, expect this search to behave very differently from a high-risk applicant.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>DECISION_THRESHOLD = 0.5
+
+def decision(prob):
+    return "REJECT" if prob &gt;= DECISION_THRESHOLD else "APPROVE"
+
+def predict_one(trial_series):
+    trial_df = pd.DataFrame([trial_series], columns=FEATURES)
+    return baseline_pipeline.predict_proba(trial_df)[0, 1]
+
+current_prob = probs_explain[borderline_idx]
+print(f"Current: {current_prob:.3f} -&gt; {decision(current_prob)}")
+
+found = []
+for feat in FEATURES:
+    lo, hi = X_train[feat].quantile(0.05), X_train[feat].quantile(0.95)
+    for val in np.linspace(lo, hi, 60):
+        trial = applicant.copy()
+        trial[feat] = val
+        p = predict_one(trial)
+        if decision(p) != decision(current_prob):
+            found.append((feat, applicant[feat], val, val - applicant[feat], p))
+            break
+
+found.sort(key=lambda r: abs(r[3]) / (X_train[r[0]].std() + 1e-9))
+print(f"\nSingle-feature counterfactuals found: {len(found)} of {len(FEATURES)} features\n")
+for feat, cur, new_val, change, new_p in found[:4]:
+    print(f"  {feat:22s} {cur:&gt;10.2f} -&gt; {new_val:&gt;10.2f}  (change {change:+.2f})  new P(default)={new_p:.3f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Current: 0.500 -&gt; REJECT
+
+Single-feature counterfactuals found: 9 of 11 features
+
+  credit_score               609.00 -&gt;     611.83  (change +2.83)  new P(default)=0.495
+  account_age_months          60.00 -&gt;      63.25  (change +3.25)  new P(default)=0.500
+  loan_to_income               0.26 -&gt;       0.11  (change -0.15)  new P(default)=0.454
+  employment_years             3.20 -&gt;       0.50  (change -2.70)  new P(default)=0.491</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> A change of only +2.83 in <code>credit_score</code> flips this applicant's decision -- a genuinely small, realistic change. Compare that to Module 6's reference notebook, where the highest-risk applicant needed a COMBINED two-feature change and no single feature was enough. What does that contrast tell you about the relationship between how confident a model's prediction is and how much "recourse" actually exists for that applicant?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 4 — The age-fairness audit</h3>
+<p class="lesson-intro">Run the same demographic-parity and equalized-odds audit as the reference notebook, on your own executed pipeline, using <code>fairlearn</code>.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from fairlearn.metrics import MetricFrame, selection_rate, demographic_parity_difference, equalized_odds_difference
+
+age_group_test = pd.cut(age_test, bins=[0, 35, 50, 100], labels=["under_35", "35_to_50", "over_50"])
+preds_test = (test_probs &gt;= 0.5).astype(int)
+
+mf = MetricFrame(metrics={"reject_rate": selection_rate}, y_true=y_test, y_pred=preds_test, sensitive_features=age_group_test)
+print("Reject rate by age group:")
+print(mf.by_group)
+
+dpd = demographic_parity_difference(y_test, preds_test, sensitive_features=age_group_test)
+eod = equalized_odds_difference(y_test, preds_test, sensitive_features=age_group_test)
+print(f"\nDemographic parity difference: {dpd:.4f}")
+print(f"Equalized odds difference:     {eod:.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Reject rate by age group:
+          reject_rate
+age                  
+35_to_50     0.200000
+over_50      0.261905
+under_35     0.245283
+
+Demographic parity difference: 0.0619
+Equalized odds difference:     0.1287</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The reject rate is lowest for the 35-50 age group and highest for the over-50 group, even though <code>age</code> was never a model input. Name one feature in <code>FEATURES</code> that could plausibly correlate with age and partially explain this gap -- and describe one thing a governance team could do to investigate whether that correlation is actually driving it.</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 6?</strong><div>You've now explained a real model's real decisions with two independent methods, searched for actual counterfactual recourse, and run the age-fairness audit Module 1 deferred all the way back in Lesson 1 -- on your own executed pipeline, not just read about it. Ready for the next step? <a href="module7.html">Read the Module 7 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m7" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 7 — Federated & Privacy-Preserving ML</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 7 — Federated &amp; Privacy-Preserving ML</h2>
+  <p>2.5 hrs · Notebook name: <code>module7_lab.ipynb</code> · This module reads what Module 1 saved (<code>data/rr_finance_module1_dataset_enriched.csv</code>). Complete the Module 1 lab first, in the SAME project folder. Modules 2-6's artifacts are not required.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's federated-learning and privacy libraries, then set up the shared project folders exactly as every module before this one has.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q torch opacus scikit-learn numpy pandas matplotlib joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np, pandas as pd, torch, copy
+from pathlib import Path
+import json, joblib
+
+SEED = 42
+np.random.seed(SEED); torch.manual_seed(SEED)
+rng = np.random.default_rng(SEED)
+Path("data").mkdir(exist_ok=True); Path("artifacts").mkdir(exist_ok=True)
+print("numpy:", np.__version__, "| torch:", torch.__version__)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>numpy: 2.4.4 | torch: 2.14.0+cu130</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Load Module 1's data, define the shared model</h3>
+<p class="lesson-intro">Load the enriched dataset and define a small shared neural network architecture -- the same one every institution will train locally in the lessons below.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import roc_auc_score
+
+df = pd.read_csv("data/rr_finance_module1_dataset_enriched.csv")
+FEATURES = ["annual_income","monthly_debt","loan_amount","loan_term_months","credit_score",
+            "employment_years","account_age_months","num_previous_loans","previous_defaults",
+            "debt_to_income","loan_to_income"]
+X = df[FEATURES]; y = df["default"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=SEED)
+scaler = StandardScaler().fit(X_train)
+X_train_s = scaler.transform(X_train); X_test_s = scaler.transform(X_test)
+X_train_t = torch.tensor(X_train_s, dtype=torch.float32)
+y_train_t = torch.tensor(y_train.values, dtype=torch.float32).view(-1, 1)
+X_test_t = torch.tensor(X_test_s, dtype=torch.float32)
+
+class SmallNet(torch.nn.Module):
+    def __init__(self, n):
+        super().__init__()
+        self.net = torch.nn.Sequential(torch.nn.Linear(n, 16), torch.nn.ReLU(), torch.nn.Linear(16, 1))
+    def forward(self, x):
+        return self.net(x)
+
+def test_auc(model):
+    model.eval()
+    with torch.no_grad():
+        probs = torch.sigmoid(model(X_test_t)).numpy().ravel()
+    return roc_auc_score(y_test, probs)
+
+criterion = torch.nn.BCEWithLogitsLoss()
+print(f"Train rows: {len(X_train)}  |  Test rows: {len(X_test)}  |  Features: {len(FEATURES)}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Train rows: 640  |  Test rows: 160  |  Features: 11</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Notice <code>age</code> is loaded from the dataframe but does NOT appear in <code>FEATURES</code>. Why does that exclusion matter just as much here as it did in Module 1, even though this module never trains on age directly?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Federated Averaging (FedAvg): train without centralizing data</h3>
+<p class="lesson-intro">Split the training data across 4 simulated institutions, train a centralized benchmark for comparison, then run a real FedAvg loop and compare the two.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>K = 4  # 4 simulated institutions for this lab
+
+def local_train(global_model, client_indices, local_epochs=5, lr=0.01):
+    local_model = copy.deepcopy(global_model)
+    local_opt = torch.optim.Adam(local_model.parameters(), lr=lr)
+    Xc = torch.tensor(X_train_s[client_indices], dtype=torch.float32)
+    yc = torch.tensor(y_train.values[client_indices], dtype=torch.float32).view(-1, 1)
+    local_model.train()
+    for _ in range(local_epochs):
+        local_opt.zero_grad()
+        loss = criterion(local_model(Xc), yc)
+        loss.backward()
+        local_opt.step()
+    return local_model.state_dict()
+
+def aggregate_mean(state_dicts):
+    return {key: torch.stack([s[key].float() for s in state_dicts]).mean(dim=0) for key in state_dicts[0]}
+
+def run_federated(client_indices_list, aggregator, rounds=15, local_epochs=5, malicious_scale=None, malicious_client=0):
+    torch.manual_seed(SEED)
+    global_model = SmallNet(len(FEATURES))
+    for rnd in range(rounds):
+        states = []
+        for i, ci in enumerate(client_indices_list):
+            s = local_train(global_model, ci, local_epochs)
+            if malicious_scale is not None and i == malicious_client:
+                s = {k: v * malicious_scale for k, v in s.items()}
+            states.append(s)
+        global_model.load_state_dict(aggregator(states))
+    return global_model
+
+torch.manual_seed(SEED)
+central_model = SmallNet(len(FEATURES))
+opt = torch.optim.Adam(central_model.parameters(), lr=0.01)
+central_model.train()
+for epoch in range(100):
+    opt.zero_grad()
+    loss = criterion(central_model(X_train_t), y_train_t)
+    loss.backward(); opt.step()
+central_auc = test_auc(central_model)
+
+shuffled = rng.permutation(len(X_train_s))
+client_indices = np.array_split(shuffled, K)
+fed_model = run_federated(client_indices, aggregate_mean)
+fed_auc = test_auc(fed_model)
+
+print(f"Centralized (all data in one place):   AUC = {central_auc:.4f}")
+print(f"Federated ({K} institutions, IID):        AUC = {fed_auc:.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Centralized (all data in one place):   AUC = 0.6327
+Federated (4 institutions, IID):        AUC = 0.6726</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The federated model's AUC is close to (in this run, slightly ahead of) the centralized benchmark's, even though no institution's raw data ever left its own training loop. What real-world assumption about the 4 institutions' data would you need to check before trusting this result generalizes to your own deployment?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Differential Privacy: putting a number on the privacy cost</h3>
+<p class="lesson-intro">Train the same architecture with real DP-SGD (via <code>opacus</code>) at three different privacy budgets, and measure the real accuracy cost of each.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from opacus import PrivacyEngine
+from torch.utils.data import TensorDataset, DataLoader
+import warnings
+warnings.filterwarnings("ignore")
+
+def train_with_dp(target_epsilon, epochs=20, batch_size=32, delta=1e-5):
+    torch.manual_seed(SEED)
+    model = SmallNet(len(FEATURES))
+    opt = torch.optim.Adam(model.parameters(), lr=0.01)
+    loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=batch_size, shuffle=True)
+    pe = PrivacyEngine()
+    model, opt, loader = pe.make_private_with_epsilon(
+        module=model, optimizer=opt, data_loader=loader,
+        target_epsilon=target_epsilon, target_delta=delta, epochs=epochs, max_grad_norm=1.0,
+    )
+    model.train()
+    for epoch in range(epochs):
+        for xb, yb in loader:
+            opt.zero_grad()
+            loss = criterion(model(xb), yb)
+            loss.backward(); opt.step()
+    return model, pe.get_epsilon(delta)
+
+for target_eps in [1.0, 5.0, 15.0]:
+    dp_model, actual_eps = train_with_dp(target_eps)
+    print(f"target epsilon={target_eps:5.1f} -&gt; actual epsilon={actual_eps:6.3f}  test AUC = {test_auc(dp_model):.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>target epsilon=  1.0 -&gt; actual epsilon= 0.995  test AUC = 0.6609
+target epsilon=  5.0 -&gt; actual epsilon= 4.992  test AUC = 0.6791
+target epsilon= 15.0 -&gt; actual epsilon=14.993  test AUC = 0.6702</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Compare these AUC numbers to Lesson 2's non-private federated AUC (0.6726). Is the accuracy cost of even the strongest privacy setting here (epsilon=1.0) larger or smaller than you expected? What would you tell a compliance team who wants "maximum privacy" without being told there's a trade-off?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 4 — Byzantine-robust aggregation: defending against a corrupted institution</h3>
+<p class="lesson-intro">Simulate one institution sending a corrupted update instead of real weights, and compare naive mean aggregation against coordinate-wise median.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>MALICIOUS_SCALE = -50
+
+honest_model = run_federated(client_indices, aggregate_mean, malicious_scale=None)
+print(f"No attack, naive mean:            AUC = {test_auc(honest_model):.4f}")
+
+attacked_model = run_federated(client_indices, aggregate_mean, malicious_scale=MALICIOUS_SCALE)
+print(f"Attack, naive mean (vulnerable):  AUC = {test_auc(attacked_model):.4f}")
+
+def aggregate_median(state_dicts):
+    return {key: torch.stack([s[key].float() for s in state_dicts]).median(dim=0).values for key in state_dicts[0]}
+
+defended_model = run_federated(client_indices, aggregate_median, malicious_scale=MALICIOUS_SCALE)
+print(f"Attack, coordinate-wise median:   AUC = {test_auc(defended_model):.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>No attack, naive mean:            AUC = 0.6726
+Attack, naive mean (vulnerable):  AUC = 0.5975
+Attack, coordinate-wise median:   AUC = 0.6681</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The median-defended model recovers almost all the accuracy naive averaging lost to the attack -- without the server ever seeing the malicious institution's raw data or knowing which institution was compromised. What kind of attack would you expect coordinate-wise median to NOT defend against (hint: think about how many institutions would need to be compromised)?</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 7?</strong><div>You've now trained a real federated model across simulated institutions, put a real number on the cost of differential privacy, and defended a shared model against a real corrupted-update attack -- all without any institution's raw data ever leaving its own training loop. Module 8's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module7.html">Read the Module 7 handbook &rarr;</a></div></div>
 </section>
 <section id="panel-m8" class="panel">
   <div class="soon-box">
