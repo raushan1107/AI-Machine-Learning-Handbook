@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 7 Handbook | Federated &amp; Privacy-Preserving ML</title>
+<meta name="description" content="Module 7 theory handbook: federated averaging, differential privacy (DP-SGD), and Byzantine-robust aggregation -- what each technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module6.html">← Module 6</a>
+    <a class="dl" href="reference-notebooks/module7.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–6</a>
+    <a href="#foundation">Why the data can't move</a>
+    <h3>Concepts</h3>
+    <a href="#why-federated">1 · Why federated learning</a>
+    <a href="#fedavg">2 · Federated Averaging (FedAvg)</a>
+    <a href="#noniid">3 · The non-IID challenge</a>
+    <a href="#differential-privacy">4 · Differential Privacy (DP-SGD)</a>
+    <a href="#model-poisoning">5 · Model poisoning at the aggregation layer</a>
+    <a href="#byzantine-robust">6 · Byzantine-robust aggregation</a>
+    <a href="#fairness-federation">7 · Fairness under federation</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 8</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 7 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Privacy</span>
+  </div>
+  <h1>Module 7 — <span>Federated &amp; Privacy-Preserving ML</span></h1>
+  <p>Same theory-first structure as Modules 1–6: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Every module so far has assumed RR Finance's training data lives in one place. Module 7 removes that assumption: what if the data can never actually be centralized at all?</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module7.ipynb" download>⬇ Download the Module 7 notebook</a>
+    <a class="btn" href="module6.html">← Back to Module 6</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 7 is not a fresh start. Here's exactly what it inherits before removing the centralized-data assumption.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1–2</div><p>A validated logistic-regression baseline and a deeper ANN, both trained on one centralized CSV — the assumption this module removes.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>Data poisoning and an Isolation Forest defence — the row-level version of the aggregation-layer attack this module introduces.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 6</div><p>SHAP, LIME, counterfactuals, and a real age-fairness audit — all computed on a centrally-trained model. This module asks whether that audit still holds once training changes.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 7</strong><div>Every prior module assumed RR Finance's 800 rows sit in one place. Module 7 asks what still works when that single CSV is really five institutions' private data, none of which can or will hand over their raw records — and what new risks appear once training itself becomes distributed.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why the data can't move</h2>
+  <p class="lead">Real cross-institution credit modelling runs into a wall no algorithm can fix by being smarter: the data is not allowed to leave.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The legal/commercial reality</h3><p>Data residency rules, privacy law, and competitive confidentiality between lending institutions mean raw applicant records often cannot be centralized, no matter how much better the resulting model would be.</p></div>
+    <div class="card"><h3>The federated answer</h3><p>Move the MODEL to the data instead of the data to the model — train locally at each institution, share only the resulting weight updates.</p></div>
+    <div class="card"><h3>Why new attack surfaces follow</h3><p>A server that trusts every institution's returned update equally, and a model whose weights alone might still leak information about individual applicants, are two NEW risks this module confronts directly.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: WHY FEDERATED LEARNING ============ -->
+<section class="concept" id="why-federated">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Why Federated Learning</h2>
+    <p>Moving the model to the data, instead of the data to the model.</p>
+  </div>
+
+  <div class="lens-tabs" id="why-federated-tabs"><div class="lens-tab active" onclick="switchLens('why-federated','overview')">Overview</div><div class="lens-tab" onclick="switchLens('why-federated','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="why-federated-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Federated Learning</strong> trains one shared model across data that lives at multiple separate locations ("clients" or, for RR Finance, partner institutions), without any of them sending their raw data anywhere else. Each institution trains locally; only the resulting model updates ever travel.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2016–2017</div>
+    <strong>McMahan et al., Google, "Communication-Efficient Learning of Deep Networks from Decentralized Data"</strong> introduced federated learning to train models across millions of mobile phones' keyboards without uploading anyone's typed messages to a central server — the same core idea RR Finance applies here across institutions instead of phones.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Data residency law, competitive confidentiality, or privacy regulation prevents centralizing training data across institutions</li><li>Each participant has enough local data to contribute a meaningful, non-trivial local training update</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>Centralizing the data is actually permitted and simpler — federation adds real complexity (communication rounds, aggregation, new attack surfaces) that a centralized pipeline (Modules 1–6) simply doesn't need</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Five partner lenders each hold their own applicants' records under strict confidentiality agreements. None can send RR Finance a single row of raw data — but all five can run a local training loop and send back model weights, which is exactly what this module builds.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="why-federated-math">
+    <div class="math-box">
+<div class="term">No formula in this framing lesson — it sets up the client/server structure (Concept 2) and the new attack surfaces (Concepts 4–5) the rest of this module addresses directly.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: FEDERATED AVERAGING (FEDAVG) ============ -->
+<section class="concept" id="fedavg">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Federated Averaging (FedAvg)</h2>
+    <p>The foundational algorithm: train locally, average globally, repeat.</p>
+  </div>
+
+  <div class="lens-tabs" id="fedavg-tabs"><div class="lens-tab active" onclick="switchLens('fedavg','overview')">Overview</div><div class="lens-tab" onclick="switchLens('fedavg','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="fedavg-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>FedAvg</strong> is the core federated learning algorithm: each communication round, every client trains the current global model on its own local data for a few epochs, then the server collects every client's resulting weights and averages them to produce the next global model.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    Introduced in the same McMahan et al. paper as Concept 1 — the specific insight was that AVERAGING MODEL WEIGHTS across clients, rather than averaging gradients every single step, dramatically reduces how often clients and server need to communicate, which matters enormously when "clients" are slow, unreliable network connections (or, here, separate institutions).
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A working FedAvg loop across 5 simulated RR Finance institutions, reaching test accuracy comparable to — in this run, even slightly ahead of — a centralized benchmark trained on all the same data in one place</li></ul></div>
+    <div class="use-box no"><h4>✗ What FedAvg does NOT guarantee on its own</h4><ul><li>Privacy (Concept 4 adds that) or robustness to a malicious participant (Concepts 5–6 address that) — plain FedAvg only solves the "don't centralize the data" problem</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook's federated model, trained across 5 simulated institutions with each institution's raw data staying local, reaches essentially the same test AUC as a fully centralized version trained on the identical rows all in one place.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="fedavg-math">
+    <div class="math-box">
+<div class="math-expr">w_(t+1) = Σₖ (nₖ/n) · wₖ_(t+1)</div>
+<div class="term"><b>w_(t+1)</b> is the new global model's weights after round t; <b>k</b> indexes each client (institution).</div>
+<div class="term"><b>wₖ_(t+1)</b> is client k's weights after training locally, starting from the CURRENT global model, for a few local epochs.</div>
+<div class="term"><b>nₖ/n</b> weights each client's contribution by its share of the total training data (n = total rows across all clients) — equal-sized clients, as simulated in this notebook, reduce this to a simple unweighted mean.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: THE NON-IID CHALLENGE ============ -->
+<section class="concept" id="noniid">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>The Non-IID Challenge</h2>
+    <p>FedAvg's convenient assumption, and what breaks when it's false.</p>
+  </div>
+
+  <div class="lens-tabs" id="noniid-tabs"><div class="lens-tab active" onclick="switchLens('noniid','overview')">Overview</div><div class="lens-tab" onclick="switchLens('noniid','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="noniid-overview">
+  <div class="subhead">What it is</div>
+  <p>FedAvg's simple averaging works best when every client's local data looks statistically similar to every other client's — an <strong>IID (independent and identically distributed)</strong> assumption. Real institutions rarely satisfy this: a regional branch, or a partner lender specializing in one credit tier, has data that looks systematically DIFFERENT from another institution's.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Identified in the original 2017 FedAvg paper itself</div>
+    McMahan et al. already reported accuracy degradation under non-IID client data splits; it has remained an active federated-learning research area since, because real deployments are essentially always non-IID to some degree.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A REAL non-IID split — institutions partitioned by sorted <code>credit_score</code>, so each one genuinely specializes in one tier — measurably underperforming the IID split from Concept 2</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>The measured gap here is modest, not catastrophic, because 5 institutions with mild specialization is a small-scale, low-heterogeneity example — real deployments with more clients and more extreme specialization see substantially larger degradation</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If one RR Finance partner institution serves almost exclusively prime borrowers and another almost exclusively subprime, naively averaging their locally-trained models pulls the global model away from what either institution's own applicants actually need — a real, measured cost of realistic institutional specialization.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="noniid-math">
+    <div class="math-box">
+<div class="term">No new aggregation formula — Concept 2's FedAvg update is unchanged. What changes is the statistical assumption behind it: FedAvg's convergence guarantees (in the original paper's analysis) rely on client data distributions being similar; non-IID splits violate that assumption, which shows up empirically as slower convergence and a lower final accuracy, exactly as measured in the notebook.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: DIFFERENTIAL PRIVACY (DP-SGD) ============ -->
+<section class="concept" id="differential-privacy">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Differential Privacy (DP-SGD)</h2>
+    <p>A mathematical guarantee, not just a best-effort defence, on what one applicant's data could reveal.</p>
+  </div>
+
+  <div class="lens-tabs" id="differential-privacy-tabs"><div class="lens-tab active" onclick="switchLens('differential-privacy','overview')">Overview</div><div class="lens-tab" onclick="switchLens('differential-privacy','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="differential-privacy-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Differential Privacy</strong> bounds exactly how much any single training example could have changed the trained model — quantified by a privacy budget <strong>ε (epsilon)</strong>. <strong>DP-SGD</strong> achieves this during neural network training by clipping each example's gradient contribution and adding calibrated random noise before every optimizer step.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2006 → 2016</div>
+    <strong>Dwork et al., 2006</strong> formalised differential privacy as a mathematical definition, not a specific algorithm. <strong>Abadi et al. (Google), 2016, "Deep Learning with Differential Privacy"</strong> adapted it specifically to neural network training via per-example gradient clipping plus Gaussian noise — DP-SGD, implemented in this notebook using the real, widely-used <code>opacus</code> library.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>Federation alone (Concept 2) keeps raw data local, but the TRAINED MODEL itself must also carry a provable guarantee against leaking whether any specific applicant was in the training set</li></ul></div>
+    <div class="use-box no"><h4>✗ Watch out for</h4><ul><li>Privacy is not free — the notebook measures a REAL accuracy cost that grows as ε shrinks (stronger privacy); on this small, 800-row dataset the effect is somewhat noisy run-to-run, since DP's injected noise is more visible relative to a small dataset's signal</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook trains the same classifier at five different privacy budgets and measures the real test-AUC cost of each — turning "how much privacy costs" from a theoretical question into an actual number RR Finance's governance function could put in a model card.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="differential-privacy-math">
+    <div class="math-box">
+<div class="math-expr">Pr[M(D) ∈ S] ≤ e^ε · Pr[M(D′) ∈ S] + δ</div>
+<div class="term"><b>M</b> is the training mechanism (DP-SGD); <b>D</b> and <b>D′</b> are two datasets differing in exactly one applicant's record.</div>
+<div class="term"><b>ε</b> (epsilon) bounds how much the PROBABILITY of any outcome can differ depending on whether that one applicant's record was included — smaller ε means a tighter bound, i.e. stronger privacy.</div>
+<div class="term"><b>δ</b> (delta) is a small allowed probability that the ε-guarantee fails entirely — kept very small (<code>1e-5</code> in the notebook) by convention.</div>
+<div class="term">DP-SGD's mechanism, concretely: clip each example's gradient to a maximum norm (<b>max_grad_norm</b>), then add Gaussian noise calibrated to that clipping bound before every optimizer step — the clipping bounds any one example's maximum influence, and the noise is what actually produces the formal (ε, δ) guarantee.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: MODEL POISONING AT THE AGGREGATION LAYER ============ -->
+<section class="concept" id="model-poisoning">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Model Poisoning at the Aggregation Layer</h2>
+    <p>Module 1 poisoned the data. This poisons the UPDATE instead.</p>
+  </div>
+
+  <div class="lens-tabs" id="model-poisoning-tabs"><div class="lens-tab active" onclick="switchLens('model-poisoning','overview')">Overview</div><div class="lens-tab" onclick="switchLens('model-poisoning','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="model-poisoning-overview">
+  <div class="subhead">What it is</div>
+  <p>Module 1 demonstrated <strong>data poisoning</strong> — corrupting training rows before centralized training. Federated learning opens a related but distinct attack surface: one participating institution can send a corrupted or malicious MODEL UPDATE instead of real locally-trained weights — a <strong>Byzantine fault</strong>, borrowing the term from distributed-systems literature for a participant that can fail or misbehave in an arbitrary way.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">A direct consequence of federation's own design</div>
+    The server in a federated system never sees any client's raw data or training process — only the returned weights. That is precisely what makes federation privacy-preserving, and precisely what makes a corrupted or malicious update hard to detect from the outside, unlike Module 1's poisoned rows, which a defender could in principle inspect directly.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, working attack: one institution (out of 5) returns a massively scaled, sign-flipped update instead of its real weights, and naive mean aggregation (Concept 2) has no mechanism to notice or resist it — a measured accuracy drop, not a hypothetical one</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A claim that any real institution WOULD do this — the point is that the server's aggregation rule alone has to be robust to the possibility, since it cannot verify what happened inside any institution's own training loop</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A compromised or malfunctioning partner institution's server could corrupt the shared RR Finance model for every OTHER institution too, purely by sending a bad update — the aggregation-layer equivalent of Module 1's data poisoning, but harder to catch because the server never sees the underlying cause.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="model-poisoning-math">
+    <div class="math-box">
+<div class="term">No new formula — this attack exploits Concept 2's aggregation rule exactly as written: a coordinate-wise MEAN gives every client's returned weights EQUAL, unweighted trust, so one arbitrarily extreme update pulls the average arbitrarily far. Concept 6 replaces that assumption.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: BYZANTINE-ROBUST AGGREGATION ============ -->
+<section class="concept" id="byzantine-robust">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Byzantine-Robust Aggregation</h2>
+    <p>Fixing the aggregation rule itself, without ever inspecting any client's data.</p>
+  </div>
+
+  <div class="lens-tabs" id="byzantine-robust-tabs"><div class="lens-tab active" onclick="switchLens('byzantine-robust','overview')">Overview</div><div class="lens-tab" onclick="switchLens('byzantine-robust','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="byzantine-robust-overview">
+  <div class="subhead">What it is</div>
+  <p>Two classic <strong>robust aggregation rules</strong> replace the simple mean: <strong>coordinate-wise median</strong> (the middle value per parameter across all clients) and <strong>trimmed mean</strong> (discard the most extreme values per parameter before averaging the rest). Both limit how much a single outlier update can influence the aggregated result.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2018</div>
+    <strong>Yin et al., "Byzantine-Robust Distributed Learning,"</strong> and related work formally analysed coordinate-wise median and trimmed mean as aggregation rules that remain robust as long as malicious participants stay a MINORITY — long-standing ideas from robust statistics, applied specifically to the federated/distributed learning setting.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>Both rules substantially recover the accuracy Concept 5's attack destroyed, using ONLY the returned weights — no institution's raw data or training process is ever inspected</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>Neither rule defends against a COLLUDING MAJORITY of malicious institutions — median and trimmed mean both assume malicious participants are outnumbered, a real constraint worth naming rather than implying these defences are unconditional</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook's median-defended global model performs essentially as well as the fully honest baseline, DESPITE the same corrupted update from Concept 5 still being submitted every round — the server never had to identify which institution was compromised, only change how it combined the results.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="byzantine-robust-math">
+    <div class="math-box">
+<div class="math-expr">Coordinate-wise median: w[j] = median(w₁[j], w₂[j], ..., w_K[j])</div>
+<div class="math-expr">Trimmed mean: w[j] = mean of the middle (K − 2·trim) values of (w₁[j], ..., w_K[j])</div>
+<div class="term">Both formulas apply PER PARAMETER <b>j</b> independently, across all K clients' returned weights for that parameter.</div>
+<div class="term">Median: a single extreme outlier value can only shift the MIDDLE value by a bounded amount, unlike a mean, which any one sufficiently extreme value can pull arbitrarily far.</div>
+<div class="term">Trimmed mean with <b>trim</b> = number of malicious clients removes exactly that many of the highest and lowest values per parameter before averaging what remains — correct if the true number of malicious clients is known or safely over-estimated.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 7: FAIRNESS UNDER FEDERATION ============ -->
+<section class="concept" id="fairness-federation">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>Fairness Under Federation</h2>
+    <p>Module 6's audit was tied to a centralized model. Does it still hold?</p>
+  </div>
+
+  <div class="lens-tabs" id="fairness-federation-tabs"><div class="lens-tab active" onclick="switchLens('fairness-federation','overview')">Overview</div><div class="lens-tab" onclick="switchLens('fairness-federation','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="fairness-federation-overview">
+  <div class="subhead">What it is</div>
+  <p>Module 6 measured demographic-parity and equalized-odds gaps by age group on a CENTRALLY trained classifier. This lesson re-runs the EXACT same audit on the federated model from Concept 2, to check whether federation itself changes that fairness profile.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">A direct extension of Module 6's own governance framework</div>
+    Module 6 insisted that excluding a protected attribute from a model's features does not, by itself, guarantee fairness — it has to be measured. This lesson applies that same discipline one level up: training a model differently (federated vs. centralized) is itself a change that fairness has to be RE-measured against, not assumed to carry over.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, measured comparison: the federated model's demographic-parity and equalized-odds gaps genuinely differ from the centralized model's — moving in different directions on the two metrics, not uniformly better or worse</li></ul></div>
+    <div class="use-box no"><h4>✗ What NOT to conclude</h4><ul><li>This is a single comparison on one dataset and one architecture — it is NOT evidence that federation always helps or always hurts fairness; the finding is that it CHANGES, which is itself the reason to re-audit rather than assume</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If RR Finance switched from a centralized to a federated training pipeline for any regulatory or commercial reason, Module 6's fairness sign-off would need to be re-obtained on the NEW model — this lesson is the concrete demonstration of why.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module7.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="fairness-federation-math">
+    <div class="math-box">
+<div class="term">Identical formulas to Module 6 — demographic parity difference and equalized odds difference, computed on the same age bins and the same test set. See Module 6's handbook page for the full formulas; nothing here changes them. What changes is only WHICH trained model they are applied to.</div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 7 hand-off</h2>
+  <p class="lead">The notebook implements a real FedAvg loop across 5 simulated institutions, measures the real accuracy cost of realistic non-IID data, trains the same architecture under real DP-SGD (via <code>opacus</code>) across five different privacy budgets, demonstrates a real model-poisoning attack against naive aggregation, defends against it with two real Byzantine-robust aggregation rules, and re-runs Module 6's fairness audit on the federated model to show it must be re-measured, not assumed -- with a metrics summary saved as an artifact for the next module.</p>
+  <div class="callout why"><strong>What Module 8 builds on this</strong><div>Module 8 (Multimodal AI) shifts RR Finance to a new kind of input entirely -- speech, document images, and vision-language understanding, building on Module 2's CNN foundations. It doesn't directly extend Module 7's federated/DP machinery, but the discipline this module established -- measure the real trade-off, don't assume a technique is free, re-audit governance under any new training regime -- carries forward to every module after it.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module6.html"><span class="n">←</span>Back to Module 6</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
