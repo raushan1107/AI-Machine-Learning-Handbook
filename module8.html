@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 8 Handbook | Multimodal AI</title>
+<meta name="description" content="Module 8 theory handbook: audio feature extraction and speech recognition, document intelligence (OCR), document tampering detection, and vision-language models -- what each technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module7.html">← Module 7</a>
+    <a class="dl" href="reference-notebooks/module8.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–7</a>
+    <a href="#foundation">Why multimodal, why now</a>
+    <h3>Concepts</h3>
+    <a href="#why-multimodal">1 · Why multimodal AI</a>
+    <a href="#audio-features">2 · Audio feature extraction</a>
+    <a href="#speech-recognition">3 · Speech recognition</a>
+    <a href="#document-intelligence">4 · Document intelligence (OCR)</a>
+    <a href="#tampering-detection">5 · Document tampering detection</a>
+    <a href="#vision-language">6 · Vision-language models</a>
+    <a href="#multimodal-fusion">7 · Multimodal fusion</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 9</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 8 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Multimodal</span>
+  </div>
+  <h1>Module 8 — <span>Multimodal AI</span></h1>
+  <p>Same theory-first structure as Modules 1–7: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Every module so far has assumed RR Finance's input arrives as a table, text, or a retrieval index. Module 8 adds the input types a real lender actually deals with: phone calls, scanned documents, and photographs.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module8.ipynb" download>⬇ Download the Module 8 notebook</a>
+    <a class="btn" href="module7.html">← Back to Module 7</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 8 is not a fresh start. Here's exactly what it inherits before adding new input types.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 2</div><p>RR Finance's first CNN, built for cheque digit recognition — the convolutional foundation this module extends to audio and document images.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 3</div><p>Regex-based PII and field extraction from text — the same technique this module applies to OCR output from document images.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 1 &amp; 6</div><p>The governed classifier and its fairness audit — still the destination every new input type in this module has to feed into, not a replacement for it.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 8</strong><div>Every prior module assumed RR Finance's input was already a table, clean text, or a retrieval index. Module 8 adds three new arrival formats a real lender actually receives: a phone call, a scanned document, and a photograph — and asks how each becomes usable input to the same system.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why multimodal, why now</h2>
+  <p class="lead">Real lending intake is multimodal by necessity, not by choice.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The channel reality</h3><p>Applicants call in, upload scans, and submit photo ID — a real intake pipeline has to handle all three, not assume clean tabular input arrives by default.</p></div>
+    <div class="card"><h3>The honest-testing constraint</h3><p>Large pretrained multimodal models (Whisper, CLIP) need internet access this sandbox doesn't have — every attempt at the real path is shown failing honestly, with a real, smaller, fully local alternative built and tested in its place.</p></div>
+    <div class="card"><h3>The integration requirement</h3><p>None of these new capabilities matter unless they feed the SAME governed classifier from Modules 1 and 6 — Lesson 7 wires them back in directly.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: WHY MULTIMODAL AI ============ -->
+<section class="concept" id="why-multimodal">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Why Multimodal AI</h2>
+    <p>Three new arrival formats, one system.</p>
+  </div>
+
+  <div class="lens-tabs" id="why-multimodal-tabs"><div class="lens-tab active" onclick="switchLens('why-multimodal','overview')">Overview</div><div class="lens-tab" onclick="switchLens('why-multimodal','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="why-multimodal-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Multimodal AI</strong> handles input that arrives in more than one form -- audio, images, and text together -- rather than assuming everything is already a clean table or a clean string.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">A practical necessity, not a research fad</div>
+    Real intake systems in finance, healthcare, and government have always been multimodal -- paper forms, phone calls, photo ID -- long before "multimodal AI" was a research term. What changed is that convolutional and transformer architectures now make it practical to handle audio and images with the SAME kind of learned model already used for tabular and text data.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why this module treats each modality separately</h4><ul><li>Audio, document images, and vision-language matching are three genuinely different problems with three different real techniques -- bundling them under one umbrella term would hide the actual work each one requires</li></ul></div>
+    <div class="use-box no"><h4>✗ What this module is NOT claiming</h4><ul><li>That one giant multimodal model replaces everything -- Lesson 7 shows a real vision-language model attempt failing honestly in this sandbox, with a smaller, real, working alternative built in its place</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's phone-based loan servicing line, its scanned-document upload portal, and its photo-ID verification step are three separate real channels -- this module gives each one a real, tested technique.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="why-multimodal-math">
+    <div class="math-box">
+<div class="term">No formula in this framing lesson — it sets up the three real techniques (Concepts 2-6) and the integration step (Concept 7) that make up the rest of this module.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: AUDIO FEATURE EXTRACTION (MFCCS) ============ -->
+<section class="concept" id="audio-features">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Audio Feature Extraction (MFCCs)</h2>
+    <p>Turning a sound wave into numbers a neural network can use.</p>
+  </div>
+
+  <div class="lens-tabs" id="audio-features-tabs"><div class="lens-tab active" onclick="switchLens('audio-features','overview')">Overview</div><div class="lens-tab" onclick="switchLens('audio-features','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="audio-features-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>MFCCs (Mel-Frequency Cepstral Coefficients)</strong> compress a raw audio waveform into a small set of coefficients per time frame, designed to track how the human ear actually perceives pitch and timbre -- the standard feature representation for speech tasks for decades.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1980</div>
+    <strong>Davis &amp; Mermelstein, "Comparison of Parametric Representations for Monosyllabic Word Recognition"</strong> introduced MFCCs, building on the earlier psychoacoustic Mel scale (Stevens, Volkmann &amp; Newman, 1937). MFCCs became the dominant speech feature representation for decades, and remain a standard preprocessing step even in modern deep-learning speech pipelines.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>Real MFCC extraction, via the real <code>librosa</code> library, on real recordings from the Free Spoken Digit Dataset -- 3,000 genuine spoken-digit audio clips across 6 speakers</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A synthetic stand-in -- this course's discipline of using real data (RR Finance's real 800-row dataset since Module 1) extends here to a real, freely available audio dataset rather than generated tones</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A caller reading out their loan account number digit by digit over RR Finance's phone line produces audio that needs exactly this kind of feature extraction before any recognition model can act on it.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="audio-features-math">
+    <div class="math-box">
+<div class="math-expr">Mel(f) = 2595 · log₁₀(1 + f/700)</div>
+<div class="term">The Mel scale (above) warps a raw frequency <b>f</b> (Hz) into a scale where equal steps correspond to roughly equal perceived pitch differences -- humans hear pitch differences non-linearly, more sensitively at low frequencies than high ones.</div>
+<div class="term">MFCC extraction pipeline: take the signal's short-time Fourier transform (a spectrogram), map its frequency axis through Mel-scale filters, take the log of the filter energies, then apply a Discrete Cosine Transform to decorrelate the result into a small number of coefficients (<code>n_mfcc</code>) per time frame.</div>
+<div class="term">The final output is a 2D array: coefficients x time frames -- exactly the "image-like" shape Concept 3's CNN treats as its input.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: SPEECH RECOGNITION: FROM WHISPER TO A FROM-SCRATCH CNN ============ -->
+<section class="concept" id="speech-recognition">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Speech Recognition: From Whisper to a From-Scratch CNN</h2>
+    <p>Extending Module 2's own CNN to a genuinely new input shape.</p>
+  </div>
+
+  <div class="lens-tabs" id="speech-recognition-tabs"><div class="lens-tab active" onclick="switchLens('speech-recognition','overview')">Overview</div><div class="lens-tab" onclick="switchLens('speech-recognition','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="speech-recognition-overview">
+  <div class="subhead">What it is</div>
+  <p>Classifying WHICH digit was spoken, from its MFCC features -- the actual recognition task, built here two ways: attempting a large pretrained model (Whisper), then a small, real, from-scratch CNN when that model's weights aren't reachable.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2022 (Whisper) vs. 1989 (CNNs for speech/vision generally)</div>
+    <strong>Radford et al. (OpenAI), 2022, "Robust Speech Recognition via Large-Scale Weak Supervision"</strong> introduced Whisper, a large, general-purpose speech-to-text model trained on 680,000 hours of audio. The fallback CNN traces back to the SAME convolutional architecture family Module 2 already covered (LeCun et al., 1989) -- applied here to a spectrogram-like input instead of pixels.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A REAL attempt to load Whisper, a genuine <code>HTTPError: 403 Forbidden</code> when its weights can't be reached in this sandbox, and a from-scratch CNN reaching over 95% test accuracy on real, unseen spoken digits</li></ul></div>
+    <div class="use-box no"><h4>✗ When the small CNN is the RIGHT choice anyway</h4><ul><li>For a narrow, closed-vocabulary task like digit entry, a small domain-specific model is often preferable to a giant general-purpose one in production -- faster, cheaper, and easier to audit, independent of what's reachable in any particular sandbox</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook's CNN correctly recognises spoken digits from speakers it never heard during training -- exactly the generalisation a phone-based IVR system needs across RR Finance's actual caller base.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="speech-recognition-math">
+    <div class="math-box">
+<div class="term">Identical 2D convolution mathematics to Module 2's CNN — see that handbook page's Math &amp; Algorithm toggle for the full convolution and pooling formulas. The only real change here is the INPUT shape: 13 MFCC coefficients x 32 time frames, one channel, instead of a pixel image.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: DOCUMENT INTELLIGENCE (OCR) ============ -->
+<section class="concept" id="document-intelligence">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Document Intelligence (OCR)</h2>
+    <p>Turning a scanned form into the structured fields a model expects.</p>
+  </div>
+
+  <div class="lens-tabs" id="document-intelligence-tabs"><div class="lens-tab active" onclick="switchLens('document-intelligence','overview')">Overview</div><div class="lens-tab" onclick="switchLens('document-intelligence','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="document-intelligence-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>OCR (Optical Character Recognition)</strong> converts a document image into raw text; regex-based extraction then pulls specific fields (income, loan amount, credit score) out of that text -- the same field-extraction technique Module 3 used for PII, now applied to an image-derived input.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Tesseract: 1985 (HP) → 2006 (open-sourced by Google)</div>
+    Tesseract, the OCR engine behind <code>pytesseract</code>, was originally developed at HP in the mid-1980s, then open-sourced and substantially improved by Google starting in 2006. It remains one of the most widely used open-source OCR engines in production document-processing systems today.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>The SAME extraction pipeline run on a low-resolution and a high-resolution rendering of an IDENTICAL document, with genuinely different, honestly reported results</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, not smoothed over</h4><ul><li>The low-resolution version misreads a real digit (36 months read as 38) -- a genuine OCR error with real financial consequences if trusted blindly, exactly the kind of finding this course discloses rather than hides</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>The notebook's high-resolution document extracts every field correctly; its low-resolution version -- simulating a poor-quality fax or phone-camera scan -- misses two fields entirely and silently gets a loan term wrong. Scan quality is a real, first-order variable in production document intake.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="document-intelligence-math">
+    <div class="math-box">
+<div class="term">No new formula — Tesseract's internal OCR pipeline (character segmentation, then classification) is used here as a tested, real external tool, exactly as Module 5 treated FAISS or Module 3 treated spaCy's pretrained pipeline. The regex extraction step following it uses the same pattern-matching approach as Module 3's PII redaction.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: DOCUMENT TAMPERING DETECTION (ERROR LEVEL ANALYSIS) ============ -->
+<section class="concept" id="tampering-detection">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Document Tampering Detection (Error Level Analysis)</h2>
+    <p>A real image-forensics attack and a real, testable defence.</p>
+  </div>
+
+  <div class="lens-tabs" id="tampering-detection-tabs"><div class="lens-tab active" onclick="switchLens('tampering-detection','overview')">Overview</div><div class="lens-tab" onclick="switchLens('tampering-detection','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="tampering-detection-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Error Level Analysis (ELA)</strong> re-saves an image at a known JPEG compression quality and measures the difference from the original -- regions edited AFTER the image was last fully saved compress differently from regions that were part of the original save, producing a detectable signal exactly where an edit happened.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Popularised in the mid-2000s digital-forensics community</div>
+    ELA exploits how JPEG's lossy, block-based compression behaves differently on freshly-edited image regions versus regions that have already been through one or more compression passes -- a well-known, widely taught technique in digital image forensics, still useful (with real limitations) today.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, working attack: a fraudulently edited loan amount on a real document image, followed by a real, measured ELA signal roughly 3.8x stronger inside the edited region than elsewhere in the same document</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>ELA is not foolproof -- a careful forger who re-compresses the WHOLE image after editing can weaken this signal considerably, a real constraint worth naming rather than implying ELA is a complete solution</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>This is the image-forensics counterpart to Module 1's data poisoning and Module 5's retrieval poisoning -- a real attack on a real input channel (a submitted document image), paired with a real, honestly-scoped defence.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="tampering-detection-math">
+    <div class="math-box">
+<div class="math-expr">ELA(x, y) = |I(x, y) − JPEG_q(I)(x, y)|</div>
+<div class="term"><b>I</b> is the original image; <b>JPEG_q(I)</b> is that same image re-saved at a known JPEG quality <b>q</b>.</div>
+<div class="term">The difference is computed per pixel, per colour channel -- regions that were part of the original save settle into a STABLE compression pattern already, so re-saving barely changes them; freshly-edited regions have not yet "settled," so they show a larger difference.</div>
+<div class="term">In practice: compare the MEAN of this difference INSIDE a suspected edited region against the mean OUTSIDE it -- a substantially higher value inside is the forensic signal, as measured directly in the notebook (roughly 3.8x higher).</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: VISION-LANGUAGE MODELS: FROM CLIP TO A FROM-SCRATCH JOINT EMBEDDING ============ -->
+<section class="concept" id="vision-language">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Vision-Language Models: From CLIP to a From-Scratch Joint Embedding</h2>
+    <p>Matching an image to a caption, without ever typing in a label.</p>
+  </div>
+
+  <div class="lens-tabs" id="vision-language-tabs"><div class="lens-tab active" onclick="switchLens('vision-language','overview')">Overview</div><div class="lens-tab" onclick="switchLens('vision-language','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="vision-language-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>vision-language model</strong> maps images and text captions into the SAME shared embedding space, trained so that matching image/caption pairs land close together and non-matching pairs land far apart -- enabling "zero-shot" classification by comparing a new image against a set of plain-text candidate captions.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2021</div>
+    <strong>Radford et al. (OpenAI), "Learning Transferable Visual Models From Natural Language Supervision"</strong> introduced CLIP, trained on 400 million real image-caption pairs scraped from the web, using a contrastive loss to align the two modalities -- the same contrastive idea this module's fallback trains from scratch, at drastically smaller scale.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A REAL attempt to load CLIP, a genuine <code>OSError</code> when huggingface.co isn't reachable in this sandbox, and a from-scratch contrastive model that correctly matches a brand-new, unseen document image to its plain-text caption</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A claim that this small model rivals real CLIP's actual visual understanding -- this lesson is explicitly about MECHANISM, not quality, the same framing Module 3 used for its own from-scratch Word2Vec on a tiny corpus</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's document intake needs to recognise WHAT TYPE of document just arrived -- loan application, bank statement, ID card, pay stub -- before any OCR or field extraction can even run; this lesson demonstrates the real mechanism behind doing that from an image and a plain-text label, with no hand-assigned category ID.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="vision-language-math">
+    <div class="math-box">
+<div class="math-expr">L = −(1/N) Σᵢ log[ exp(sim(imgᵢ, txtᵢ)/τ) / Σⱼ exp(sim(imgᵢ, txtⱼ)/τ) ]</div>
+<div class="term">This is a contrastive (InfoNCE-style) loss: for each image <b>i</b> in a batch, its matching caption should have the HIGHEST similarity among every candidate caption <b>j</b> in the batch.</div>
+<div class="term"><b>sim(img, txt)</b> is cosine similarity between the image embedding and the text embedding, both produced by their own encoder network and both normalised to unit length.</div>
+<div class="term"><b>τ</b> (temperature) sharpens or softens how strongly the loss separates the correct match from the alternatives -- CLIP learns this parameter; the notebook's fallback fixes a similar scale factor directly for simplicity.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 7: MULTIMODAL FUSION ============ -->
+<section class="concept" id="multimodal-fusion">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 7</span>
+    <h2>Multimodal Fusion</h2>
+    <p>Wiring three new input types back into one governed system.</p>
+  </div>
+
+  <div class="lens-tabs" id="multimodal-fusion-tabs"><div class="lens-tab active" onclick="switchLens('multimodal-fusion','overview')">Overview</div><div class="lens-tab" onclick="switchLens('multimodal-fusion','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="multimodal-fusion-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Multimodal fusion</strong> here means something specific and modest: taking fields extracted from a document image (Concept 4) and feeding them into Module 1's ACTUAL saved classifier pipeline -- no new model, no parallel system, just a new INPUT PATH into the one RR Finance has been building since Module 1.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">This module's own throughline, not a named external technique</div>
+    This lesson is deliberately NOT a sophisticated fusion architecture (there is real research on early vs. late fusion, cross-attention between modalities, and more) -- it is the much more basic, and arguably more important, discipline of making sure new capability actually connects to the governed system rather than becoming an unaudited side pipeline.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real check of which of Module 1's <code>FEATURES</code> document extraction CAN supply (income, loan amount, term, credit score) versus which ones genuinely cannot come from a document image alone (previous defaults, account age, existing debt)</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A claim that document intelligence alone can fully replace an application intake process -- naming the fields it CANNOT supply is as important as the ones it can</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A real RR Finance deployment would combine this module's document-extracted fields with the applicant's existing account history (already in Module 1's system) before the classifier ever runs -- exactly the honest gap this lesson names rather than glosses over.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module8.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="multimodal-fusion-math">
+    <div class="math-box">
+<div class="term">No new modelling — this lesson reuses Module 1's already-fitted <code>StandardScaler</code> and <code>LogisticRegression</code> exactly as saved. The only computation is a set-membership check: which of Module 1's <code>FEATURES</code> a document image can and cannot supply.</div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 8 hand-off</h2>
+  <p class="lead">The notebook extracts real MFCC features from a real spoken-digit dataset, extends Module 2's own CNN architecture to recognise spoken digits at over 95% test accuracy, runs real OCR-based document field extraction with an honestly-measured resolution-quality effect, detects a real document tampering attack via Error Level Analysis, builds a real from-scratch vision-language joint embedding model where CLIP itself isn't reachable, and wires the whole result back into Module 1's actual saved classifier -- with a metrics summary saved as an artifact for the next module.</p>
+  <div class="callout why"><strong>What Module 9 builds on this</strong><div>Module 9 (Graph Neural Networks) shifts RR Finance's lens from individual applicants to the RELATIONSHIPS between them -- fraud rings, shared addresses or devices across seemingly unrelated applications, and knowledge-graph-based reasoning. It doesn't directly reuse Module 8's audio or vision pipelines, but the same discipline carries forward: attempt the real production tool first, disclose honestly when this sandbox can't reach it, and always wire new capability back into the one system RR Finance has been building since Module 1.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module7.html"><span class="n">←</span>Back to Module 7</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
