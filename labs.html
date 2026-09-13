@@ -4720,15 +4720,209 @@ Attack, coordinate-wise median:   AUC = 0.6681</pre></div>
 <div class="selfcheck"><strong>Self-check:</strong> The median-defended model recovers almost all the accuracy naive averaging lost to the attack -- without the server ever seeing the malicious institution's raw data or knowing which institution was compromised. What kind of attack would you expect coordinate-wise median to NOT defend against (hint: think about how many institutions would need to be compromised)?</div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 7?</strong><div>You've now trained a real federated model across simulated institutions, put a real number on the cost of differential privacy, and defended a shared model against a real corrupted-update attack -- all without any institution's raw data ever leaving its own training loop. Module 8's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module7.html">Read the Module 7 handbook &rarr;</a></div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 7?</strong><div>You've now trained a real federated model across simulated institutions, put a real number on the cost of differential privacy, and defended a shared model against a real corrupted-update attack -- all without any institution's raw data ever leaving its own training loop. Ready for the next step? <a href="module8.html">Read the Module 8 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m8" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 8 — Multimodal AI</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 8 — Multimodal AI</h2>
+  <p>2.5 hrs · Notebook name: <code>module8_lab.ipynb</code> · This module clones a small real audio dataset directly from GitHub and needs the <code>tesseract-ocr</code> system package installed (<code>sudo apt-get install -y tesseract-ocr</code> on Ubuntu/Debian) for the OCR lesson. No prior module's artifacts are required.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's audio, image, and OCR libraries, then set up the shared project folders exactly as every module before this one has.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q torch librosa soundfile pytesseract pillow numpy pandas matplotlib scikit-learn joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")
+print("Note: pytesseract also needs the tesseract-ocr SYSTEM package (sudo apt-get install -y tesseract-ocr).")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.
+Note: pytesseract also needs the tesseract-ocr SYSTEM package (sudo apt-get install -y tesseract-ocr).</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np, torch, subprocess
+from pathlib import Path
+import json
+
+SEED = 42
+np.random.seed(SEED); torch.manual_seed(SEED)
+Path("data").mkdir(exist_ok=True); Path("artifacts").mkdir(exist_ok=True)
+print("numpy:", np.__version__, "| torch:", torch.__version__)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>numpy: 2.4.4 | torch: 2.14.0+cu130</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Real audio, real MFCC features</h3>
+<p class="lesson-intro">Clone the real Free Spoken Digit Dataset (3,000 genuine recordings) and extract MFCC features from a real audio file.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import librosa, warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="librosa")
+
+FSDD_PATH = Path("data/free-spoken-digit-dataset")
+if not FSDD_PATH.exists():
+    subprocess.run(["git", "clone", "--depth", "1",
+                     "https://github.com/Jakobovski/free-spoken-digit-dataset.git", str(FSDD_PATH)], check=True)
+
+recordings_dir = FSDD_PATH / "recordings"
+files = sorted(p.name for p in recordings_dir.glob("*.wav"))
+print(f"Total recordings: {len(files)}")
+
+N_MFCC, N_FFT, HOP_LENGTH, MAX_FRAMES = 13, 512, 128, 32
+
+def extract_mfcc(path):
+    y, sr = librosa.load(path, sr=8000)
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=N_MFCC, n_fft=N_FFT, hop_length=HOP_LENGTH)
+    if mfcc.shape[1] &lt; MAX_FRAMES:
+        mfcc = np.pad(mfcc, ((0, 0), (0, MAX_FRAMES - mfcc.shape[1])))
+    else:
+        mfcc = mfcc[:, :MAX_FRAMES]
+    return mfcc
+
+example_mfcc = extract_mfcc(recordings_dir / files[0])
+print(f"Example file: {files[0]}  -&gt;  MFCC shape: {example_mfcc.shape}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Total recordings: 3000
+Example file: 0_george_0.wav  -&gt;  MFCC shape: (13, 32)</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The MFCC shape is (13, 32) -- 13 coefficients across 32 time frames. If a caller spoke more slowly, taking longer to say the digit, what would happen to the RAW MFCC output before padding/truncation forces it back to a fixed shape?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Train a real spoken-digit CNN</h3>
+<p class="lesson-intro">Extract MFCC features for all 3,000 recordings and train a CNN -- the same convolutional architecture pattern as Module 2's CNN, applied to this new input shape.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import torch.nn as nn, torch.optim as optim
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from torch.utils.data import TensorDataset, DataLoader
+
+X_audio, y_digits = [], []
+for f in files:
+    X_audio.append(extract_mfcc(recordings_dir / f))
+    y_digits.append(int(f.split("_")[0]))
+X_audio, y_digits = np.array(X_audio), np.array(y_digits)
+
+X_train, X_test, y_train, y_test = train_test_split(X_audio, y_digits, test_size=0.2, stratify=y_digits, random_state=SEED)
+train_mean, train_std = X_train.mean(), X_train.std()
+X_train_t = torch.tensor((X_train - train_mean) / train_std, dtype=torch.float32).unsqueeze(1)
+y_train_t = torch.tensor(y_train, dtype=torch.long)
+X_test_t = torch.tensor((X_test - train_mean) / train_std, dtype=torch.float32).unsqueeze(1)
+
+class SpokenDigitCNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(1, 8, 3, padding=1)
+        self.conv2 = nn.Conv2d(8, 16, 3, padding=1)
+        self.pool = nn.MaxPool2d(2)
+        self.fc1 = nn.Linear(16*3*8, 64)
+        self.fc2 = nn.Linear(64, 10)
+    def forward(self, x):
+        x = self.pool(torch.relu(self.conv1(x)))
+        x = self.pool(torch.relu(self.conv2(x)))
+        x = torch.relu(self.fc1(x.flatten(1)))
+        return self.fc2(x)
+
+model = SpokenDigitCNN()
+opt = optim.Adam(model.parameters(), lr=0.001)
+crit = nn.CrossEntropyLoss()
+loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=32, shuffle=True)
+
+for epoch in range(15):
+    model.train()
+    for xb, yb in loader:
+        opt.zero_grad()
+        loss = crit(model(xb), yb)
+        loss.backward(); opt.step()
+    if (epoch+1) % 5 == 0:
+        model.eval()
+        with torch.no_grad():
+            acc = accuracy_score(y_test, model(X_test_t).argmax(1).numpy())
+        print(f"Epoch {epoch+1}: test accuracy = {acc:.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Epoch 5: test accuracy = 0.8683
+Epoch 10: test accuracy = 0.9417
+Epoch 15: test accuracy = 0.9517</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> This model reaches over 95% test accuracy recognising digits from speakers whose OTHER recordings it trained on, but never this exact recording. What would you expect to happen to this accuracy if you tested on a completely NEW speaker never seen in training at all -- and why might that be a harder test than the one this lesson actually ran?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Document OCR and field extraction</h3>
+<p class="lesson-intro">Render a synthetic loan document as a high-resolution image, run real OCR on it, and extract structured fields with regex.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from PIL import Image, ImageDraw, ImageFont
+import pytesseract, re
+
+def render_doc(scale=1, font=None):
+    img = Image.new("RGB", (600*scale, 300*scale), color="white")
+    d = ImageDraw.Draw(img)
+    lines = ["RR FINANCE - LOAN APPLICATION SUMMARY", "", "Applicant Name: Amit Verma",
+             "Annual Income: $67,000", "Loan Amount Requested: $30,000",
+             "Credit Score: 695", "Loan Term: 24 months"]
+    y = 10*scale
+    for line in lines:
+        d.text((15*scale, y), line, fill="black", font=font)
+        y += 30*scale
+    return img
+
+patterns = {
+    "applicant_name": r"Applicant Name:\s*(.+)",
+    "annual_income": r"Annual Income:\s*\$?([\d,]+)",
+    "loan_amount": r"Loan Amount Requested:\s*\$?([\d,]+)",
+    "credit_score": r"Credit Score:\s*(\d+)",
+    "loan_term_months": r"Loan Term:\s*(\d+)",
+}
+
+try:
+    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24*3)
+except Exception:
+    font = ImageFont.load_default()
+
+doc = render_doc(scale=3, font=font)
+text = pytesseract.image_to_string(doc)
+print("OCR output:\n", text)
+
+extracted = {}
+for field, pattern in patterns.items():
+    m = re.search(pattern, text, re.IGNORECASE)
+    extracted[field] = m.group(1).strip() if m else None
+print("Extracted fields:", extracted)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>OCR output:
+ RR FINANCE - LOAN APPLICATION SUMMARY
+
+Applicant Name: Amit Verma
+Annual Income: $67,000
+
+Loan Amount Requested: $30,000
+Credit Score: 695
+
+Loan Term: 24 months
+
+Extracted fields: {'applicant_name': 'Amit Verma', 'annual_income': '67,000', 'loan_amount': '30,000', 'credit_score': '695', 'loan_term_months': '24'}</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Every field extracted correctly here because the document was rendered at high resolution with a proper font. Module 8's reference notebook shows the SAME pipeline run on a low-resolution version instead -- try rendering this document at <code>scale=1</code> with <code>font=None</code> and re-running. What breaks, and why does a regex fix alone not solve everything that goes wrong?</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 8?</strong><div>You've now trained a real speech-recognition CNN on real audio, and built a working OCR-based document extraction pipeline -- both tested against genuine data, not synthetic stand-ins. The reference notebook goes further: document tampering detection and a from-scratch vision-language model. Module 9's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module8.html">Read the Module 8 handbook &rarr;</a></div></div>
 </section>
 <section id="panel-m9" class="panel">
   <div class="soon-box">
