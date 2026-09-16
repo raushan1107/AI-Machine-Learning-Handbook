@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 9 Handbook | Graph Neural Networks</title>
+<meta name="description" content="Module 9 theory handbook: fraud-ring detection with GNNs, knowledge graphs, GraphRAG, and GNN-based intrusion detection -- what each technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module8.html">← Module 8</a>
+    <a class="dl" href="reference-notebooks/module9.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–8</a>
+    <a href="#foundation">Why relationships, not just rows</a>
+    <h3>Concepts</h3>
+    <a href="#why-gnn">1 · Why Graph Neural Networks</a>
+    <a href="#fraud-rings">2 · Fraud-ring detection with GNNs</a>
+    <a href="#knowledge-graphs">3 · Knowledge graphs</a>
+    <a href="#graphrag">4 · GraphRAG</a>
+    <a href="#intrusion-detection">5 · GNN-based intrusion detection</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 10</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 9 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Graphs</span>
+  </div>
+  <h1>Module 9 — <span>Graph Neural Networks</span></h1>
+  <p>Same theory-first structure as Modules 1–8: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Every module so far has treated each applicant as an independent row. Module 9 asks what changes once you stop assuming that — and includes the most dramatic head-to-head result, and the most honest limitation, in this entire course.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module9.ipynb" download>⬇ Download the Module 9 notebook</a>
+    <a class="btn" href="module8.html">← Back to Module 8</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 9 is not a fresh start. Here's exactly what it inherits before adding a relational lens on top.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>The real 800-applicant dataset, always treated as independent rows — this module builds a real graph directly on top of it.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 5</div><p>A real RAG system over 4 real RR Finance policy documents — this module extracts structured facts from those same documents and combines both approaches.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 7</div><p>5 simulated institutions and their federated training setup — reused here as a real network topology for intrusion detection.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 9</strong><div>Every prior module scored one applicant, one document, or one caller at a time. Module 9 asks what only becomes visible once you look at the CONNECTIONS between them — and honestly tests when that relational view actually helps versus when it doesn't.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why relationships, not just rows</h2>
+  <p class="lead">Some fraud patterns are invisible until you stop looking at applicants one at a time.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The independence assumption</h3><p>Every classifier since Module 1 scores each row on its own — a reasonable assumption for most fraud, but not for coordinated fraud rings.</p></div>
+    <div class="card"><h3>What graphs add</h3><p>A Graph Neural Network learns from a node's own features AND its neighbors' — information a row-independent model structurally cannot access.</p></div>
+    <div class="card"><h3>What graphs don't automatically fix</h3><p>This module's closing lesson shows a real case where a GNN actually underperforms a simple baseline — the right tool depends on the shape of the pattern, not on using the most sophisticated technique by default.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: WHY GRAPH NEURAL NETWORKS ============ -->
+<section class="concept" id="why-gnn">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Why Graph Neural Networks</h2>
+    <p>Some fraud patterns exist only between applicants, not within any one of them.</p>
+  </div>
+
+  <div class="lens-tabs" id="why-gnn-tabs"><div class="lens-tab active" onclick="switchLens('why-gnn','overview')">Overview</div><div class="lens-tab" onclick="switchLens('why-gnn','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="why-gnn-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>Graph Neural Network</strong> learns from a node's own features AND from its neighbors' features, propagated across a graph structure — information a row-independent classifier structurally cannot see.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2005 → 2017</div>
+    Early graph neural network formulations date to <strong>Gori et al., 2005</strong>, but the modern, widely-used **Graph Convolutional Network (GCN)** formulation comes from <strong>Kipf &amp; Welling, 2017, "Semi-Supervised Classification with Graph Convolutional Networks"</strong>, which simplified earlier spectral graph-learning approaches into an efficient, practical layer that generalises convolution from grids (images) to arbitrary graphs.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>The pattern you're detecting is fundamentally RELATIONAL — who is connected to whom — not something visible in any single row's own features</li></ul></div>
+    <div class="use-box no"><h4>✗ Don't assume it always wins</h4><ul><li>Concept 5 of this module shows a real, honest case where a GNN underperforms a much simpler approach — the technique is a tool for a specific SHAPE of problem, not a universal upgrade</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A fraud ring's members can each individually look like an ordinary applicant — the giveaway is that several of them share one device. Concept 2 builds and detects exactly this pattern, with a dramatic, real, measured result.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module9.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="why-gnn-math">
+    <div class="math-box">
+<div class="term">No formula in this framing lesson — it sets up the specific graph propagation rule covered in Concept 2.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: FRAUD-RING DETECTION WITH GNNS ============ -->
+<section class="concept" id="fraud-rings">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Fraud-Ring Detection with GNNs</h2>
+    <p>The clearest demonstration in this course of when graph structure IS the entire signal.</p>
+  </div>
+
+  <div class="lens-tabs" id="fraud-rings-tabs"><div class="lens-tab active" onclick="switchLens('fraud-rings','overview')">Overview</div><div class="lens-tab" onclick="switchLens('fraud-rings','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="fraud-rings-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>Graph Convolutional Network (GCN)</strong> classifies each applicant as a likely fraud-ring member by repeatedly aggregating their own features with their graph neighbors' features across two layers — learning to recognise the "shape" of a device-sharing cluster.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Kipf &amp; Welling, 2017 (again) — GCNs applied to fraud specifically</div>
+    Graph-based fraud detection using GCNs and their successors (GraphSAGE, GAT) became a standard approach in financial-crime and payments fraud teams through the late 2010s and 2020s — precisely because ring-based fraud is, by construction, a relational pattern that feature-only models miss.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, dramatic, measured gap: a non-graph baseline reaches AUC ≈ 0.63 on the SAME 11 applicant features Module 1 has always used; the GCN, using the identical features PLUS the graph, reaches AUC = 1.0</li></ul></div>
+    <div class="use-box no"><h4>✗ Why this comparison is fair, not rigged</h4><ul><li>Ring members' individual features are constructed to look statistically ORDINARY — the gap is entirely attributable to the graph, not to a features shortcut hidden in the setup</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>20 applicants, spread across 4 device-sharing rings of 5, are statistically indistinguishable from ordinary applicants on income, credit score, or debt-to-income — the GCN finds every one of them anyway, using only who they're connected to.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module9.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="fraud-rings-math">
+    <div class="math-box">
+<div class="math-expr">H^(l+1) = σ( D̂^(−1/2) · Â · D̂^(−1/2) · H^(l) · W^(l) )</div>
+<div class="term"><b>Â = A + I</b> is the graph's adjacency matrix with self-loops added — every node aggregates its OWN previous representation as well as its neighbors'.</div>
+<div class="term"><b>D̂</b> is the degree matrix of Â, used to NORMALISE the aggregation so nodes with many neighbors don't dominate purely by connection count.</div>
+<div class="term"><b>H^(l)</b> is the matrix of all nodes' representations at layer l (H^(0) is the raw input features); <b>W^(l)</b> is that layer's learned weight matrix; <b>σ</b> is a non-linearity (ReLU).</div>
+<div class="term">Two stacked layers (as used in the notebook) let information travel two hops — far enough for a ring member to "see" its device-sharing neighbors' representations directly, which is exactly the signal a single-node classifier cannot access.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: KNOWLEDGE GRAPHS ============ -->
+<section class="concept" id="knowledge-graphs">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Knowledge Graphs</h2>
+    <p>Turning free text into precise, queryable facts.</p>
+  </div>
+
+  <div class="lens-tabs" id="knowledge-graphs-tabs"><div class="lens-tab active" onclick="switchLens('knowledge-graphs','overview')">Overview</div><div class="lens-tab" onclick="switchLens('knowledge-graphs','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="knowledge-graphs-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>knowledge graph</strong> represents information as structured (entity, relation, value) triples — extracted here from Module 5's real policy documents — so precise questions (numeric comparisons, thresholds) can be answered by graph traversal instead of approximate text search.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Long-standing AI concept, popularised at scale by Google's Knowledge Graph (2012)</div>
+    Structured knowledge representation predates modern deep learning by decades (semantic networks, RDF triples), but Google's 2012 Knowledge Graph brought the term into mainstream use for exactly this pattern: extracting precise facts from unstructured sources so they can be queried reliably.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>Real regex extraction of numeric facts (minimum credit score, interest rate, maximum amount) from RR Finance's 4 real policy documents — then real, exact-match graph queries over those facts</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, not smoothed over</h4><ul><li>The Gold Loan policy has no extracted <code>min_credit_score</code> fact — because the real policy text never states one (it's a secured product) — correctly reflected as an ABSENCE, not a missing feature to paper over</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>"Which products does an applicant with credit score 640 qualify for?" is answered by the notebook with an exact, reliable graph query — precisely the kind of question pure text search answers only approximately.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module9.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="knowledge-graphs-math">
+    <div class="math-box">
+<div class="term">No learned model here — graph traversal in this lesson is EXACT filtering over edges (e.g. "find all Product nodes with a min_credit_score edge whose weight is ≤ the applicant's score"), fundamentally different from Concept 2's GCN, which LEARNS a function over graph structure. Both are "graph techniques," but one is a database query and the other is a trained model — a distinction worth keeping clear.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: GRAPHRAG ============ -->
+<section class="concept" id="graphrag">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>GraphRAG</h2>
+    <p>Structured facts for precision, retrieved text for procedure.</p>
+  </div>
+
+  <div class="lens-tabs" id="graphrag-tabs"><div class="lens-tab active" onclick="switchLens('graphrag','overview')">Overview</div><div class="lens-tab" onclick="switchLens('graphrag','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="graphrag-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>GraphRAG</strong> combines Concept 3's structured graph traversal with Module 5's text retrieval (here, real BM25 ranking) — using each for what it does well, then composing both into one answer.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">Emerged as a named pattern around 2023-2024</div>
+    As RAG systems matured, practitioners recognised that pure vector/text retrieval handles precise numeric or relational questions poorly — GraphRAG (structured retrieval + text retrieval, composed together) became a common named pattern for closing that gap without abandoning the retrieval infrastructure already built.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, working, multi-hop answer: the graph precisely determines which products an applicant qualifies for by credit score, while BM25 retrieval finds the exact procedural text about debt-to-income review thresholds — genuinely needing both</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A single unified model — this is two real, separate, well-understood techniques (Concept 3's traversal, Module 5's BM25) composed by simple, explicit Python logic, not a new learned architecture</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>"Which products do I qualify for, and will my application need manual review?" gets answered correctly and precisely — the graph half says "PersonalLoan, GoldLoan"; the retrieved half explains the 50% debt-to-income review threshold, sourced from the real risk-review policy document.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module9.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="graphrag-math">
+    <div class="math-box">
+<div class="math-expr">score(D, Q) = Σ_(t∈Q) IDF(t) · [f(t,D)·(k₁+1)] / [f(t,D) + k₁·(1−b+b·|D|/avgdl)]</div>
+<div class="term">This is the BM25 ranking formula Module 5 introduced and this lesson reuses directly: <b>f(t,D)</b> is how often query term <b>t</b> appears in document <b>D</b>; <b>IDF(t)</b> downweights common terms; <b>k₁</b> and <b>b</b> control term-frequency saturation and document-length normalisation.</div>
+<div class="term">GraphRAG's real mechanism is simpler than the formula above suggests: run the graph query (Concept 3) and the BM25 query independently, then compose their results with plain Python logic — no new mathematics beyond what each half already uses.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: GNN-BASED INTRUSION DETECTION: AN HONEST LIMITATION ============ -->
+<section class="concept" id="intrusion-detection">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>GNN-Based Intrusion Detection: An Honest Limitation</h2>
+    <p>When a simple baseline beats the sophisticated technique.</p>
+  </div>
+
+  <div class="lens-tabs" id="intrusion-detection-tabs"><div class="lens-tab active" onclick="switchLens('intrusion-detection','overview')">Overview</div><div class="lens-tab" onclick="switchLens('intrusion-detection','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="intrusion-detection-overview">
+  <div class="subhead">What it is</div>
+  <p>The SAME kind of GCN as Concept 2, applied to a network-traffic graph (RR Finance's 5 simulated institutions from Module 7) to detect a compromised host — but tested honestly against a simple non-graph baseline, rather than assumed to win.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">A real, standing debate in graph-ML practice</div>
+    Whether a GNN outperforms simpler graph-FEATURE engineering (degree, clustering coefficient, centrality measures fed into a plain classifier) is genuinely dataset- and problem-dependent — this is a well-known, actively discussed limitation in graph machine learning, not a settled question with one universal answer.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>With content-only features, both a simple baseline and a GCN struggle. Once explicit structural features (degree, cross-institution connection ratio) are added, the SIMPLE baseline reaches perfect detection — and the GCN, on the identical features, does WORSE</li></ul></div>
+    <div class="use-box no"><h4>✗ Why this isn't a failure to fix</h4><ul><li>The compromised host here is an INDIVIDUAL outlier (high degree, but connects to otherwise-normal hosts) — unlike Concept 2's ring members, which connect to EACH OTHER. A GCN's neighbor-averaging can dilute one node's own extreme signal when its neighbors are ordinary; it excels when the anomaly is a property of a connected group instead</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A compromised server beaconing widely across RR Finance's federated institutions (Module 7) has an unusual connectivity PATTERN, but talks to otherwise-normal peers — exactly the case where hand-engineered graph statistics, fed into a simple classifier, turn out to be the more reliable tool.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module9.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="intrusion-detection-math">
+    <div class="math-box">
+<div class="term">Same GCN propagation rule as Concept 2 (see that concept's Math &amp; Algorithm toggle) — the mathematics is identical. What differs is the STRUCTURE of the anomaly: Concept 2's ring members form dense sub-cliques where averaging a member's neighbors' features reinforces the "ring" signal; this lesson's compromised host connects mostly to normal-looking neighbors, so the SAME averaging operation smooths its own extreme degree/connectivity signal toward the neighborhood average instead of preserving it.</div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 9 hand-off</h2>
+  <p class="lead">The notebook builds a real fraud-ring detection pipeline on top of Module 1's actual applicant data — a GCN reaching AUC 1.0 against a non-graph baseline's 0.63 on identical features — extracts a real knowledge graph from Module 5's real policy documents, combines structured graph traversal with real BM25 retrieval into a working GraphRAG pipeline, and closes with an honest, tested finding about when a GCN does NOT outperform a much simpler approach -- with a metrics summary saved as an artifact for the next module.</p>
+  <div class="callout why"><strong>What Module 10 builds on this</strong><div>Module 10 (MLOps &amp; On-Premises Deployment) shifts from "does this model work" to "how does RR Finance actually RUN this in production" -- FastAPI serving, Docker/Kubernetes, and DevSecOps tooling. It doesn't extend Module 9's graph machinery directly, but every model built since Module 1 -- including this module's fraud-ring GCN -- needs exactly the deployment discipline Module 10 covers before any of it reaches a real applicant.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module8.html"><span class="n">←</span>Back to Module 8</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
