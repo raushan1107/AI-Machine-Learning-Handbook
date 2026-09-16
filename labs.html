@@ -4922,15 +4922,193 @@ Extracted fields: {'applicant_name': 'Amit Verma', 'annual_income': '67,000', 'l
 <div class="selfcheck"><strong>Self-check:</strong> Every field extracted correctly here because the document was rendered at high resolution with a proper font. Module 8's reference notebook shows the SAME pipeline run on a low-resolution version instead -- try rendering this document at <code>scale=1</code> with <code>font=None</code> and re-running. What breaks, and why does a regex fix alone not solve everything that goes wrong?</div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 8?</strong><div>You've now trained a real speech-recognition CNN on real audio, and built a working OCR-based document extraction pipeline -- both tested against genuine data, not synthetic stand-ins. The reference notebook goes further: document tampering detection and a from-scratch vision-language model. Module 9's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module8.html">Read the Module 8 handbook &rarr;</a></div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 8?</strong><div>You've now trained a real speech-recognition CNN on real audio, and built a working OCR-based document extraction pipeline -- both tested against genuine data, not synthetic stand-ins. The reference notebook goes further: document tampering detection and a from-scratch vision-language model. Ready for the next step? <a href="module9.html">Read the Module 9 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m9" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 9 — Graph Neural Networks</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 9 — Graph Neural Networks</h2>
+  <p>2.5 hrs · Notebook name: <code>module9_lab.ipynb</code> · This module reads what Module 1 saved (<code>data/rr_finance_module1_dataset_enriched.csv</code>). Complete the Module 1 lab first, in the SAME project folder. No other module's artifacts are required.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's graph-learning libraries, then set up the shared project folders exactly as every module before this one has.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q torch torch_geometric networkx rank_bm25 numpy pandas matplotlib scikit-learn joblib
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import numpy as np, pandas as pd, torch
+from pathlib import Path
+import json
+
+SEED = 42
+np.random.seed(SEED); torch.manual_seed(SEED)
+rng = np.random.default_rng(SEED)
+Path("data").mkdir(exist_ok=True); Path("artifacts").mkdir(exist_ok=True)
+print("numpy:", np.__version__, "| torch:", torch.__version__)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>numpy: 2.4.4 | torch: 2.14.0+cu130</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Build a fraud-ring graph on Module 1's real applicants</h3>
+<p class="lesson-intro">Load the enriched dataset and construct 3 synthetic fraud rings of 5 applicants each, sharing a device ID -- their individual features stay statistically ordinary on purpose.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import networkx as nx
+from collections import defaultdict
+
+df = pd.read_csv("data/rr_finance_module1_dataset_enriched.csv")
+n = len(df)
+
+device_id = np.array([f"dev_{i:04d}" for i in range(n)], dtype=object)
+is_ring_member = np.zeros(n, dtype=int)
+RING_SIZE, N_RINGS = 5, 3
+chosen = rng.choice(n, size=RING_SIZE*N_RINGS, replace=False)
+for r in range(N_RINGS):
+    members = chosen[r*RING_SIZE:(r+1)*RING_SIZE]
+    for m in members:
+        device_id[m] = f"dev_ring_{r}"
+        is_ring_member[m] = 1
+
+G = nx.Graph()
+G.add_nodes_from(range(n))
+groups = defaultdict(list)
+for i, d in enumerate(device_id):
+    groups[d].append(i)
+for d, members in groups.items():
+    if len(members) &gt; 1:
+        for i in range(len(members)):
+            for j in range(i+1, len(members)):
+                G.add_edge(members[i], members[j])
+
+print(f"Graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
+print(f"Ring members: {is_ring_member.sum()}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Graph: 800 nodes, 30 edges
+Ring members: 15</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> This lesson uses <code>dtype=object</code> when building the <code>device_id</code> array. Try removing it and re-running -- what happens to the ring count, and why does a plain numpy string array cause this?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Compare a non-graph baseline against a real GCN</h3>
+<p class="lesson-intro">Train a logistic regression on applicant features alone, then a GCN using the same features plus the graph -- and compare.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import torch.nn as nn, torch.nn.functional as F
+from torch_geometric.utils import from_networkx
+from torch_geometric.nn import GCNConv
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score, f1_score
+
+FEATURES = ["annual_income","monthly_debt","loan_amount","loan_term_months","credit_score",
+            "employment_years","account_age_months","num_previous_loans","previous_defaults",
+            "debt_to_income","loan_to_income"]
+X = df[FEATURES].values.astype(np.float32)
+X = (X - X.mean(0)) / X.std(0)
+y = is_ring_member
+
+train_idx, test_idx = train_test_split(np.arange(n), test_size=0.3, stratify=y, random_state=SEED)
+
+clf = LogisticRegression(max_iter=1000, class_weight="balanced")
+clf.fit(X[train_idx], y[train_idx])
+base_auc = roc_auc_score(y[test_idx], clf.predict_proba(X[test_idx])[:,1])
+print(f"Non-graph baseline: AUC = {base_auc:.4f}")
+
+data = from_networkx(G)
+data.x = torch.tensor(X, dtype=torch.float32)
+data.y = torch.tensor(y, dtype=torch.long)
+train_mask = torch.zeros(n, dtype=torch.bool); train_mask[train_idx] = True
+test_mask = torch.zeros(n, dtype=torch.bool); test_mask[test_idx] = True
+
+class GCN(nn.Module):
+    def __init__(self, in_dim, hidden=16):
+        super().__init__()
+        self.conv1 = GCNConv(in_dim, hidden)
+        self.conv2 = GCNConv(hidden, 2)
+    def forward(self, x, edge_index):
+        x = F.relu(self.conv1(x, edge_index))
+        x = F.dropout(x, p=0.3, training=self.training)
+        return self.conv2(x, edge_index)
+
+model = GCN(X.shape[1])
+opt = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
+cw = torch.tensor([1.0, (len(train_idx)-y[train_idx].sum())/y[train_idx].sum()], dtype=torch.float32)
+for epoch in range(150):
+    model.train(); opt.zero_grad()
+    out = model(data.x, data.edge_index)
+    loss = F.cross_entropy(out[train_mask], data.y[train_mask], weight=cw)
+    loss.backward(); opt.step()
+model.eval()
+with torch.no_grad():
+    out = model(data.x, data.edge_index)
+    gcn_probs = F.softmax(out, dim=1)[:,1]
+gcn_auc = roc_auc_score(y[test_idx], gcn_probs[test_idx].numpy())
+print(f"GCN (features + graph): AUC = {gcn_auc:.4f}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Non-graph baseline: AUC = 0.6875
+GCN (features + graph): AUC = 1.0000</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Both models saw the exact same 11 applicant features. What does the size of this gap tell you about whether fraud-ring membership is even theoretically detectable from an applicant's own data alone?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Extract a small knowledge graph from real policy text</h3>
+<p class="lesson-intro">Use regex to pull structured credit-score requirements out of two real RR Finance policy documents, then query them precisely.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import re
+
+rr_finance_documents = [
+    {"id": "policy_personal_loan", "text": (
+        "RR Finance Personal Loan Policy (effective March 2026). Personal loans are offered up to a "
+        "maximum amount of $75,000. A minimum credit score of 620 is required."
+    )},
+    {"id": "policy_home_loan", "text": (
+        "RR Finance Home Loan Policy (effective March 2026). Home loans are available up to $500,000. "
+        "Interest rates start at 7.9% per annum for applicants with a credit score above 750."
+    )},
+]
+
+KG_products = {}
+for doc in rr_finance_documents:
+    text = doc["text"]
+    name = "PersonalLoan" if "Personal" in text else "HomeLoan"
+    m = re.search(r"minimum credit score of (\d+)", text) or re.search(r"credit score above (\d+)", text)
+    KG_products[name] = int(m.group(1)) if m else None
+
+print("Extracted knowledge graph facts:", KG_products)
+
+applicant_score = 700
+qualifies = [p for p, req in KG_products.items() if req is None or applicant_score &gt;= req]
+print(f"Applicant with credit_score={applicant_score} qualifies for: {qualifies}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Extracted knowledge graph facts: {'PersonalLoan': 620, 'HomeLoan': 750}
+Applicant with credit_score=700 qualifies for: ['PersonalLoan']</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Module 9's reference notebook includes a Gold Loan policy with NO credit-score requirement extracted, because the real policy text never states one. How does this lesson's <code>qualifies</code> logic need to handle a product with no extracted requirement at all -- and does it get that right?</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 9?</strong><div>You've now built a real graph on top of Module 1's actual applicant data, watched a GCN dramatically outperform a feature-only baseline on fraud-ring detection, and extracted real structured facts from real policy text. The reference notebook goes further: a full GraphRAG pipeline and an honest case where a GCN loses to a simple baseline. Module 10's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module9.html">Read the Module 9 handbook &rarr;</a></div></div>
 </section>
 <section id="panel-m10" class="panel">
   <div class="soon-box">
