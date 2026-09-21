@@ -5108,15 +5108,186 @@ Applicant with credit_score=700 qualifies for: ['PersonalLoan']</pre></div>
 <div class="selfcheck"><strong>Self-check:</strong> Module 9's reference notebook includes a Gold Loan policy with NO credit-score requirement extracted, because the real policy text never states one. How does this lesson's <code>qualifies</code> logic need to handle a product with no extracted requirement at all -- and does it get that right?</div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 9?</strong><div>You've now built a real graph on top of Module 1's actual applicant data, watched a GCN dramatically outperform a feature-only baseline on fraud-ring detection, and extracted real structured facts from real policy text. The reference notebook goes further: a full GraphRAG pipeline and an honest case where a GCN loses to a simple baseline. Module 10's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module9.html">Read the Module 9 handbook &rarr;</a></div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 9?</strong><div>You've now built a real graph on top of Module 1's actual applicant data, watched a GCN dramatically outperform a feature-only baseline on fraud-ring detection, and extracted real structured facts from real policy text. The reference notebook goes further: a full GraphRAG pipeline and an honest case where a GCN loses to a simple baseline. Ready for the next step? <a href="module10.html">Read the Module 10 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m10" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 10 — MLOps & On-Premises Deployment</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 10 — MLOps &amp; On-Premises Deployment</h2>
+  <p>2.5 hrs · Notebook name: <code>module10_lab.ipynb</code> · This module reads what Module 1 saved (<code>artifacts/baseline_logreg_pipeline.joblib</code>). Complete the Module 1 lab first, in the SAME project folder. No other module's artifacts are required.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's API-serving libraries, then set up the shared project folders exactly as every module before this one has.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q fastapi uvicorn pydantic joblib pandas scikit-learn requests
+print("Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- if you saw 'Requirement already satisfied' lines above, that is expected and fine.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from pathlib import Path
+import json
+
+Path("data").mkdir(exist_ok=True)
+Path("artifacts").mkdir(exist_ok=True)
+Path("deployment").mkdir(exist_ok=True)
+print("Project folders ready: data/, artifacts/, deployment/")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Project folders ready: data/, artifacts/, deployment/</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Write a real FastAPI service around Module 1's model</h3>
+<p class="lesson-intro">Write a real <code>app.py</code> that loads Module 1's actual saved pipeline and exposes it through <code>/health</code> and <code>/predict</code> endpoints.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>api_code = '''
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+import joblib
+import pandas as pd
+
+app = FastAPI(title="RR Finance Loan Risk API")
+pipeline = joblib.load("baseline_logreg_pipeline.joblib")
+
+FEATURES = [
+    "annual_income", "monthly_debt", "loan_amount", "loan_term_months",
+    "credit_score", "employment_years", "account_age_months",
+    "num_previous_loans", "previous_defaults", "debt_to_income", "loan_to_income",
+]
+
+class LoanApplication(BaseModel):
+    annual_income: float = Field(..., gt=0)
+    monthly_debt: float = Field(..., ge=0)
+    loan_amount: float = Field(..., gt=0)
+    loan_term_months: int = Field(..., gt=0)
+    credit_score: int = Field(..., ge=300, le=850)
+    employment_years: float = Field(..., ge=0)
+    account_age_months: float = Field(..., ge=0)
+    num_previous_loans: int = Field(..., ge=0)
+    previous_defaults: int = Field(..., ge=0)
+    debt_to_income: float = Field(..., ge=0)
+    loan_to_income: float = Field(..., ge=0)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.post("/predict")
+def predict(application: LoanApplication):
+    row = pd.DataFrame([application.model_dump()])[FEATURES]
+    prob = pipeline.predict_proba(row)[0, 1]
+    decision = "REJECT" if prob &gt;= 0.5 else "APPROVE"
+    return {"default_probability": round(float(prob), 4), "decision": decision}
+'''
+
+Path("deployment/app.py").write_text(api_code)
+import shutil
+shutil.copy("artifacts/baseline_logreg_pipeline.joblib", "deployment/baseline_logreg_pipeline.joblib")
+print("Wrote deployment/app.py and copied the real pipeline artifact next to it.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Wrote deployment/app.py and copied the real pipeline artifact next to it.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The <code>LoanApplication</code> model constrains <code>credit_score</code> to between 300 and 850. Where does that specific range come from, and what would happen to a request with <code>credit_score=850.5</code> given the field is typed as <code>int</code>?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Run the server and send it real requests</h3>
+<p class="lesson-intro">Start the API as a real subprocess, then send it a real valid request and a real invalid one.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>import subprocess, time, requests
+
+server_proc = subprocess.Popen(
+    ["python3", "-m", "uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"],
+    cwd="deployment", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+)
+time.sleep(3)
+
+health = requests.get("http://127.0.0.1:8000/health")
+print("GET /health -&gt;", health.status_code, health.json())
+
+valid_application = {
+    "annual_income": 52000, "monthly_debt": 1200, "loan_amount": 15000, "loan_term_months": 24,
+    "credit_score": 705, "employment_years": 4, "account_age_months": 30, "num_previous_loans": 1,
+    "previous_defaults": 0, "debt_to_income": 0.28, "loan_to_income": 0.29,
+}
+response = requests.post("http://127.0.0.1:8000/predict", json=valid_application)
+print("POST /predict -&gt;", response.status_code, response.json())
+
+invalid_application = dict(valid_application, credit_score=50)
+bad_response = requests.post("http://127.0.0.1:8000/predict", json=invalid_application)
+print("POST /predict (invalid credit_score=50) -&gt;", bad_response.status_code)
+print(bad_response.json())
+
+server_proc.terminate()
+server_proc.wait()
+print("Server stopped.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>GET /health -&gt; 200 {'status': 'ok'}
+POST /predict -&gt; 200 {'default_probability': 0.1165, 'decision': 'APPROVE'}
+POST /predict (invalid credit_score=50) -&gt; 422
+{'detail': [{'type': 'greater_than_equal', 'loc': ['body', 'credit_score'], 'msg': 'Input should be greater than or equal to 300', 'input': 50, 'ctx': {'ge': 300}}]}
+Server stopped.</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> The invalid request is rejected with a <code>422</code> status before the model ever sees it. Why is validating at the API boundary, rather than inside the model or the business logic, the right place to catch this kind of error?</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Write a real, production-shaped Dockerfile</h3>
+<p class="lesson-intro">Write a Dockerfile that already includes a non-root user and a health check -- the two fixes Module 10's reference notebook shows a real security scanner catching when they're missing.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>dockerfile_content = '''FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+COPY baseline_logreg_pipeline.joblib .
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=3s CMD python3 -c "import requests; requests.get('http://localhost:8000/health').raise_for_status()"
+RUN useradd --create-home --shell /bin/bash apiuser
+USER apiuser
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+'''
+
+Path("deployment/Dockerfile").write_text(dockerfile_content)
+Path("deployment/requirements.txt").write_text("fastapi\nuvicorn\npydantic\njoblib\npandas\nscikit-learn\n")
+print("Wrote deployment/Dockerfile and deployment/requirements.txt")
+print(dockerfile_content)</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Wrote deployment/Dockerfile and deployment/requirements.txt
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+COPY baseline_logreg_pipeline.joblib .
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=3s CMD python3 -c "import requests; requests.get('http://localhost:8000/health').raise_for_status()"
+RUN useradd --create-home --shell /bin/bash apiuser
+USER apiuser
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]</pre></div>
+</div>
+<div class="selfcheck"><strong>Self-check:</strong> Module 10's reference notebook scans a NAIVE version of this Dockerfile (no <code>USER</code>, no <code>HEALTHCHECK</code>) with a real security scanner and finds 2 real findings. Try removing the <code>RUN useradd</code> and <code>USER apiuser</code> lines from your own Dockerfile above -- what specifically changes about who the container runs as, and why does that matter if the container is ever compromised?</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 10?</strong><div>You've now wrapped a real model in a real running API with real request validation, and written a real, production-shaped Dockerfile. The reference notebook goes further: a real Trivy security scan, a real Kubernetes manifest, a real encrypted secrets store, and a real, tested mutual-TLS boundary. Module 11's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module10.html">Read the Module 10 handbook &rarr;</a></div></div>
 </section>
 <section id="panel-m11" class="panel">
   <div class="soon-box">
