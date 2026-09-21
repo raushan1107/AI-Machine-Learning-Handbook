@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RR Skillverse — Module 10 Handbook | MLOps &amp; On-Premises Deployment</title>
+<meta name="description" content="Module 10 theory handbook: FastAPI model serving, Docker containerization, DevSecOps scanning with Trivy, Kubernetes deployment, secrets management, and mutual TLS -- what each technique is, why it exists, its history, its alternatives, and where it is used in real financial systems.">
+<meta name="theme-color" content="#07111f">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module9.html">← Module 9</a>
+    <a class="dl" href="reference-notebooks/module10.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–9</a>
+    <a href="#foundation">From notebook to production</a>
+    <h3>Concepts</h3>
+    <a href="#fastapi-serving">1 · FastAPI model serving</a>
+    <a href="#containerization">2 · Containerization with Docker</a>
+    <a href="#devsecops-scanning">3 · DevSecOps scanning with Trivy</a>
+    <a href="#kubernetes">4 · Kubernetes deployment</a>
+    <a href="#secrets-management">5 · Secrets management</a>
+    <a href="#mtls">6 · Mutual TLS</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 11</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 10 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + MLOps</span>
+  </div>
+  <h1>Module 10 — <span>MLOps &amp; On-Premises Deployment</span></h1>
+  <p>Same theory-first structure as Modules 1–9: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. Nine modules have built real, tested models that have only ever run inside a notebook. Module 10 asks how RR Finance actually RUNS one — on its own infrastructure, not a third-party cloud.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module10.ipynb" download>⬇ Download the Module 10 notebook</a>
+    <a class="btn" href="module9.html">← Back to Module 9</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has</h2>
+  <p class="lead">Module 10 is not a fresh start. Here's exactly what it inherits before deploying any of it.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULE 1</div><p>A real, saved, validated classifier pipeline — the exact model this module wraps in a real running API, unchanged.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 6</div><p>A real fairness and explainability audit — the governance work that has to precede letting this model answer real requests.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 7</div><p>Federated training and a real privacy focus — this module's mTLS and on-premises framing extends that same discipline to the deployment layer.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 10</strong><div>Every prior module's output was a result in a notebook cell. Module 10 builds the boundary between that and a system a real loan-origination process could actually depend on — a real API, a real container, a real security scan, and a real encrypted network boundary.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>From notebook to production</h2>
+  <p class="lead">On-premises, specifically — not cloud, and that choice shapes everything in this module.</p>
+  <div class="card-grid">
+    <div class="card"><h3>Why on-premises</h3><p>RR Finance's applicant data is exactly what Module 7's privacy work and typical financial-sector regulation push toward keeping inside an institution's own infrastructure.</p></div>
+    <div class="card"><h3>The honest-testing constraint</h3><p>This sandbox has no Docker daemon, no live Kubernetes cluster, and can't reach Vault's server binary — every real tool is attempted honestly, with disclosed, working alternatives where this sandbox specifically can't reach something.</p></div>
+    <div class="card"><h3>What ties it together</h3><p>Every layer in this module — API, container, scan, cluster, secrets, TLS — wraps the SAME model from Module 1, unchanged, all the way through.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: FASTAPI MODEL SERVING ============ -->
+<section class="concept" id="fastapi-serving">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>FastAPI Model Serving</h2>
+    <p>The boundary between a notebook experiment and a system.</p>
+  </div>
+
+  <div class="lens-tabs" id="fastapi-serving-tabs"><div class="lens-tab active" onclick="switchLens('fastapi-serving','overview')">Overview</div><div class="lens-tab" onclick="switchLens('fastapi-serving','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="fastapi-serving-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>FastAPI</strong>, with <strong>Pydantic</strong> for request validation, wraps a trained model in a real HTTP API — run by <strong>uvicorn</strong>, a real ASGI server — so it can answer requests from any real caller, not just a notebook cell.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2018</div>
+    <strong>Sebastián Ramírez, FastAPI</strong> built on Python's type hints and Starlette/Pydantic to give automatic request validation, serialization, and interactive API documentation essentially for free — quickly becoming one of the most widely used Python API frameworks specifically for ML model serving.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real server, started as a real subprocess, wrapping Module 1's ACTUAL saved pipeline — a valid request returns a real prediction (200), an invalid one (credit score 9999) is rejected before it ever reaches the model (422)</li></ul></div>
+    <div class="use-box no"><h4>✗ What this is NOT</h4><ul><li>A retrained or simplified stand-in model — this is the exact object Module 1 fitted and Module 6 audited, loaded unchanged</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's loan-origination system would call this exact `/predict` endpoint with an applicant's data and get back a real default-probability score and decision — the same computation Module 1's notebook always performed, now reachable over the network.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="fastapi-serving-math">
+    <div class="math-box">
+<div class="term">No new mathematics — Pydantic's field constraints (<code>ge</code>, <code>le</code>, <code>gt</code>) are simple range checks enforced BEFORE the request reaches the model, not a modelling technique. The model itself is Module 1's already-fitted logistic regression pipeline, unchanged.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: CONTAINERIZATION WITH DOCKER ============ -->
+<section class="concept" id="containerization">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>Containerization with Docker</h2>
+    <p>Making 'works on my machine' into 'works on their machine.'</p>
+  </div>
+
+  <div class="lens-tabs" id="containerization-tabs"><div class="lens-tab active" onclick="switchLens('containerization','overview')">Overview</div><div class="lens-tab" onclick="switchLens('containerization','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="containerization-overview">
+  <div class="subhead">What it is</div>
+  <p>A <strong>Docker</strong> container packages the API, its exact Python dependencies, and the model artifact into one portable, reproducible unit, built from a versioned <code>Dockerfile</code> recipe.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2013</div>
+    <strong>Docker, Inc.</strong> popularised Linux containers (building on earlier cgroups/namespaces technology) as a practical, standard way to package and run applications identically across development, testing, and production — replacing "it works on my machine" with a shippable, reproducible artifact.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, valid Dockerfile — with a non-root <code>USER</code> and a <code>HEALTHCHECK</code> already included, deliberately, before Concept 3 shows exactly why those two lines matter</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>This sandbox has no Docker daemon (no privileged container-in-container access) — the Dockerfile is real and correct, but was never actually built into a running image here</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's infrastructure team would build this exact Dockerfile on their own on-premises servers and run the resulting image identically across every environment — the same file this notebook writes and Concept 3 scans.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="containerization-math">
+    <div class="math-box">
+<div class="term">No mathematics here — this is systems engineering. The one structural fact worth naming: a Dockerfile builds in LAYERS, each instruction caching independently, which is why <code>COPY requirements.txt</code> and <code>RUN pip install</code> come before <code>COPY app.py</code> — application code changes far more often than dependencies, so ordering this way avoids re-installing packages on every code change.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: DEVSECOPS SCANNING WITH TRIVY ============ -->
+<section class="concept" id="devsecops-scanning">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>DevSecOps Scanning with Trivy</h2>
+    <p>A real automated gate, catching a real, common mistake.</p>
+  </div>
+
+  <div class="lens-tabs" id="devsecops-scanning-tabs"><div class="lens-tab active" onclick="switchLens('devsecops-scanning','overview')">Overview</div><div class="lens-tab" onclick="switchLens('devsecops-scanning','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="devsecops-scanning-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Trivy</strong>, downloaded directly from its real GitHub release, scans Dockerfiles (and container images, dependencies, and infrastructure-as-code more broadly) for known security misconfigurations — the automated check a real CI/CD pipeline runs before any container reaches production.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2019</div>
+    <strong>Aqua Security's Trivy</strong> became one of the most widely adopted open-source security scanners specifically because it is fast, simple to run, and covers vulnerabilities, misconfigurations, and exposed secrets in one tool — a common default choice in real DevSecOps pipelines.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real before/after: a naive Dockerfile fails 2 real checks (HIGH: running as root; LOW: no healthcheck); Concept 2's actual deployment Dockerfile, which already fixed both, scans clean</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>This sandbox cannot reach <code>mirror.gcr.io</code>, the host Trivy normally pulls its latest vulnerability database and policy bundle from — Trivy handles this gracefully by falling back to its embedded checks, disclosed directly in the notebook's output rather than hidden</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A container running as root that suffers a container-escape vulnerability hands an attacker root on the HOST machine too — exactly the real, HIGH-severity class of finding Trivy's real scan catches here, on RR Finance's own Dockerfile, before it ever ships.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="devsecops-scanning-math">
+    <div class="math-box">
+<div class="term">No learned model — Trivy's misconfiguration scanning is rule-based policy evaluation (Rego/OPA policies under the hood), similar in spirit to a linter but for infrastructure configuration rather than code syntax. Each rule (like <code>DS-0002</code>, non-root user) is a specific, named, documented check, not a statistical prediction.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: KUBERNETES DEPLOYMENT ============ -->
+<section class="concept" id="kubernetes">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Kubernetes Deployment</h2>
+    <p>Surviving a crashed pod, and being reachable by one stable name.</p>
+  </div>
+
+  <div class="lens-tabs" id="kubernetes-tabs"><div class="lens-tab active" onclick="switchLens('kubernetes','overview')">Overview</div><div class="lens-tab" onclick="switchLens('kubernetes','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="kubernetes-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Kubernetes</strong> orchestrates multiple copies (replicas) of a containerized service, automatically restarting failed ones and giving them one stable internal address via a <code>Service</code> — a <code>Deployment</code> manifest describes exactly how.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2014</div>
+    <strong>Google open-sourced Kubernetes</strong>, building on over a decade of internal container-orchestration experience (Borg), and it became the de facto standard for running containerized services at scale across on-premises and cloud infrastructure alike.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, valid, parseable Kubernetes manifest — 3 replicas, liveness and readiness probes pointed at the SAME <code>/health</code> endpoint Concept 1 actually tested, a non-root security context</li></ul></div>
+    <div class="use-box no"><h4>✗ An honest limitation, stated plainly</h4><ul><li>This sandbox has no running Kubernetes cluster — the manifest would <code>kubectl apply</code> cleanly on a real one, but was never actually deployed anywhere here, and the notebook says so directly rather than implying otherwise</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>If one of RR Finance's 3 replica pods crashes under load, Kubernetes restarts it automatically using this same manifest — the loan API stays reachable at one stable internal address throughout.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="kubernetes-math">
+    <div class="math-box">
+<div class="term">No mathematics — YAML structure and Kubernetes' own reconciliation loop (continuously comparing the manifest's DESIRED state against the cluster's ACTUAL state, and acting to close any gap) is the underlying mechanism, not a modelling technique. The one worth understanding: <code>livenessProbe</code> and <code>readinessProbe</code> reuse Concept 1's own <code>/health</code> endpoint — a probe failure is what actually TRIGGERS a pod restart or removal from traffic routing.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: SECRETS MANAGEMENT: FROM VAULT TO A REAL LOCAL ALTERNATIVE ============ -->
+<section class="concept" id="secrets-management">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Secrets Management: From Vault to a Real Local Alternative</h2>
+    <p>Never storing a credential in plaintext.</p>
+  </div>
+
+  <div class="lens-tabs" id="secrets-management-tabs"><div class="lens-tab active" onclick="switchLens('secrets-management','overview')">Overview</div><div class="lens-tab" onclick="switchLens('secrets-management','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="secrets-management-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>HashiCorp Vault</strong> stores secrets encrypted at rest, behind access policies and an audit log, accessed via a client library rather than a config file — attempted here first via the real <code>hvac</code> client, exactly as this course's discipline requires.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2015</div>
+    <strong>HashiCorp Vault</strong> addressed a specific, common real problem: credentials scattered in plaintext across config files, environment variables, and version control — one of the most frequent real causes of financial-sector and enterprise breaches.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real, honest attempt to connect to a local Vault server (fails, because Vault's server binary is hosted at <code>releases.hashicorp.com</code>, unreachable here), followed by a real, working AES-based (Fernet) local encryption-at-rest fallback — genuinely unreadable on disk without the key</li></ul></div>
+    <div class="use-box no"><h4>✗ What the fallback does NOT claim</h4><ul><li>Access-control policies, audit logging, dynamic secret leasing, and multi-node durability are real, substantial Vault capabilities this fallback does not have — only the ONE guarantee actually tested (no plaintext at rest) is claimed</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's database password, instead of sitting in <code>app.py</code> or a Dockerfile in plaintext, is retrieved at runtime from a secrets store — Vault in a real deployment, the notebook's tested local encryption-at-rest fallback here.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="secrets-management-math">
+    <div class="math-box">
+<div class="math-expr">c = E_k(m)  where  E is AES-128-CBC + HMAC-SHA256 (Fernet)</div>
+<div class="term"><b>m</b> is the plaintext secret; <b>k</b> is a symmetric key generated once and stored separately from the encrypted data; <b>c</b> is the ciphertext actually written to disk.</div>
+<div class="term">Fernet (used by the notebook's fallback) combines AES-128 in CBC mode for confidentiality with an HMAC for integrity — a real, standard, authenticated encryption scheme, not a custom or weakened one.</div>
+<div class="term">The security of this scheme rests entirely on <b>k</b> staying separate from <b>c</b> — exactly the property Vault's real architecture (and this fallback) both depend on.</div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: MUTUAL TLS ============ -->
+<section class="concept" id="mtls">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Mutual TLS</h2>
+    <p>Both sides prove who they are, or the connection never completes.</p>
+  </div>
+
+  <div class="lens-tabs" id="mtls-tabs"><div class="lens-tab active" onclick="switchLens('mtls','overview')">Overview</div><div class="lens-tab" onclick="switchLens('mtls','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="mtls-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Mutual TLS (mTLS)</strong> requires BOTH the server AND the client to present a valid certificate, signed by a trusted Certificate Authority, before a connection completes — encryption plus two-way authentication, not just one.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">TLS: 1999 (RFC 2246) → mTLS as standard internal-service practice, 2010s onward</div>
+    Standard (one-way) TLS only proves the SERVER's identity to the client — mTLS closes the other half, and became standard practice for internal service-to-service traffic (not just public-facing endpoints) as "zero trust" network architectures became common in the 2010s and 2020s.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the notebook demonstrates</h4><ul><li>A real X.509 certificate chain (CA, server cert, client cert) generated with real OpenSSL, and a real running HTTPS server that REJECTS a request with no client certificate at the TLS handshake itself, before any application code runs, and ACCEPTS one with a valid client certificate</li></ul></div>
+    <div class="use-box no"><h4>✗ A real detail this lesson caught directly</h4><ul><li>Modern TLS clients verify hostname against the certificate's SAN (Subject Alternative Name) field, not the legacy CN field alone — a certificate signed without SAN genuinely fails verification in Python's <code>ssl</code> module, exactly the kind of real, specific detail this course surfaces rather than glossing over</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>An internal RR Finance service calling the loan API over mTLS proves its own identity via its client certificate — an attacker who reaches the internal network but has no valid certificate cannot complete a connection at all, regardless of what HTTP request they attempt to send.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module10.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="mtls-math">
+    <div class="math-box">
+<div class="term">The core mechanism is asymmetric-key signature verification: the CA signs each certificate with its PRIVATE key; anyone holding the CA's PUBLIC key (distributed via <code>ca.crt</code>) can verify that signature, confirming the certificate is genuinely CA-issued without ever needing the CA's private key themselves.</div>
+<div class="term">In mTLS specifically, this verification runs TWICE during the handshake: once for the server's certificate (standard TLS) and once for the client's certificate (the "mutual" part) — <code>--ssl-cert-reqs 2</code> (uvicorn's <code>CERT_REQUIRED</code>) is what makes the client-side check mandatory rather than optional.</div>
+<div class="term">Hostname verification (matching the connection target against the certificate's SAN field) is a SEPARATE check from signature verification — a certificate can be validly signed by a trusted CA and still fail verification if its SAN doesn't match the hostname being connected to, exactly the real failure this lesson's build process encountered and fixed.</div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 10 hand-off</h2>
+  <p class="lead">The notebook wraps Module 1's real saved pipeline in a real, running FastAPI service, writes a real Trivy-scanned Dockerfile (catching a genuine before/after: 2 real findings, then 0), writes a real, valid Kubernetes manifest, builds a real working secrets-encryption fallback where Vault's server binary is unreachable, and runs a real, tested mutual-TLS boundary around the API -- with a metrics summary saved as an artifact for the next module.</p>
+  <div class="callout why"><strong>What Module 11 builds on this</strong><div>Module 11 (AI Cybersecurity) returns to attack the exact system this module just deployed -- STRIDE and MITRE ATLAS threat modelling, model stealing, and adversarial attacks against a model now reachable over a real network boundary, not just inside a notebook. Every deployment choice here (the API's validation layer, the container's non-root user, the mTLS boundary) becomes something Module 11 will specifically try to get around.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module9.html"><span class="n">←</span>Back to Module 9</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
