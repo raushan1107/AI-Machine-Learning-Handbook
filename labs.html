@@ -5515,15 +5515,83 @@ The check blocks the naive attack, because it drove debt_to_income away from its
 </div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 11?</strong><div>You've now threat-modelled a deployed model with STRIDE, stolen it through label-only queries, flipped a real rejection to an approval within valid input ranges, and stopped that evasion with a consistency check. The reference notebook goes much further: a full MITRE ATLAS map of the whole course, coefficient-level extraction, an honest membership-inference attack that <em>fails</em> on this simple model, and a defence (server-side recomputation) that only half-works. Ready for the last step? <a href="module11.html">Read the Module 11 handbook &rarr;</a> or head to the capstone below.</div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 11?</strong><div>You've now threat-modelled a deployed model with STRIDE, stolen it through label-only queries, flipped a real rejection to an approval within valid input ranges, and stopped that evasion with a consistency check. The reference notebook goes much further: a full MITRE ATLAS map of the whole course, coefficient-level extraction, an honest membership-inference attack that <em>fails</em> on this simple model, and a defence (server-side recomputation) that only half-works. Ready for the final step? <a href="module12.html">Read the Module 12 capstone handbook &rarr;</a> or run the capstone below.</div></div>
 </section>
 <section id="panel-m12" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 12 — Final Capstone</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 12 — Final Capstone (CAMEL Sentinel)</h2>
+  <p>This module is different: instead of pasting notebook cells, you <strong>run the finished system</strong> — the whole course wired into one app, trained on real FDIC bank data. You need <a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">Docker Desktop</a> installed and running. Nothing to train first: the models and data are inside the image. The full theory is in the <a href="module12.html">Module 12 handbook</a>.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Run the entire system in one command</h3>
+<p class="lesson-intro">One image contains the Streamlit UI, the FastAPI service, and every trained model. This downloads it and starts it.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Open a terminal and run this. The first run downloads the image (a few minutes); later runs are instant.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>docker run -d --name camel -p 8501:8501 raushanranjan/camel-sentinel:latest</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Unable to find image 'raushanranjan/camel-sentinel:latest' locally
+latest: Pulling from raushanranjan/camel-sentinel
+...
+Status: Downloaded newer image for raushanranjan/camel-sentinel:latest
+9f3c2b7e1a8d4c6f0b2e5a1d7c9f3b6e0a4d8c2f1b5e9a3d7c1f5b9e3a7d0c4f
+(your container ID will be a different 64-character hash)</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Check it is running. Re-run this until STATUS shows <code>(healthy)</code> — about 1–2 minutes while the models load.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>docker ps</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>CONTAINER ID   IMAGE                                  STATUS                   PORTS
+9f3c2b7e1a8d   raushanranjan/camel-sentinel:latest    Up About a minute (healthy)   0.0.0.0:8501-&gt;8501/tcp</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 3</span><span class="step-instr">Open the app in your browser.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>http://localhost:8501</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>The CAMEL Sentinel UI loads: a sidebar of pages (Score a Bank, Chat, Documentation,
+Fraud Detection, AI Security Lab, AI/ML Roadmap, Build Guide, Deploy, Security Posture)
+and a theme switcher. No keys are needed for anything except the optional Chat page.</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Explore what the whole course built</h3>
+<p class="lesson-intro">Each page is one module made real. A suggested tour, matching the handbook:</p>
+<div class="callout why"><strong>Click through, in order</strong><div>
+<strong>🐫 Score a Bank</strong> — pick a real FDIC bank or type in ratios, and read the failure-risk score with its SHAP, LIME and counterfactual explanations (Modules 1 &amp; 6).<br>
+<strong>🕸️ Fraud Detection (GNN)</strong> — watch a GraphSAGE model catch fraud rings a tabular baseline misses (Modules 2 &amp; 9).<br>
+<strong>🛡️ AI Security Lab</strong> — run the ten attack → defence labs (prompt injection, model stealing, adversarial examples, deepfakes…) against the app itself, with the STRIDE + MITRE ATLAS map (Module 11).<br>
+<strong>🔐 Security Posture</strong> — read the audit and press the live self-test; the container is non-root with no baked-in secrets and passes its Trivy scans (Modules 10 &amp; 11).<br>
+<strong>🚢 Deploy &amp; Containerize</strong> — the Dockerfile explained line by line, with the Azure and Kubernetes paths (Module 10).<br>
+<strong>💬 Chat Assistant</strong> (optional) — add Azure keys to ask about a bank in plain English or by voice; the assistant may only explain the model's numbers, never invent them (Modules 3, 4, 5, 8).
+</div></div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Read and change the code (optional)</h3>
+<p class="lesson-intro">To go under the hood — read the real logic, retrain the models, or extend the app — clone the project.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Clone the repository, then follow its README to run from Python instead of Docker.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>git clone https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone.git
+cd ai-ml-cybersecurity-bank-risk-capstone</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Cloning into 'ai-ml-cybersecurity-bank-risk-capstone'...
+remote: Enumerating objects: done.
+Receiving objects: 100% ...
+(the src/, notebooks/, backend/ and frontend/ folders are now on your machine)</pre></div>
+</div>
+<p class="lesson-intro" style="margin-top:14px">Stop the app when you're done: <code>docker stop camel</code> · start it again later: <code>docker start camel</code> · remove it: <code>docker rm -f camel</code>.</p>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 12 — and the course.</strong><div>Twelve modules ago this was a single tabular model on a synthetic dataset. You've now run a complete, defended AI product that ties the entire course together on real data: an explainable risk model, a fairness audit, a graph fraud-detector, a guard-railed assistant, an AI security lab, and one-command deployment. Fork it, swap in your own data, or add a module of your own. The full write-up is in the <a href="module12.html">Module 12 handbook &rarr;</a>, and the complete project lives <a href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone" target="_blank" rel="noopener">on GitHub</a> and <a href="https://hub.docker.com/r/raushanranjan/camel-sentinel" target="_blank" rel="noopener">Docker Hub</a>. Thank you for learning with RR Skillverse.</div></div>
 </section>
 
 <footer>
