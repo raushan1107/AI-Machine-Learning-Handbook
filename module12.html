@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 12 — Final Capstone · RR Skillverse</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module11.html">← Module 11</a>
+    <a class="dl" href="https://hub.docker.com/r/raushanranjan/camel-sentinel" target="_blank" rel="noopener">🐳 Docker image</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: the whole course</a>
+    <a href="#foundation">From teaching set to real product</a>
+    <a href="#mapping">Where each module lives</a>
+    <h3>The capstone, part by part</h3>
+    <a href="#architecture">1 · One integrated system</a>
+    <a href="#model">2 · The model on real data</a>
+    <a href="#xai">3 · Explaining decisions</a>
+    <a href="#assistant">4 · A safe assistant</a>
+    <a href="#gnn">5 · Graph fraud detection</a>
+    <a href="#security">6 · Attacking the app</a>
+    <a href="#deploy">7 · Shipping one container</a>
+    <h3>Wrap-up</h3>
+    <a href="#run">Run it yourself</a>
+    <a href="#handoff">You've finished the course</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 12 of 12</span>
+    <span class="badge">Final Capstone</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 12 — <span>Final Capstone: CAMEL Sentinel</span></h1>
+  <p>Eleven modules taught each technique on the synthetic RR Finance teaching system, so the mechanics were always clear. The capstone does the harder thing: it applies that <strong>same</strong> twelve-stage path to <strong>real public FDIC bank data</strong>, and wires everything — model, explanations, fairness audit, guard-railed assistant, fraud-detecting GNN, an AI security lab, and one-command deployment — into a single, defended, runnable product. This page is a guided tour of that system and how each earlier module shows up inside it.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="https://hub.docker.com/r/raushanranjan/camel-sentinel" target="_blank" rel="noopener">🐳 Get the Docker image</a>
+    <a class="btn" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone" target="_blank" rel="noopener">View the project on GitHub</a>
+    <a class="btn" href="module11.html">← Back to Module 11</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — everything the course built</h2>
+  <p class="lead">The capstone assumes all eleven modules. Here is the ground it stands on.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULES 1–4</div><p>A validated tabular model, deep-learning fundamentals with adversarial attacks, financial NLP with PII redaction, and an aligned from-scratch language model with red-teaming.</p></div>
+    <div class="recap-card"><div class="tag">MODULES 5–8</div><p>Retrieval and tool-using agents, explainability and a fairness audit, federated and differentially-private training, and multimodal document and voice intelligence.</p></div>
+    <div class="recap-card"><div class="tag">MODULES 9–11</div><p>Graph-based fraud detection, a real containerised and mutual-TLS-protected API deployment, and an AI-security module that attacked that deployment and hardened it.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 12</strong><div>Nothing — and that is the point. The capstone introduces no new technique. It takes the eleven you already have and proves they hold together as one product, on real data, defended and deployable. The measure of a capstone is integration, not novelty.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>From a teaching set to a real product</h2>
+  <p class="lead">An honest note on what changes when the training wheels come off.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The data gets real</h3><p>Modules 1–11 used the synthetic RR Finance loan set so every mechanism was inspectable. The capstone trains on 265,114 real FDIC bank-quarters (2005–2023) — imbalanced, messy, and validated out-of-time on the untouched 2012–2023 years.</p></div>
+    <div class="card"><h3>The pieces become one system</h3><p>Model, explanations, fairness audit, assistant, fraud GNN, security lab and deployment stop being separate notebooks and become one FastAPI service behind one UI, in one Docker image.</p></div>
+    <div class="card"><h3>The honesty stays</h3><p>The capstone keeps the course's discipline: PR-AUC over accuracy for rare failures, an out-of-time test set, disclosed synthetic data where used, and a security posture that names its residual findings instead of hiding them.</p></div>
+  </div>
+</div>
+
+<div class="section" id="mapping">
+  <h2>Where each module lives in the capstone</h2>
+  <p class="lead">Every one of the eleven modules is used where it genuinely fits — not bolted on for completeness.</p>
+  <table>
+    <thead><tr><th>#</th><th>Module</th><th>Where it lives in CAMEL Sentinel</th></tr></thead>
+    <tbody>
+    <tr><td>1</td><td>Data Science &amp; Financial Data Analysis</td><td>FDIC pipeline, CAMEL ratios, EDA, baseline + tuned models</td></tr>
+    <tr><td>2</td><td>Deep Neural Networks</td><td>Layers, backprop and Adam inside the GNN; adversarial-example ideas in the Security Lab</td></tr>
+    <tr><td>3</td><td>NLP &amp; Financial Text AI</td><td>Prompt-injection detection and PII redaction in the assistant</td></tr>
+    <tr><td>4</td><td>Generative AI, LLMs &amp; RLHF</td><td>Chat assistant with server-side guardrails</td></tr>
+    <tr><td>5</td><td>RAG, LangChain &amp; AI Agents</td><td>Allow-listed <code>score_bank</code> tool and tool-calling agent</td></tr>
+    <tr><td>6</td><td>Explainable &amp; Responsible AI</td><td>SHAP, LIME, counterfactuals, fairness audit, model card</td></tr>
+    <tr><td>7</td><td>Federated &amp; Privacy-Preserving ML</td><td>FedAvg simulation with clipping and noise</td></tr>
+    <tr><td>8</td><td>Multimodal AI</td><td>Voice input/output; deepfake-voice lab</td></tr>
+    <tr><td>9</td><td>Graph Neural Networks</td><td>GraphSAGE fraud-ring detection</td></tr>
+    <tr><td>10</td><td>MLOps &amp; Deployment</td><td>FastAPI, Docker, Docker Hub, ACR, Azure Container Apps, Kubernetes, Trivy</td></tr>
+    <tr><td>11</td><td>AI Cybersecurity</td><td>AI Security Lab, STRIDE, MITRE ATLAS, Security Posture</td></tr>
+    </tbody>
+  </table>
+  <div class="callout why"><strong>The through-line</strong><div>Read top to bottom, this table is the course itself: each module contributed one real capability, and the capstone is what those capabilities become when they run together and defend each other.</div></div>
+</div>
+
+<!-- ============ PART 1: ONE SYSTEM, CLEANLY SEPARATED ============ -->
+<section class="concept" id="architecture">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 1</span>
+    <h2>One System, Cleanly Separated</h2>
+    <p>A browser talks to a UI, the UI talks HTTP to an API, and only the API touches the models — three tiers that can be tested, scaled and replaced independently.</p>
+  </div>
+
+  <div class="lens-tabs" id="architecture-tabs"><div class="lens-tab active" onclick="switchLens('architecture','overview')">Overview</div><div class="lens-tab" onclick="switchLens('architecture','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="architecture-overview">
+  <div class="subhead">What it is</div>
+  <p>The capstone, <strong>CAMEL Sentinel</strong>, is a single deployable product with a strict separation of concerns: a <strong>Streamlit UI</strong> that never loads a model, a <strong>FastAPI</strong> service that owns all the intelligence (the risk model, the fraud GNN, the security-lab engine, the guard-railed assistant), and an optional Azure OpenAI/Speech provider the API calls only when chat is switched on. One Docker image contains everything; a <code>MODE</code> switch decides whether it runs as one container or as separate UI and API services.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why it's built this way</h4><ul><li>The UI can be pointed at any CAMEL API (local or cloud) without code changes — a real backend-switch control, allow-listed and SSRF-safe</li><li>Each tier is independently testable; the model can be upgraded without touching the UI</li></ul></div>
+    <div class="use-box no"><h4>✗ What it deliberately avoids</h4><ul><li>The UI holding model logic — that would couple presentation to inference and make the API pointless</li><li>The LLM making decisions — risk numbers come only from the ML model, never invented by the assistant</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is the shape every module pointed toward: Module 10 served a model behind an API, and Module 11 showed why that boundary must be defended. The capstone makes the boundary the backbone of the whole product.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone#%EF%B8%8F-how-it-works">↗ See the architecture in the capstone README</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="architecture-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 10 (serving) and the whole course's integration goal.</b> The FastAPI + model-behind-an-API pattern is exactly Module 10's deployment lesson, now carrying four subsystems instead of one endpoint.</div>
+<div class="term">The UI→API→model split is the same trust-boundary thinking Module 11 used against evasion and tool-hijacking: presentation is untrusted, the API validates, the model is never reached directly.</div>
+<div class="term">One image, many roles (<code>MODE=all|api|ui</code>) is the container discipline Module 10 introduced with Docker and Kubernetes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 2: AN EARLY-WARNING MODEL ON REAL DATA ============ -->
+<section class="concept" id="model">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 2</span>
+    <h2>An Early-Warning Model on Real Data</h2>
+    <p>The same modelling discipline the course taught on a synthetic set, now applied to 265,114 real FDIC bank-quarters.</p>
+  </div>
+
+  <div class="lens-tabs" id="model-tabs"><div class="lens-tab active" onclick="switchLens('model','overview')">Overview</div><div class="lens-tab" onclick="switchLens('model','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="model-overview">
+  <div class="subhead">What it is</div>
+  <p>Banks are rated on <strong>CAMEL(S)</strong> — Capital, Asset quality, Management, Earnings, Liquidity (and Sensitivity). Real ratings are confidential, so the capstone learns an early-warning signal from public data: six financial ratios from <strong>265,114 real FDIC bank-quarters (2005–2023)</strong>, with 4,165 "failed within two years" examples, predicting failure risk. The model is a tuned <code>HistGradientBoostingClassifier</code>, chosen from ten compared families (RandomForest, XGBoost, LightGBM, ExtraTrees, logistic regression, imbalanced-learn ensembles, and more).</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ How it is validated honestly</h4><ul><li>Tuned only on 2005–2011, then tested on the <strong>untouched</strong> 2012–2023 period — a real out-of-time split, not a random shuffle</li><li>PR-AUC is the headline metric (54.9%) because failures are rare; ROC-AUC (97.3%) is reported alongside, not instead</li></ul></div>
+    <div class="use-box no"><h4>✗ What it is not</h4><ul><li>Not an official CAMELS supervisory rating, and not financial advice — a relative early-warning ranking from public statement proxies</li><li>Not evaluated on the same years it was tuned on — the trap the course warned about repeatedly</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is Module 1's lesson grown up: the synthetic RR Finance loan set made the mechanics clear; the capstone proves the same discipline on real, messy, imbalanced public data where the honest metric and the honest split actually matter.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/blob/main/docs/model_card.md">↗ Read the model card</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="model-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 1 (data science + financial modelling).</b> EDA, CAMEL-ratio feature engineering, a compared model bake-off, and an out-of-time test set are exactly Module 1's workflow, scaled to real FDIC data.</div>
+<div class="term">The rare-event framing — PR-AUC over accuracy, imbalanced-learn ensembles in the bake-off — is the class-imbalance care Module 1 introduced with the loan-default problem.</div>
+<div class="term">The out-of-time validation (tune on 2005–2011, test on 2012–2023) is the same guard against leakage that every modelling module in the course insisted on.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 3: EXPLAINING AND AUDITING EVERY DECISION ============ -->
+<section class="concept" id="xai">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 3</span>
+    <h2>Explaining and Auditing Every Decision</h2>
+    <p>A score no one can interrogate is a liability; the capstone explains each decision three ways and audits the model for fairness.</p>
+  </div>
+
+  <div class="lens-tabs" id="xai-tabs"><div class="lens-tab active" onclick="switchLens('xai','overview')">Overview</div><div class="lens-tab" onclick="switchLens('xai','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="xai-overview">
+  <div class="subhead">What it is</div>
+  <p>For every bank it scores, the capstone shows <strong>why</strong>: a <strong>SHAP</strong> breakdown (global and per-bank), a <strong>LIME</strong> cross-check from a second method, and a bounded <strong>counterfactual</strong> search that answers "what would have to change for this bank to be judged safe?". On top of that sits a <strong>Responsible-AI audit</strong> — subgroup performance by asset size and region — and a published <strong>model card</strong> documenting intended use, data, and caveats.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What this buys</h4><ul><li>A decision a regulator or a bank officer can actually inspect, not a black-box number</li><li>Two independent explanation methods that can disagree — surfacing when an explanation is fragile</li></ul></div>
+    <div class="use-box no"><h4>✗ What it refuses to do</h4><ul><li>Present a score without its reasons</li><li>Ship without a fairness audit or a model card — governance is part of the artifact, not an afterthought</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is Module 6 realised in production. The age-fairness question Module 1 flagged and Module 6 audited becomes a standing subgroup audit here — governance wired into the running system, not a one-off notebook.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/tree/main/docs">↗ Read the responsible-AI docs</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="xai-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 6 (explainable &amp; responsible AI).</b> SHAP, LIME, and counterfactual recourse are Module 6's three explanation techniques, deployed per-request.</div>
+<div class="term">The subgroup fairness audit and model card are Module 6's governance deliverables, kept live alongside the model.</div>
+<div class="term">The bounded counterfactual search is the same minimal-change method Module 6 used for recourse — and the mirror image of Module 11's evasion search, used here for good.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 4: AN ASSISTANT THAT CANNOT LIE ABOUT RISK ============ -->
+<section class="concept" id="assistant">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 4</span>
+    <h2>An Assistant That Cannot Lie About Risk</h2>
+    <p>A language model people can chat with, wrapped so it can only ever explain the real model's numbers — never invent them.</p>
+  </div>
+
+  <div class="lens-tabs" id="assistant-tabs"><div class="lens-tab active" onclick="switchLens('assistant','overview')">Overview</div><div class="lens-tab" onclick="switchLens('assistant','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="assistant-overview">
+  <div class="subhead">What it is</div>
+  <p>The capstone includes an optional <strong>LLM assistant</strong> (text and voice) that lets a user ask about a bank in plain English. Crucially, the language model is a <em>translator, not a decision-maker</em>: risk numbers reach it only through a single allow-listed <code>score_bank</code> tool with validated arguments. Around it sit real guardrails — a prompt-injection pre-check, <strong>PII redaction before anything leaves for the provider</strong>, and sanitised output — so the assistant can explain the model's reasoning without ever being able to fabricate a rating.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ The guardrails that make it safe</h4><ul><li>An allow-listed tool with validated arguments is the only path to a number — the LLM can't route around it</li><li>PII is redacted before the provider sees it; injection is checked before the prompt is trusted</li></ul></div>
+    <div class="use-box no"><h4>✗ What it is not allowed to be</h4><ul><li>A source of risk scores in its own right — it may only relay what the ML model returned</li><li>A channel that leaks user PII to a third-party provider, or that trusts injected instructions</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This folds Modules 3, 4, 5 and 8 into one feature: NLP guardrails (Module 3), an aligned assistant (Module 4), an allow-listed tool-calling agent (Module 5), and voice in/out (Module 8) — all behind the trust boundary Module 11 argued for.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/blob/main/docs/04_chat_interface.md">↗ Read the chat-interface docs</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="assistant-math">
+    <div class="math-box">
+<div class="term"><b>Realises Modules 3, 4, 5 and 8.</b> Prompt-injection detection and PII redaction are Module 3; the guard-railed assistant is Module 4; the allow-listed <code>score_bank</code> tool and tool-calling agent are Module 5; voice input/output (and the deepfake-voice lab) are Module 8.</div>
+<div class="term">"The LLM is a translator, not a decision-maker" is the direct application of Module 5's tool-use trust boundary and Module 11's rule that retrieved/user content is data, not instructions.</div>
+<div class="term">Server-side guardrails (not prompt-only) are the red-teaming lesson of Module 4 turned into an actual control.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 5: CATCHING FRAUD RINGS A TABULAR MODEL MISSES ============ -->
+<section class="concept" id="gnn">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 5</span>
+    <h2>Catching Fraud Rings a Tabular Model Misses</h2>
+    <p>Some risk lives in the relationships between accounts, not in any single row — so the capstone adds a graph model.</p>
+  </div>
+
+  <div class="lens-tabs" id="gnn-tabs"><div class="lens-tab active" onclick="switchLens('gnn','overview')">Overview</div><div class="lens-tab" onclick="switchLens('gnn','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="gnn-overview">
+  <div class="subhead">What it is</div>
+  <p>Alongside the tabular risk model, the capstone runs a <strong>heterogeneous GraphSAGE</strong> graph neural network on a (clearly-labelled synthetic) transaction graph, and compares it against tabular baselines on the same data. The point is pedagogical and real: a fraud <em>ring</em> — a pattern of connections between accounts — is invisible to a model that sees each account in isolation, but visible to one that learns from the graph structure.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What the graph model adds</h4><ul><li>Detection of ring-shaped fraud patterns that per-row tabular models structurally cannot see</li><li>A like-for-like comparison against tabular baselines, so the graph model's advantage is measured, not asserted</li></ul></div>
+    <div class="use-box no"><h4>✗ Where it is honest about limits</h4><ul><li>The transaction graph is synthetic and labelled as such — the technique is real, the data is a teaching stand-in</li><li>It complements, not replaces, the tabular model</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is Module 9 realised. And the neural machinery underneath it — layers, backpropagation, the Adam optimiser — is Module 2's deep-learning foundation doing real work inside the capstone.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/blob/main/docs/05_gnn_fraud_detection.md">↗ Read the GNN fraud-detection docs</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="gnn-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 9 (graph neural networks), on Module 2's foundations.</b> Heterogeneous GraphSAGE for fraud-ring detection is Module 9's central technique.</div>
+<div class="term">The neural layers, backprop, and Adam optimiser inside the GNN are Module 2's deep-learning fundamentals — the capstone is where they run for real.</div>
+<div class="term">Comparing the GNN against tabular baselines is the same honest "does the fancy model actually beat the simple one?" discipline the course applied throughout (including Module 9's own case where a GCN can lose to a baseline).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 6: ATTACKING AND DEFENDING THE APP ITSELF ============ -->
+<section class="concept" id="security">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 6</span>
+    <h2>Attacking and Defending the App Itself</h2>
+    <p>The security modules end where they should: a lab that attacks this very application, and shows the defence for each attack.</p>
+  </div>
+
+  <div class="lens-tabs" id="security-tabs"><div class="lens-tab active" onclick="switchLens('security','overview')">Overview</div><div class="lens-tab" onclick="switchLens('security','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="security-overview">
+  <div class="subhead">What it is</div>
+  <p>The capstone ships an <strong>AI Security Lab</strong>: a STRIDE + MITRE ATLAS threat map of the app, and <strong>ten attack → defence labs</strong> run against the app itself — prompt injection, model stealing, adversarial examples on the real model, deepfakes, PII leakage, data poisoning, and more. A separate <strong>Security Posture</strong> page documents how the app protects itself and includes a <em>live self-test</em>, backed by real scans: Trivy config <strong>27/27 pass</strong> and <strong>0 Python-package CVEs</strong> in the image.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Why this is the honest ending</h4><ul><li>Every attack is run against the real running app, and paired with the actual control that stops it</li><li>Security is measured (Trivy results, a live self-test), not claimed</li></ul></div>
+    <div class="use-box no"><h4>✗ What it doesn't pretend</h4><ul><li>That the app is unbreakable — remaining OS-level findings with no upstream fix are disclosed, not hidden</li><li>That a single control is enough — defence in depth, exactly as Module 11 concluded</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is Module 11 realised against a real product. STRIDE, MITRE ATLAS, model extraction, evasion, and the defence-in-depth verdict all reappear here as a working, clickable lab rather than a notebook.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/blob/main/docs/07_ai_security_lab.md">↗ Read the AI Security Lab docs</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="security-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 11 (AI cybersecurity).</b> The STRIDE + MITRE ATLAS threat map and the extraction/evasion/injection labs are Module 11's exact content, run against this app.</div>
+<div class="term">The measured, honest posture — Trivy 27/27, 0 Python CVEs, disclosed residual OS findings, a defence-in-depth stance — is Module 11's "report it as it actually is" discipline.</div>
+<div class="term">The container hardening checked here (non-root, no secrets in the image, pinned deps) is Module 10's DevSecOps lesson verified by Module 11's scanning.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PART 7: SHIPPING IT ANYWHERE AS ONE CONTAINER ============ -->
+<section class="concept" id="deploy">
+  <div class="concept-head">
+    <span class="eyebrow">CAPSTONE · PART 7</span>
+    <h2>Shipping It Anywhere as One Container</h2>
+    <p>The whole system — UI, API, and models — packaged as a single hardened image you can run in one command.</p>
+  </div>
+
+  <div class="lens-tabs" id="deploy-tabs"><div class="lens-tab active" onclick="switchLens('deploy','overview')">Overview</div><div class="lens-tab" onclick="switchLens('deploy','math')">🔗 How it maps</div></div>
+
+  <div class="lens-pane lens-overview active" id="deploy-overview">
+  <div class="subhead">What it is</div>
+  <p>The capstone is delivered as <strong>one Docker image</strong> on Docker Hub (<code>raushanranjan/camel-sentinel</code>), runnable with a single <code>docker run</code>, and deployable to Azure Container Apps, a Kubernetes cluster (manifests included), or Docker Compose as two services. The image runs as a <strong>non-root user</strong>, bakes in <strong>no secrets</strong>, pins its dependencies, and ships without <code>curl</code> or <code>pip</code> at run time — the production-shaped container Module 10 described, hardened by Module 11's findings.</p>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ What "production-shaped" means here</h4><ul><li>One command to run the entire system; models and data are included, so there is nothing to train first</li><li>Non-root, no baked-in secrets, pinned dependencies, and a health check — verified by Trivy</li></ul></div>
+    <div class="use-box no"><h4>✗ What it refuses to ship</h4><ul><li>Secrets in the image or echoed in errors — keys are supplied at run time via environment only</li><li>An image that assumes trust — CORS is allow-listed and the API is private by default</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">WHY IT MATTERS</div>This is Module 10 realised end to end: FastAPI, Docker, a registry, Azure Container Apps, Kubernetes, and Trivy — the full deployment path, now carrying the whole capstone instead of a single endpoint.</div>
+
+  <a class="notebook-link" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/blob/main/docs/06_deployment_containerization.md">↗ Read the deployment runbook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="deploy-math">
+    <div class="math-box">
+<div class="term"><b>Realises Module 10 (MLOps &amp; deployment).</b> Dockerfile, Docker Hub, Azure Container Registry, Azure Container Apps, Kubernetes manifests, and Trivy scanning are Module 10's exact toolchain.</div>
+<div class="term">The privacy-preserving training the course taught — Module 7's FedAvg simulation with gradient clipping and noise — also lives in the capstone's source as the federated component.</div>
+<div class="term">Non-root, no-secrets, pinned-dependency images are the DevSecOps controls Module 10 introduced and Module 11 verified.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section" id="run">
+  <h2>Run the whole thing yourself</h2>
+  <p class="lead">The models and data are included in the image, so there is nothing to train first — one command brings up the entire system.</p>
+  <div class="math-box">
+<div class="term"><b>One container (easiest — no Python needed):</b></div>
+<div class="term"><code>docker run -d --name camel -p 8501:8501 raushanranjan/camel-sentinel:latest</code></div>
+<div class="term">Then open <code>http://localhost:8501</code>. Wait ~1–2 minutes for the health check to go green while the models load, then explore: <strong>Score a Bank</strong> (with SHAP, LIME and counterfactuals), the <strong>Fraud GNN</strong>, the <strong>AI Security Lab</strong>, and the <strong>Security Posture</strong> self-test. Scoring, explanations, fraud detection, the security lab and the roadmap all work with no keys; only the chat assistant needs optional Azure keys.</div>
+  </div>
+  <div class="hero-actions">
+    <a class="btn primary" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone" target="_blank" rel="noopener">Full instructions on GitHub</a>
+    <a class="btn" href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone/tree/main/docs" target="_blank" rel="noopener">Read the docs</a>
+    <a class="btn" href="https://hub.docker.com/r/raushanranjan/camel-sentinel" target="_blank" rel="noopener">Docker Hub</a>
+  </div>
+</div>
+
+<div class="section" id="handoff">
+  <h2>You've finished the course</h2>
+  <p class="lead">Twelve modules ago this was a single tabular model on a synthetic dataset. You now understand — and can point to a running, defended system that demonstrates — the full path from raw financial data to a deployed, explainable, secured AI product.</p>
+  <div class="callout why"><strong>Where to go from here</strong><div>Fork the capstone and swap in your own dataset; add a module of your own (a new attack and its defence, a new explanation method); or deploy it to your own cloud using the included Azure and Kubernetes paths. The handbook explains the ideas; the capstone shows them working together — the rest is yours to extend. Thank you for learning with RR Skillverse.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module11.html"><span class="n">←</span>Back to Module 11</a>
+    <a href="https://github.com/raushan1107/ai-ml-cybersecurity-bank-risk-capstone" target="_blank" rel="noopener"><span class="n">↗</span>Open the capstone project</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service. The capstone project, CAMEL Sentinel, is MIT-licensed and uses public FDIC data.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
