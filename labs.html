@@ -5287,15 +5287,235 @@ CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]</pre></div>
 <div class="selfcheck"><strong>Self-check:</strong> Module 10's reference notebook scans a NAIVE version of this Dockerfile (no <code>USER</code>, no <code>HEALTHCHECK</code>) with a real security scanner and finds 2 real findings. Try removing the <code>RUN useradd</code> and <code>USER apiuser</code> lines from your own Dockerfile above -- what specifically changes about who the container runs as, and why does that matter if the container is ever compromised?</div>
 </div>
 
-<div class="callout why" style="margin-top:36px"><strong>Finished Module 10?</strong><div>You've now wrapped a real model in a real running API with real request validation, and written a real, production-shaped Dockerfile. The reference notebook goes further: a real Trivy security scan, a real Kubernetes manifest, a real encrypted secrets store, and a real, tested mutual-TLS boundary. Module 11's lab guide is coming soon. Want the full theory behind everything you just built? <a href="module10.html">Read the Module 10 handbook &rarr;</a></div></div>
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 10?</strong><div>You've now wrapped a real model in a real running API with real request validation, and written a real, production-shaped Dockerfile. The reference notebook goes further: a real Trivy security scan, a real Kubernetes manifest, a real encrypted secrets store, and a real, tested mutual-TLS boundary. Ready for the next step? <a href="module11.html">Read the Module 11 handbook &rarr;</a> or jump into its lab below.</div></div>
 </section>
 <section id="panel-m11" class="panel">
-  <div class="soon-box">
-    <div class="soon-badge">Coming soon</div>
-    <h2>Module 11 — AI Cybersecurity</h2>
-    <p>The hands-on lab guide for this module hasn't been published yet. Check back after its notebook and theory handbook are released, or head back to the modules that are ready now.</p>
-    <a class="btn" href="index.html">← See all 12 modules</a>
-  </div>
+<div class="module-head">
+  <h2>Module 11 — AI Cybersecurity</h2>
+  <p>2 hrs · Notebook name: <code>module11_lab.ipynb</code> · This module reads what Module 1 saved (<code>artifacts/baseline_logreg_pipeline.joblib</code> and <code>data/rr_finance_module1_dataset.csv</code>). Complete the Module 1 lab first, in the SAME project folder. No other module's artifacts are required. This lab is a simpler, self-contained version of the reference notebook — it attacks the model in-process so you need no running server.</p>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Setup — run these cells first (they are REAL, runnable cells, not just instructions)</h3>
+<p class="lesson-intro">Install this module's libraries, then load the exact model Module 1 saved — the one Module 10 put behind an API and the one every attack below targets.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>%pip install -q fastapi pydantic joblib pandas scikit-learn numpy
+print("Setup complete -- 'Requirement already satisfied' lines above are expected and fine.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>(same harmless externally-managed-environment message as prior modules)
+Setup complete -- 'Requirement already satisfied' lines above are expected and fine.</pre></div>
+</div>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 2</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from pathlib import Path
+import json, numpy as np, pandas as pd, joblib
+
+SEED = 42
+np.random.seed(SEED)
+Path("artifacts").mkdir(exist_ok=True)
+
+pipe_path = Path("artifacts/baseline_logreg_pipeline.joblib")
+assert pipe_path.exists(), "Run the Module 1 lab first (in the same folder) -- this attacks its model."
+pipeline = joblib.load(pipe_path)
+
+FEATURES = ["annual_income","monthly_debt","loan_amount","loan_term_months","credit_score",
+            "employment_years","account_age_months","num_previous_loans","previous_defaults",
+            "debt_to_income","loan_to_income"]
+print("Loaded Module 1's real pipeline. Steps:", list(pipeline.named_steps.keys()))
+print("This is the model behind Module 10's /predict endpoint -- everything below attacks it.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Loaded Module 1's real pipeline. Steps: ['scaler', 'model']
+This is the model behind Module 10's /predict endpoint -- everything below attacks it.</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 1 — Stand up Module 10's deployed decision, then query it</h3>
+<p class="lesson-intro">Rebuild Module 10's exact request contract (Pydantic validation) around Module 1's pipeline, and wrap it in one <code>api_predict()</code> function — the single door every attack in this lab knocks on.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from pydantic import BaseModel, Field, ValidationError
+
+# Module 10's exact validation contract, wrapping Module 1's real pipeline.
+class LoanApplication(BaseModel):
+    annual_income: float = Field(..., gt=0)
+    monthly_debt: float = Field(..., ge=0)
+    loan_amount: float = Field(..., gt=0)
+    loan_term_months: int = Field(..., gt=0)
+    credit_score: int = Field(..., ge=300, le=850)
+    employment_years: float = Field(..., ge=0)
+    account_age_months: float = Field(..., ge=0)
+    num_previous_loans: int = Field(..., ge=0)
+    previous_defaults: int = Field(..., ge=0)
+    debt_to_income: float = Field(..., ge=0)
+    loan_to_income: float = Field(..., ge=0)
+
+def api_predict(payload):
+    """One call to the deployed model -- real validation, then the real pipeline.
+    Returns None when validation rejects the input (what an HTTP 422 would mean)."""
+    try:
+        app = LoanApplication(**payload)
+    except ValidationError:
+        return None
+    row = pd.DataFrame([app.model_dump()])[FEATURES]
+    prob = float(pipeline.predict_proba(row)[0, 1])
+    return {"default_probability": round(prob, 4), "decision": "REJECT" if prob &gt;= 0.5 else "APPROVE"}
+
+q = {"annual_income":45000,"monthly_debt":1800,"loan_amount":20000,"loan_term_months":36,
+     "credit_score":610,"employment_years":2,"account_age_months":18,"num_previous_loans":2,
+     "previous_defaults":1,"debt_to_income":0.48,"loan_to_income":0.44}
+print("valid query   :", api_predict(q))
+print("credit=9999   :", api_predict(dict(q, credit_score=9999)), " (None =&gt; rejected by validation)")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>valid query   : {'default_probability': 0.5252, 'decision': 'REJECT'}
+credit=9999   : None  (None =&gt; rejected by validation)</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 2 — Threat-model the deployment with STRIDE</h3>
+<p class="lesson-intro">Before attacking anything, name what could go wrong. Six threat classes, each mapped to the real control Module 10 does (or does not) have — the two WEAK/GAP rows are exactly what Lessons 3 and 4 then exploit.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># A minimal STRIDE view of Module 10's deployment: which real control covers each threat class?
+stride = {
+    "Spoofing":               "mTLS -- caller needs a valid client cert (STRONG)",
+    "Tampering":              "Pydantic range checks only -- not plausibility (WEAK; see Lesson 4)",
+    "Repudiation":           "no request logging built yet (GAP)",
+    "Information disclosure": "nothing protects the model itself (extraction risk; see Lesson 3)",
+    "Denial of service":     "K8s replicas help, but no rate limiting (PARTIAL)",
+    "Elevation of privilege": "non-root container, Trivy-checked (STRONG)",
+}
+for k, v in stride.items():
+    print(f"{k:24s} -&gt; {v}")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>Spoofing                 -&gt; mTLS -- caller needs a valid client cert (STRONG)
+Tampering                -&gt; Pydantic range checks only -- not plausibility (WEAK; see Lesson 4)
+Repudiation              -&gt; no request logging built yet (GAP)
+Information disclosure    -&gt; nothing protects the model itself (extraction risk; see Lesson 3)
+Denial of service        -&gt; K8s replicas help, but no rate limiting (PARTIAL)
+Elevation of privilege   -&gt; non-root container, Trivy-checked (STRONG)</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 3 — Steal the model through its API (extraction)</h3>
+<p class="lesson-intro">An attacker who can only send queries and read decisions trains their own copy. Watch fidelity climb with the query budget — and note that Module 10's range validation never once objected.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code>from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+
+rng = np.random.default_rng(SEED)
+# The attacker only knows plausible feature ranges, then queries and records the DECISION label.
+ref = pd.read_csv("data/rr_finance_module1_dataset.csv")
+LO, HI = ref[FEATURES].quantile(0.01), ref[FEATURES].quantile(0.99)
+INT = ("loan_term_months","credit_score","num_previous_loans","previous_defaults")
+
+def sample(n):
+    out = []
+    for _ in range(n):
+        r = {f: float(rng.uniform(LO[f], HI[f])) for f in FEATURES}
+        for f in INT: r[f] = int(round(r[f]))
+        r["credit_score"] = int(np.clip(r["credit_score"], 300, 850))
+        r["annual_income"] = max(1.0, r["annual_income"]); r["loan_amount"] = max(1.0, r["loan_amount"])
+        r["loan_term_months"] = max(1, r["loan_term_months"])
+        out.append(r)
+    return out
+
+def harvest(qs):
+    X, y = [], []
+    for q in qs:
+        d = api_predict(q)
+        if d: X.append([q[f] for f in FEATURES]); y.append(1 if d["decision"]=="REJECT" else 0)
+    return np.array(X), np.array(y)
+
+X_test, y_test = harvest(sample(400))
+for budget in (200, 500, 1000):
+    Xq, yq = harvest(sample(budget))
+    surr = make_pipeline(StandardScaler(), LogisticRegression(max_iter=5000)).fit(Xq, yq)
+    fid = accuracy_score(y_test, surr.predict(X_test))
+    print(f"budget={budget:5d}  surrogate fidelity = {fid:.3f}")
+print("\nThe attacker rebuilds the model from label-only queries. Pydantic validation never objected.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>budget=  200  surrogate fidelity = 0.983
+budget=  500  surrogate fidelity = 0.985
+budget= 1000  surrogate fidelity = 0.985
+
+The attacker rebuilds the model from label-only queries. Pydantic validation never objected.</pre></div>
+</div>
+</div>
+
+<div class="lesson-block">
+<h3 class="lesson-title">Lesson 4 — Flip a rejection to an approval (evasion), then defend it</h3>
+<p class="lesson-intro">Start from a real rejected applicant and nudge a single reported field, staying inside every legal range, until the decision flips. Then add a consistency check that catches this naive attack — and see it hold.</p>
+<div class="step-card">
+<div class="step-head"><span class="step-num">Step 1</span><span class="step-instr">Create a new cell, paste the code below, then press <kbd>Shift</kbd>+<kbd>Enter</kbd> to run it.</span></div>
+<div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code># Start from a real REJECTED applicant and nudge one reported field, in-range, to flip the decision.
+rejected = None
+for _, row in ref.iterrows():
+    cand = {f: (int(row[f]) if f in INT else float(row[f])) for f in FEATURES}
+    cand["credit_score"] = int(np.clip(cand["credit_score"], 300, 850))
+    if cand["annual_income"] &lt;= 0 or cand["loan_amount"] &lt;= 0: continue
+    if api_predict(cand)["decision"] == "REJECT": rejected = cand; break
+
+def try_evade(guard):
+    cur = dict(rejected)
+    for _ in range(40):
+        d = guard(cur)
+        if d and d["decision"] == "APPROVE": return True, cur
+        base = d["default_probability"] if d else 1.0
+        best, best_p = None, base
+        cand = dict(cur)
+        step = 0.05 * float(HI["debt_to_income"] - LO["debt_to_income"])
+        cand["debt_to_income"] = max(0.0, cur["debt_to_income"] - step)
+        dc = guard(cand)
+        if dc and dc["default_probability"] &lt; best_p: best, best_p = cand, dc["default_probability"]
+        if best is None: return False, cur
+        cur = best
+    return False, cur
+
+before = api_predict(rejected)["default_probability"]
+flipped_plain, ev = try_evade(api_predict)
+print(f"No defence : REJECT ({before:.4f}) -&gt; {api_predict(ev)['decision']} ({api_predict(ev)['default_probability']:.4f})")
+print(f"             debt_to_income {rejected['debt_to_income']:.3f} -&gt; {ev['debt_to_income']:.3f}")
+
+# Defence: reject inputs whose debt_to_income contradicts monthly_debt*12/annual_income.
+def consistency_guard(q):
+    if q["annual_income"] &gt; 0:
+        implied = (q["monthly_debt"] * 12.0) / q["annual_income"]
+        if abs(implied - q["debt_to_income"]) &gt; 0.02 * max(q["debt_to_income"], 0.05):
+            return None
+    return api_predict(q)
+
+flipped_def, _ = try_evade(consistency_guard)
+print(f"\nWith consistency check -&gt; evasion still succeeds: {flipped_def}")
+print("The check blocks the naive attack, because it drove debt_to_income away from its components.")</code></pre>
+</div><div class="output-box"><div class="output-label">Expected output</div>
+<pre>No defence : REJECT (0.5857) -&gt; APPROVE (0.4859)
+             debt_to_income 0.167 -&gt; 0.023
+
+With consistency check -&gt; evasion still succeeds: False
+The check blocks the naive attack, because it drove debt_to_income away from its components.</pre></div>
+</div>
+</div>
+
+<div class="callout why" style="margin-top:36px"><strong>Finished Module 11?</strong><div>You've now threat-modelled a deployed model with STRIDE, stolen it through label-only queries, flipped a real rejection to an approval within valid input ranges, and stopped that evasion with a consistency check. The reference notebook goes much further: a full MITRE ATLAS map of the whole course, coefficient-level extraction, an honest membership-inference attack that <em>fails</em> on this simple model, and a defence (server-side recomputation) that only half-works. Ready for the last step? <a href="module11.html">Read the Module 11 handbook &rarr;</a> or head to the capstone below.</div></div>
 </section>
 <section id="panel-m12" class="panel">
   <div class="soon-box">
