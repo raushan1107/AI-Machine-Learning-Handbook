@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 11 — AI Cybersecurity · RR Skillverse</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2fb; --muted:#9fb1c5;
+  --accent:#56d6c9; --accent2:#7aa7ff; --warning:#ffc857; --danger:#ff6b7a; --ok:#55d187;
+  --border:#1d3550; --shadow:0 18px 50px rgba(0,0,0,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#06101d 0%,#081626 45%,#07111f 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.65}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(6,16,29,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:12px 22px}
+.brand{font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand span{color:var(--accent)}
+.topnav{margin-left:auto;display:flex;gap:14px;font-size:13.5px;align-items:center}
+.topnav a.dl{border:1px solid var(--border);padding:7px 11px;border-radius:8px;color:#cfe0f1}
+.topnav a.dl:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.layout{display:grid;grid-template-columns:270px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto;border-right:1px solid var(--border);padding:22px 16px;background:rgba(7,17,31,.75)}
+.sidebar h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 10px 8px}
+.nav a{display:block;padding:8px 10px;border-radius:9px;color:#c6d4e4;font-size:13.5px}
+.nav a:hover{background:#10243c;color:#fff;text-decoration:none}
+main{max-width:1080px;width:100%;margin:0 auto;padding:44px 34px 90px}
+.hero{padding:10px 0 20px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.badge{border:1px solid var(--border);background:#0c1d31;border-radius:999px;padding:6px 11px;font-size:12px;color:#c9d9e9}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.06;letter-spacing:-1px;margin:0 0 14px}
+h1 span{color:var(--accent)}
+.hero p{font-size:17px;color:#b9c9da;max-width:820px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{border:1px solid var(--border);background:#10243c;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:14px}
+.btn.primary{background:var(--accent);color:#041016;border-color:transparent;font-weight:750}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.section{margin-top:52px}
+.section>h2{font-size:30px;margin-bottom:8px}
+.section>p.lead{color:#b8c9da;font-size:16px;max-width:860px}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.card h3{margin-top:0;font-size:15.5px}
+.card p{color:#b6c6d8;font-size:13.5px;margin:0}
+.callout{border:1px solid var(--border);background:#0c1c2f;border-radius:14px;padding:16px 18px;margin:18px 0}
+.callout strong{display:block;margin-bottom:6px}
+.callout.why{border-color:#24586b}
+.callout.warn{border-color:#6b5424}
+.callout.danger{border-color:#6b2733}
+.callout.ok{border-color:#256243}
+table{width:100%;border-collapse:collapse;margin:16px 0;background:#0b1a2c;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:13.5px}
+th{color:#dce9f6;background:#0f2339}
+td{color:#b9c9d9}
+.concept{margin-top:64px;scroll-margin-top:72px;border-top:1px solid var(--border);padding-top:36px}
+.concept-head{border-left:3px solid var(--accent);padding-left:18px;margin-bottom:22px}
+.eyebrow{font-size:11px;letter-spacing:1.8px;color:var(--accent);font-weight:800}
+.concept h2{font-size:32px;line-height:1.1;margin:5px 0 8px}
+.concept-head p{margin:0;color:var(--muted);font-size:15px}
+.subhead{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent2);font-weight:800;margin:26px 0 10px}
+.history-card{background:#0a1626;border:1px solid #27425f;border-radius:14px;padding:16px 18px;margin:14px 0}
+.history-card .yr{color:var(--accent);font-weight:800;font-size:13px;margin-bottom:4px}
+.alt-table td.picked{color:var(--ok);font-weight:700}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.use-box{border-radius:13px;padding:15px 17px;border:1px solid var(--border)}
+.use-box.yes{background:rgba(85,209,135,.06);border-color:#256243}
+.use-box.no{background:rgba(255,107,122,.06);border-color:#6b2733}
+.use-box h4{margin:0 0 8px;font-size:14px}
+.use-box ul{margin:0;padding-left:18px;color:#c2d2e2;font-size:13.5px}
+.analogy{background:#0b192b;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+.analogy .label{font-size:11px;letter-spacing:1.4px;color:var(--warning);font-weight:800;margin-bottom:6px}
+.code-teaser{border:1px solid var(--border);background:#050d17;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13px}
+.code-teaser code{color:#dbe8f5}
+.notebook-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+.notebook-link:hover{border-color:var(--accent);text-decoration:none}
+.toc-index{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}
+.toc-index a{border:1px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:#cfe0f1}
+.toc-index a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.toc-index .n{color:var(--accent);font-weight:800;margin-right:6px}
+.recap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.recap-card{background:#0c1b2d;border:1px solid var(--border);border-radius:16px;padding:19px}
+.recap-card .tag{font-size:11px;letter-spacing:1.2px;color:var(--accent);font-weight:800;margin-bottom:6px}
+.recap-card p{margin:0;color:#b6c6d8;font-size:13.5px}
+footer{margin-top:90px;padding-top:25px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--border)}.card-grid,.recap-grid{grid-template-columns:1fr 1fr}.use-grid{grid-template-columns:1fr}}
+@media(max-width:680px){main{padding:26px 16px 70px}.card-grid,.toc-index,.recap-grid{grid-template-columns:1fr}h1{font-size:34px}.concept h2{font-size:26px}}
+.lens-tabs{display:flex;gap:8px;margin:22px 0 4px}
+.lens-tab{background:#0c1b2d;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.4px;color:#9fb3c8;cursor:pointer}
+.lens-tab.active{background:var(--accent);border-color:transparent;color:#041016}
+.lens-pane{display:none}
+.lens-pane.active{display:block}
+.math-box{background:#0c1c2f;border:1px solid #24586b;border-radius:14px;padding:16px 18px;margin:10px 0}
+.math-expr{font-family:'Courier New',monospace;background:#081422;border-radius:8px;padding:10px 14px;margin:8px 0;color:#d7e6f5;font-size:14px;overflow-x:auto}
+.math-box .term{margin:4px 0 4px 4px;font-size:13.5px;color:#c3d3e2}
+.math-box .term b{color:#8fd0ff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">RR <span>Skillverse</span> · Free Learning Handbook</div>
+  <nav class="topnav">
+    <a href="index.html">← All modules</a>
+    <a href="module10.html">← Module 10</a>
+    <a class="dl" href="reference-notebooks/module11.ipynb" download>⬇ Notebook</a>
+  </nav>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <h3>Start here</h3>
+    <a href="#recap">Recap: Modules 1–10</a>
+    <a href="#foundation">Why attack our own system</a>
+    <h3>Concepts</h3>
+    <a href="#stride">1 · Threat modelling (STRIDE)</a>
+    <a href="#atlas">2 · MITRE ATLAS taxonomy</a>
+    <a href="#extraction">3 · Model extraction</a>
+    <a href="#evasion">4 · Evasion attacks</a>
+    <a href="#membership">5 · Membership inference</a>
+    <a href="#defenses">6 · Defences that work</a>
+    <h3>Wrap-up</h3>
+    <a href="#handoff">Hand-off to Module 12</a>
+  </div>
+</aside>
+
+<main>
+<section class="hero">
+  <div class="badges">
+    <span class="badge">RR Skillverse</span>
+    <span class="badge">Module 11 of 12</span>
+    <span class="badge">Theory Handbook</span>
+    <span class="badge">Finance + AI + Security</span>
+  </div>
+  <h1>Module 11 — <span>AI Cybersecurity</span></h1>
+  <p>Same theory-first structure as Modules 1–10: for every technique below, <strong>what it is</strong>, <strong>why it exists</strong> — the specific problem it was invented to solve — <strong>what else you could use instead</strong>, and <strong>a real financial example</strong>. The difference now: the moment Module 10 put the model behind a real API, RR Finance acquired a real attack surface. This module threat-models that system and then attacks it — extraction, evasion, and membership inference — measuring every result honestly, including two findings that are deliberately <em>un</em>-dramatic.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="reference-notebooks/module11.ipynb" download>⬇ Download the Module 11 notebook</a>
+    <a class="btn" href="module10.html">← Back to Module 10</a>
+    <a class="btn" href="index.html">All modules →</a>
+  </div>
+</section>
+
+<div class="section" id="recap">
+  <h2>Recap — what RR Finance already has, and why it is now a target</h2>
+  <p class="lead">Module 11 is not a fresh start. Here is exactly what it inherits — and why that inheritance is now something an adversary can reach.</p>
+  <div class="recap-grid">
+    <div class="recap-card"><div class="tag">MODULES 1–6</div><p>A validated tabular model, deep-learning fundamentals with adversarial attacks, NLP and a from-scratch LLM, RAG and agents, and an explainability + fairness audit.</p></div>
+    <div class="recap-card"><div class="tag">MODULES 7–9</div><p>Federated and differentially-private training, multimodal pipelines with tamper detection, and graph-based fraud detection.</p></div>
+    <div class="recap-card"><div class="tag">MODULE 10</div><p>A real, running FastAPI service wrapping Module 1's pipeline — Pydantic-validated, containerised, Trivy-scanned, and behind a mutual-TLS boundary. The first time the model was reachable over a network.</p></div>
+  </div>
+  <div class="callout why"><strong>What's new in Module 11</strong><div>Every previous module treated attacks as isolated demos. Module 11 steps back to threat-model the whole deployed system (STRIDE + MITRE ATLAS), then attacks the exact Module 10 API directly — and pairs each attack with a real, tested defence. Two results are kept deliberately undramatic: an attack that fails and a defence that only half-works, because knowing <em>when</em> an attack works is the whole point of thinking like a defender.</div></div>
+</div>
+
+<div class="section" id="foundation">
+  <h2>Why attack our own system</h2>
+  <p class="lead">A model behind an API is only as safe as the weakest thing an attacker can do with query access — and the only way to know that is to try, carefully and honestly.</p>
+  <div class="card-grid">
+    <div class="card"><h3>The core shift</h3><p>Ten modules built capability; deployment turned that capability into an attack surface. Module 11 measures the exposure that Module 10's convenience created.</p></div>
+    <div class="card"><h3>The path this module walks</h3><p>Threat-model the architecture (STRIDE) → map the course to a standard taxonomy (ATLAS) → execute extraction, evasion, and membership inference against the real API → harden it with measured defences.</p></div>
+    <div class="card"><h3>Why honesty is the method</h3><p>Every number here comes from a real attack against the real deployed model. Two attacks under-perform — reported as-is, because a security course that only shows scary results teaches nothing about where the real boundaries are.</p></div>
+  </div>
+</div>
+
+<!-- ============ CONCEPT 1: THREAT MODELLING WITH STRIDE ============ -->
+<section class="concept" id="stride">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 1</span>
+    <h2>Threat Modelling with STRIDE</h2>
+    <p>Before attacking anything, enumerate what could go wrong — one structured question per threat class.</p>
+  </div>
+
+  <div class="lens-tabs" id="stride-tabs"><div class="lens-tab active" onclick="switchLens('stride','overview')">Overview</div><div class="lens-tab" onclick="switchLens('stride','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="stride-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>STRIDE</strong> is a threat-modelling framework that walks six categories of threat — <strong>S</strong>poofing, <strong>T</strong>ampering, <strong>R</strong>epudiation, <strong>I</strong>nformation disclosure, <strong>D</strong>enial of service, <strong>E</strong>levation of privilege — against a specific system, turning "is this secure?" into six concrete, answerable questions.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">1999</div>
+    <strong>Loren Kohnfelder and Praerit Garg at Microsoft</strong> introduced STRIDE as a structured way to enumerate threats during design. It remains one of the most widely-taught threat-modelling frameworks precisely because its six categories are exhaustive enough to be useful and few enough to remember.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You have a concrete architecture to model — Module 10's API, container, and mTLS boundary give STRIDE something specific to bite on</li><li>A security review or regulator expects a documented, category-by-category threat model</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>You need to model attacker <em>capability</em> and <em>likelihood</em>, not just threat categories — STRIDE enumerates what could go wrong, not how likely each is (pair it with a risk-scoring method for that)</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's loan API handles applicant PII and makes money-affecting decisions. STRIDE forces the question 'how could each part of this be spoofed, tampered, or abused?' <em>before</em> an incident, and produces the exact category-by-category table an auditor asks to see.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="stride-math">
+    <div class="math-box">
+<div class="term">STRIDE is a structured enumeration, not a computation — there is no formula. Its rigour comes from completeness: every threat you can name should fall into one of the six categories, so working through all six is a check that nothing was missed.</div>
+<div class="term">In the notebook, each category maps to specific Module 10 components and a <b>residual risk</b> after Module 10's real controls: Spoofing → mTLS (strong), Tampering → bounds-only validation (weak), Information disclosure → nothing protecting the model (extraction severe). Lessons 4–6 then execute the three model-specific threats this table identifies.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 2: THE MITRE ATLAS TAXONOMY ============ -->
+<section class="concept" id="atlas">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 2</span>
+    <h2>The MITRE ATLAS Taxonomy</h2>
+    <p>A shared, standard vocabulary for adversarial ML — so the course's scattered attacks become one coherent picture.</p>
+  </div>
+
+  <div class="lens-tabs" id="atlas-tabs"><div class="lens-tab active" onclick="switchLens('atlas','overview')">Overview</div><div class="lens-tab" onclick="switchLens('atlas','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="atlas-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>MITRE ATLAS</strong> (Adversarial Threat Landscape for Artificial-Intelligence Systems) is the ML-specific counterpart to the well-known MITRE ATT&amp;CK framework: a real, maintained knowledge base of adversary <em>tactics</em> (goals) and <em>techniques</em> (methods) observed against real ML systems.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2021</div>
+    <strong>MITRE, with industry and academic partners</strong>, released ATLAS to give AI security the same shared taxonomy that ATT&amp;CK gave conventional cybersecurity. It catalogues real, documented attacks — data poisoning, model extraction, evasion, and more — as a common language for describing and defending against them.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You need to communicate an ML risk to a security team, or compare your exposure against documented industry incidents</li><li>You want to turn ad-hoc security demos into an auditable map of which standard techniques you have evidence about</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>You need step-by-step exploit code — ATLAS names and categorises techniques; it is a taxonomy, not an attack toolkit</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's security team cannot triage or defend what it cannot name. Mapping this course's real attacks onto ATLAS turns 'we ran some security demos' into 'here are the seven standard adversary techniques we have real evidence about, and our current control for each' — exactly the governance artifact a review requires.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="atlas-math">
+    <div class="math-box">
+<div class="term">No mathematics — this lesson is a mapping over attacks already run. Each entry pairs a real course artifact with an ATLAS tactic and technique.</div>
+<div class="term">The notebook maps <b>seven</b> distinct techniques already demonstrated: data poisoning (Module 1), adversarial/evasion crafting (Modules 2, 5), Byzantine model-integrity attack (Module 7), input/document tampering (Module 8), and the three Module 11 attacks — model extraction, query-only evasion, and membership inference.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 3: MODEL EXTRACTION (MODEL STEALING) ============ -->
+<section class="concept" id="extraction">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 3</span>
+    <h2>Model Extraction (Model Stealing)</h2>
+    <p>Reconstructing a functional copy of the model from nothing but its API answers.</p>
+  </div>
+
+  <div class="lens-tabs" id="extraction-tabs"><div class="lens-tab active" onclick="switchLens('extraction','overview')">Overview</div><div class="lens-tab" onclick="switchLens('extraction','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="extraction-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Model extraction</strong> trains a <em>surrogate</em> model to imitate a target using only (input, output) pairs harvested through the target's API. The attacker chooses inputs, records the returned decisions, and fits their own model — measured by <strong>fidelity</strong>: how often the surrogate agrees with the victim on fresh inputs.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2016</div>
+    <strong>Tramèr et al., "Stealing Machine Learning Models via Prediction APIs" (USENIX Security)</strong> showed that many deployed prediction APIs could be cloned with surprisingly few queries — sometimes recovering model parameters almost exactly. It established model extraction as a practical, not merely theoretical, threat to any model exposed behind an API.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You are assessing a model that is exposed behind a query API (like Module 10's /predict) and want to know whether it can be cloned</li><li>You want to understand the enabling attack behind offline evasion — a stolen surrogate lets an attacker craft attacks with unlimited, undetected tries</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The model is never queryable by untrusted parties — extraction needs query access, so a fully internal model with no exposed API is out of scope for this specific attack</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>RR Finance's model is intellectual property and a competitive asset. The notebook shows a linear surrogate reaching very high fidelity from only a few hundred label-only queries — and recovering the victim's actual coefficient structure, i.e. <em>which features drive a rejection and by how much</em>. Module 10's Pydantic validation accepted every query, because each value was in range: validation is not an anti-extraction control.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="extraction-math">
+    <div class="math-box">
+<div class="term">The surrogate minimises disagreement with the victim's labels: it fits parameters θ to make surrogate(x; θ) match the victim's returned decision on each queried x. With enough well-spread queries, minimising this disagreement reconstructs the victim's decision boundary.</div>
+<div class="term"><b>Query budget</b> — the number of API calls — trades off against fidelity: more queries, closer clone. In the notebook, fidelity climbs with budget and the best (linear) surrogate reaches ~0.99 while recovering the victim's coefficients with Pearson correlation ~0.99 and all 11 signs correct.</div>
+<div class="term"><b>Model family</b> matters: the linear surrogate beats tree and forest surrogates here because the victim's boundary is a smooth linear one — a concrete illustration that correctly guessing the victim's architecture makes theft dramatically more effective.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 4: EVASION: QUERY-ONLY ADVERSARIAL INPUTS ============ -->
+<section class="concept" id="evasion">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 4</span>
+    <h2>Evasion: Query-Only Adversarial Inputs</h2>
+    <p>Flipping a rejection to an approval by changing only what is reported — with no model internals.</p>
+  </div>
+
+  <div class="lens-tabs" id="evasion-tabs"><div class="lens-tab active" onclick="switchLens('evasion','overview')">Overview</div><div class="lens-tab" onclick="switchLens('evasion','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="evasion-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Evasion</strong> crafts an input that the model misclassifies in the attacker's favour. In a <em>query-only</em> (black-box) setting the attacker has no gradients — so they start from a real rejected case and greedily probe small, in-range changes, keeping whichever lowers the returned risk, until the decision flips.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2013–2014</div>
+    <strong>Szegedy et al. and Goodfellow et al.</strong> showed that tiny, deliberate input perturbations reliably fool neural networks (the adversarial-example result Module 2 demonstrated white-box with FGSM/PGD). Later work extended the attack to the harder <em>black-box</em> setting, where the attacker sees only the model's outputs — exactly the setting a public API creates.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You want to test whether a deployed decision can be gamed by an applicant or broker adjusting only reported fields</li><li>You need the black-box counterpart to Module 2's white-box gradient attacks — the realistic case when only an API is exposed</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>You control the whole pipeline and can verify every input against an authoritative source — then the attack surface this exploits (self-reported, unverified fields) largely disappears</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Every successfully evaded rejection is a loan RR Finance's own model judged too risky, approved anyway — direct fraud. The notebook flips a real REJECT to APPROVE in a handful of queries by nudging a single reported field within its legal range; Module 10's bounds-only validation never objects, because each number is individually valid.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="evasion-math">
+    <div class="math-box">
+<div class="term">This is a coarse, black-box <b>hill-climb</b> on the model's probability output: at each step, probe each mutable feature by a small fraction of its range, and move in whichever direction most reduces the returned default probability, until the decision crosses the 0.5 threshold.</div>
+<div class="term">It is the query-only cousin of Module 2's gradient attacks: gradient methods use ∂loss/∂x directly; here the attacker <em>estimates</em> the useful direction by finite differences — trying a step and observing the output change — because the API exposes no gradient.</div>
+<div class="term"><b>What changes the result:</b> a larger step explores faster but overshoots; restricting the <b>mutable set</b> to plausibly-misreportable fields (income, debt, ratios — not lender-verified fields like previous_defaults) keeps the attack realistic. The notebook flips the decision by changing debt_to_income alone.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 5: MEMBERSHIP INFERENCE (AND AN HONEST FAILURE) ============ -->
+<section class="concept" id="membership">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 5</span>
+    <h2>Membership Inference (and an Honest Failure)</h2>
+    <p>Asking whether a specific person was in the training set — and finding, honestly, that this model does not tell.</p>
+  </div>
+
+  <div class="lens-tabs" id="membership-tabs"><div class="lens-tab active" onclick="switchLens('membership','overview')">Overview</div><div class="lens-tab" onclick="switchLens('membership','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="membership-overview">
+  <div class="subhead">What it is</div>
+  <p><strong>Membership inference</strong> tries to determine whether a specific record was in a model's training set, using the model's outputs alone. It exploits <em>overfitting</em>: a model that memorised its training data tends to answer more confidently on records it has seen than on ones it hasn't.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2017</div>
+    <strong>Shokri et al., "Membership Inference Attacks Against Machine Learning Models" (IEEE S&amp;P)</strong> demonstrated that a model's confidence gap between training and non-training data can leak membership — a genuine privacy breach, since confirming someone was in a sensitive dataset (medical, financial) is itself a disclosure.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You are auditing a model's privacy exposure — especially a high-capacity model likely to memorise training rows</li><li>You want to test, not assume, whether Module 7's privacy concern actually materialises for a given deployed model</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>The model is a small, well-regularised one that barely overfits — as this lesson shows, there may simply be no membership signal to find, and reporting that honestly is the correct result</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>Confirming a named individual was in RR Finance's default-risk training data leaks that they applied for a loan and were used to model risk — the disclosure Module 7's privacy work aimed to prevent. The notebook runs the attack for real and reports its honest result: it essentially fails on this model.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="membership-math">
+    <div class="math-box">
+<div class="term">The attack scores <b>confidence</b> as the distance of the returned probability from the 0.5 boundary, then measures how well that score separates known members from non-members — reported as an <b>AUC</b>, where 0.5 means the attacker learns nothing.</div>
+<div class="term">The attack works only to the extent the confidence <em>distributions</em> differ between members and non-members. That gap exists when a model overfits; it vanishes when a model generalises.</div>
+<div class="term"><b>The honest result:</b> the notebook's AUC sits on top of 0.5, because the victim is a simple regularised logistic regression whose train and test AUC are nearly identical (Module 1) — there is no memorisation to leak. The very simplicity that made the model easy to steal (Concept 3) makes it incidentally private. A higher-capacity model would very plausibly leak here where this one does not.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCEPT 6: DEFENCES: WHAT ACTUALLY HELPS, AND BY HOW MUCH ============ -->
+<section class="concept" id="defenses">
+  <div class="concept-head">
+    <span class="eyebrow">CONCEPT 6</span>
+    <h2>Defences: What Actually Helps, and By How Much</h2>
+    <p>Turning the attack findings into real, measured mitigations — including where a defence only half-works.</p>
+  </div>
+
+  <div class="lens-tabs" id="defenses-tabs"><div class="lens-tab active" onclick="switchLens('defenses','overview')">Overview</div><div class="lens-tab" onclick="switchLens('defenses','math')">🧮 Math &amp; Algorithm</div></div>
+
+  <div class="lens-pane lens-overview active" id="defenses-overview">
+  <div class="subhead">What it is</div>
+  <p>Three real controls, each targeting a specific attack: <strong>output minimisation</strong> (return only the decision, never the probability), <strong>rate limiting</strong> (cap queries per caller), and <strong>input integrity</strong> (consistency checks or server-side recomputation of derived features). Each is measured against the live attacks, honestly, including where it falls short.</p>
+
+  <div class="subhead">Why it exists — the history</div>
+  <div class="history-card">
+    <div class="yr">2015–present</div>
+    As extraction, evasion, and inference attacks were documented, the defensive literature converged on a <strong>defence-in-depth</strong> consensus: no single control stops a determined adversary, so real systems layer output minimisation, query throttling, input validation, and downstream anomaly monitoring — accepting that each control raises cost rather than guaranteeing safety.
+  </div>
+
+  <div class="use-grid">
+    <div class="use-box yes"><h4>✓ Use it when</h4><ul><li>You are hardening a deployed model API and want evidence-backed, prioritised changes rather than a checklist</li><li>You need to know the <em>limits</em> of each control — which is exactly what tells you where monitoring must pick up</li></ul></div>
+    <div class="use-box no"><h4>✗ Reach for something else when</h4><ul><li>You are looking for a single silver-bullet fix — the honest finding here is that none of these controls, alone, stops the attacks; they raise cost and must be layered</li></ul></div>
+  </div>
+
+  <div class="analogy"><div class="label">REAL-WORLD FINANCIAL EXAMPLE</div>A threat model that ends in 'we are exposed' is useless to RR Finance. The notebook produces a prioritised, measured set of changes to Module 10's real service: minimise output (leaking the probability makes theft near-perfect), rate-limit (raises cost but a simple model is cheap to clone), and enforce input consistency (blocks the naive evasion) — while showing that server-side recomputation still lets a <em>consistent</em> lie, like inflated income, through.</div>
+
+  <a class="notebook-link" href="reference-notebooks/module11.ipynb" download>⬇ Run this lesson in the notebook</a>
+  </div>
+
+  <div class="lens-pane lens-math" id="defenses-math">
+    <div class="math-box">
+<div class="term">These are engineering controls measured against the real attacks, not new models. <b>Output minimisation</b> is measured as extraction fidelity when the API leaks the probability versus decision-only; <b>rate limiting</b> as fidelity across shrinking query budgets; <b>input integrity</b> by replaying the Lesson 5 evasion against a hardened endpoint.</div>
+<div class="term"><b>The subtle result:</b> a tight consistency check <em>does</em> stop the naive evasion (it drove a ratio away from its components), but server-side <em>recomputation</em> does not — the attacker simply reports a higher income, which consistently lowers the recomputed ratios and flips the decision. Input validation can enforce that numbers agree with each other, but not that they are <em>true</em>.</div>
+<div class="term">The boundary this exposes: catching an inflated-income lie needs verification against an external source or downstream anomaly monitoring — a control outside the model's request path entirely. The actionable takeaway: minimise output, rate-limit, enforce consistency, and treat the model as stealable and foolable, because over a real API it is both.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section" id="handoff">
+  <h2>Module 11 hand-off</h2>
+  <p class="lead">The notebook threat-models Module 10's real architecture, maps the whole course onto MITRE ATLAS, then runs real model-extraction, evasion, and membership-inference attacks against the actual deployed API — reporting each result honestly, including an attack that fails and a defence that only half-works — and saves a threat model, an ATLAS map, and per-attack metrics as artifacts.</p>
+  <div class="callout why"><strong>What Module 12 builds on this</strong><div>Module 12 is the capstone: it integrates the whole course into one production system. Module 11's findings become concrete requirements for it — output minimisation and rate limiting on the serving layer, input consistency checks alongside Module 10's range validation, request logging to close the STRIDE Repudiation gap, and a documented, ATLAS-mapped threat model as a governance artifact. The capstone treats the model as an asset an adversary will actively try to steal, fool, and probe.</div></div>
+  <div class="toc-index">
+    <a href="index.html"><span class="n">←</span>Back to all 12 modules</a>
+    <a href="module10.html"><span class="n">←</span>Back to Module 10</a>
+  </div>
+</div>
+
+<footer>
+  <div><strong>RR Skillverse</strong> — Free Learning Handbook by Raushan Ranjan. Shared for learning purposes only — not a commercial product or paid service.</div>
+</footer>
+</main>
+</div>
+<script>
+function switchLens(id, which) {
+  document.getElementById(id+'-overview').classList.toggle('active', which==='overview');
+  document.getElementById(id+'-math').classList.toggle('active', which==='math');
+  const tabs = document.getElementById(id+'-tabs').children;
+  tabs[0].classList.toggle('active', which==='overview');
+  tabs[1].classList.toggle('active', which==='math');
+}
+</script>
+
+</body>
+</html>
